@@ -1,0 +1,190 @@
+# tufter
+
+**Documentation: <https://lobsterbush.github.io/tufter/>** — including a
+[gallery built entirely on simulated
+data](https://lobsterbush.github.io/tufter/articles/simulated-examples.html)
+and a walk through [what each measurement actually
+computes](https://lobsterbush.github.io/tufter/articles/measuring.html).
+
+Edward Tufte’s principles of graphical design, as working `ggplot2` code
+and as measurements you can apply to a figure you have already drawn.
+
+Most Tufte packages give you a theme. A theme is one principle out of
+about twenty, and it is the easiest one. Tufte’s actual argument is that
+statistical graphics can be *evaluated* rather than merely preferred,
+and he gives the quantities to do it with: the data-ink ratio, the lie
+factor, data density. `tufter` implements both halves.
+
+![Default ggplot2 next to the same plot with a quartile frame and
+theme_tufte, with measured data-ink ratios of 0.05 and
+0.35](reference/figures/README-before-after.png)
+
+Default ggplot2 next to the same plot with a quartile frame and
+theme_tufte, with measured data-ink ratios of 0.05 and 0.35
+
+## Installation
+
+``` r
+# install.packages("remotes")
+remotes::install_github("lobsterbush/tufter")
+```
+
+## The two halves
+
+**Generative.** The graphical forms Tufte designed or advocated:
+
+| Function | What it does |
+|----|----|
+| [`theme_tufte()`](https://lobsterbush.github.io/tufter/reference/theme_tufte.md) | Strips the panel, the grid, the border, the legend frame |
+| [`geom_rangeframe()`](https://lobsterbush.github.io/tufter/reference/geom_rangeframe.md) | An axis line spanning only the range the data occupy |
+| [`geom_quartileframe()`](https://lobsterbush.github.io/tufter/reference/geom_rangeframe.md) | The same, broken at the quartiles, so the axis carries the five-number summary |
+| [`geom_dotdash()`](https://lobsterbush.github.io/tufter/reference/geom_dotdash.md) | Marginal distributions on both axes, in place of a frame |
+| [`geom_tufteboxplot()`](https://lobsterbush.github.io/tufter/reference/geom_tufteboxplot.md) | The box plot with the box erased; three variants |
+| [`geom_col_tufte()`](https://lobsterbush.github.io/tufter/reference/geom_col_tufte.md) | Bars with the gridlines erased where they cross the bars |
+| [`slopegraph()`](https://lobsterbush.github.io/tufter/reference/slopegraph.md) | Before-and-after for many units, with every number printed |
+| [`sparkline()`](https://lobsterbush.github.io/tufter/reference/sparkline.md), [`sparklines()`](https://lobsterbush.github.io/tufter/reference/sparklines.md) | Word-sized graphics, with normal band and extremes |
+| [`facet_tufte()`](https://lobsterbush.github.io/tufter/reference/facet_tufte.md) | Small multiples, scales fixed so panels stay comparable |
+| [`geom_text_last()`](https://lobsterbush.github.io/tufter/reference/geom_text_last.md) | Labels on the data, in place of a legend |
+| [`tufte_pal()`](https://lobsterbush.github.io/tufter/reference/tufte_pal.md), [`scale_colour_tufte()`](https://lobsterbush.github.io/tufter/reference/scale_colour_tufte.md) | Greys, greys with one accent, muted earth tones |
+| [`label_source()`](https://lobsterbush.github.io/tufter/reference/label_source.md) | The documentation principle: say where the numbers came from |
+| [`save_tufte()`](https://lobsterbush.github.io/tufter/reference/save_tufte.md) | [`ggsave()`](https://ggplot2.tidyverse.org/reference/ggsave.html) with print defaults, and a clipping check first |
+
+**Evaluative.** The quantities Tufte defined:
+
+| Function | What it measures |
+|----|----|
+| [`data_ink_ratio()`](https://lobsterbush.github.io/tufter/reference/data_ink_ratio.md) | The share of ink that varies with the data, estimated by rendering the plot with and without its data layers |
+| [`lie_factor()`](https://lobsterbush.github.io/tufter/reference/lie_factor.md) | The size of the effect shown over the size of the effect in the data |
+| [`data_density()`](https://lobsterbush.github.io/tufter/reference/data_density.md) | Numbers per square inch of data graphic |
+| [`check_labels_fit()`](https://lobsterbush.github.io/tufter/reference/check_labels_fit.md) | Whether any text will be clipped at the printed size |
+| [`tufte_audit()`](https://lobsterbush.github.io/tufter/reference/tufte_audit.md) | All of the above, plus the structural checks, scored |
+
+![Four graphical forms: the box plot with the box erased, a bar chart
+with gridlines erased through the bars, a slopegraph, and stacked
+sparklines](reference/figures/README-gallery.png)
+
+Four graphical forms: the box plot with the box erased, a bar chart with
+gridlines erased through the bars, a slopegraph, and stacked sparklines
+
+## The short version
+
+``` r
+library(ggplot2)
+library(tufter)
+
+base <- ggplot(mtcars, aes(wt, mpg)) + geom_point()
+
+data_ink_ratio(base)
+#> ── Data-ink ratio
+#> 6% of the ink in this figure varies with the data.
+
+lean <- base + geom_rangeframe() + theme_tufte()
+
+data_ink_ratio(lean)
+#> ── Data-ink ratio
+#> 56% of the ink in this figure varies with the data.
+```
+
+## The audit
+
+``` r
+tufte_audit(ggplot(mtcars, aes(wt, mpg)) + geom_point())
+#> ── Tufte audit ──
+#> 9/13 checks passed (69%), at 6.5in x 4in.
+#>
+#> ── Failing
+#> ✖ The panel is filled with #EBEBEBFF. A tinted panel is ink that never
+#>   varies with the data.
+#>   Erase non-data ink (VDQI ch. 4)
+#> ✖ Minor gridlines are drawn. They divide space the reader is not reading
+#>   to that precision.
+#>   Erase redundant data-ink (VDQI ch. 4)
+#> ✖ No caption. A graphic should name its source on the graphic, so the claim
+#>   can be checked without hunting through the text. See label_source().
+#>   Documentation (Beautiful Evidence ch. 6)
+```
+
+It catches the failures that matter and that authors stop seeing after
+the fifth draft: a pie chart, a bar baseline that is not zero, a
+variable encoded twice, a legend with four entries that should have been
+direct labels, a subtitle that will be clipped at the size you are about
+to save.
+
+## What it will not tell you
+
+[`tufte_principles()`](https://lobsterbush.github.io/tufter/reference/tufte_principles.md)
+lists every principle, its source, the function that implements it, and
+whether the audit can check it.
+
+``` r
+p <- tufte_principles()
+p[!p$audited, c("principle", "implemented_by")]
+#> Show comparisons          slopegraph(), facet_tufte()
+#> Show causality            annotation, not code
+#> Show multivariate data    facet_tufte(), sparklines()
+#> Content counts most of all  you
+```
+
+The score is a prompt, not a verdict. A figure can pass every check and
+still be pointless.
+
+## Relationship to other packages
+
+**Where this duplicates existing work.**
+[`ggthemes`](https://github.com/jrnold/ggthemes) has a
+[`theme_tufte()`](https://lobsterbush.github.io/tufter/reference/theme_tufte.md),
+a
+[`geom_rangeframe()`](https://lobsterbush.github.io/tufter/reference/geom_rangeframe.md)
+and a
+[`geom_tufteboxplot()`](https://lobsterbush.github.io/tufter/reference/geom_tufteboxplot.md).
+It is actively maintained and widely used. If the theme is all you want,
+it is the lighter dependency, and you should use it. Note that loading
+both packages masks
+[`theme_tufte()`](https://lobsterbush.github.io/tufter/reference/theme_tufte.md).
+
+For labels that must not collide,
+[`directlabels`](https://cran.r-project.org/package=directlabels) and
+[`ggrepel`](https://cran.r-project.org/package=ggrepel) solve the
+general problem properly;
+[`geom_text_last()`](https://lobsterbush.github.io/tufter/reference/geom_text_last.md)
+here is the narrow case of labelling the end of a series.
+
+**Where it fills a gap.** As far as I can find, no R package computes
+the data-ink ratio, the lie factor or data density, and none scores a
+plot against design principles. A search of every CRAN package title and
+description turns up no hits for “data-ink”, “lie factor” or
+“chartjunk”. The nearest neighbours do something adjacent but different:
+`ggcheck` introspects built ggplot objects to autograde student code,
+`ggalttext` does so to write alt text, and
+[`GGenemy`](https://cran.r-project.org/package=GGenemy) audits plots for
+*accessibility* — WCAG contrast, colour-vision deficiency — rather than
+for Tufte’s criteria. The only implementation of the data-ink ratio I
+could find in any language is a Java repository last touched in 2010.
+
+Several Tufte forms are also currently unmaintained or absent in R.
+`CGPfunctions`, which provided `newggslopegraph()`, was removed from
+CRAN in November 2025; `leeper/slopegraph` has not moved since 2018; and
+`ggtufte`, Jeff Arnold’s own attempt to spin the Tufte parts out of
+`ggthemes`, was abandoned in 2018. I could find no existing
+implementation of the bar chart with gridlines erased through the bars,
+no first-class dot-dash geom, and no Tufte colour palette (`ggthemes`
+ships Few, Cleveland, Tableau and Ptol palettes, but not one from
+Tufte).
+
+The measurement half is the reason this package exists. The drawing half
+is partly convenience and partly consolidation.
+
+## Sources
+
+- Tufte, E. R. (2001). *The Visual Display of Quantitative Information*,
+  2nd ed.
+- Tufte, E. R. (1990). *Envisioning Information*.
+- Tufte, E. R. (1997). *Visual Explanations*.
+- Tufte, E. R. (2006). *Beautiful Evidence*.
+
+## Author
+
+Charles Crabtree, Senior Lecturer, School of Social Sciences, Monash
+University and K-Club Professor, University College, Korea University.
+
+MIT licensed.

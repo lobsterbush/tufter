@@ -1,0 +1,276 @@
+---
+title: "Measuring a figure"
+description: >
+  What the data-ink ratio, the lie factor and data density actually compute,
+  and where each of them will mislead you.
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>",
+  fig.width = 6.5, fig.height = 4, dpi = 150, out.width = "100%",
+  fig.align = "center", dev = "png"
+)
+library(ggplot2)
+library(tufter)
+```
+
+Most of what people take from Tufte is a look. The more interesting claim in
+*The Visual Display of Quantitative Information* is methodological: that
+statistical graphics can be evaluated, and that he can give you the quantities
+to do it with. This article works through what each of those quantities means
+here, how it is computed, and where it will lead you astray if you quote it
+without thinking.
+
+All data below are simulated.
+
+```{r data}
+set.seed(20260729)
+n <- 400
+d <- data.frame(
+  x = rnorm(n, 50, 12),
+  g = sample(c("Treated", "Control"), n, replace = TRUE)
+)
+d$y <- 12 + 0.42 * d$x + ifelse(d$g == "Treated", 3.1, 0) + rnorm(n, 0, 5)
+```
+
+## The data-ink ratio
+
+Tufte defines the data-ink ratio as the share of a graphic's ink devoted to the
+non-redundant display of data, and asks that it be pushed towards one. That is a
+definition, not a procedure: no book tells you how to count ink on a screen.
+
+`data_ink_ratio()` estimates it empirically. The plot is rendered to a bitmap
+twice, once whole and once with every data layer stripped out of the panel
+grobs. Each pixel contributes in proportion to how far it sits from the
+background colour, so an anti-aliased edge counts as the fraction of a pixel it
+actually is. What is left after subtraction is data ink.
+
+```{r ratio-default}
+base <- ggplot(d, aes(x, y)) +
+  geom_point(size = 1, alpha = 0.5) +
+  labs(x = "Pre-treatment score", y = "Outcome")
+
+data_ink_ratio(base)
+```
+
+Almost nothing. The grey panel alone is most of that ink, and it does not change
+when the data change.
+
+```{r ratio-lean}
+lean <- base + geom_rangeframe() + theme_tufte()
+data_ink_ratio(lean)
+```
+
+The same numbers, drawn with about seven times the share of the ink doing work.
+
+### Where it misleads
+
+Three things are worth knowing before you quote the number.
+
+**Overlap is counted once.** A dense scatterplot draws many points on top of
+each other, and the measurement sees one blob. So dense plots understate their
+own data-ink, which is the opposite of the direction you would want the bias to
+run.
+
+```{r overlap, fig.height = 3}
+dense <- data.frame(x = rnorm(20000), y = rnorm(20000))
+sparse <- dense[1:60, ]
+
+lean_theme <- list(geom_rangeframe(), theme_tufte())
+
+c(
+  dense = data_ink_ratio(
+    ggplot(dense, aes(x, y)) + geom_point(size = 0.4, alpha = 0.2) + lean_theme
+  )$ratio,
+  sparse = data_ink_ratio(
+    ggplot(sparse, aes(x, y)) + geom_point(size = 0.4) + lean_theme
+  )$ratio
+)
+```
+
+**Redundant data-ink still counts as data-ink.** Tufte would subtract ink that
+repeats information the reader already has. No measurement can tell whether a
+mark is repeating something, so this estimate does not try.
+
+**The number depends on the size you render at.** Non-data ink is largely fixed
+furniture, so shrinking the canvas raises the ratio. Compare figures at the size
+you intend to print them, and compare like with like.
+
+```{r size-dependence}
+vapply(
+  c(3, 6.5, 12),
+  function(w) data_ink_ratio(lean, width = w, height = w * 0.6)$ratio,
+  numeric(1)
+)
+```
+
+Treat it as a comparative instrument. It is reliable for judging whether one
+version of a figure is leaner than another, and unreliable as an absolute score.
+
+## The lie factor
+
+The lie factor is the size of the effect shown in the graphic divided by the
+size of the effect in the data. A truthful graphic has a lie factor of one, and
+Tufte treats anything outside roughly 0.95 to 1.05 as distortion.
+
+Given the numbers directly, it reproduces his own examples. The fuel-economy
+graphic in *The Visual Display* showed an eighteen percent change as a line
+growing by seven hundred and eighty-three percent.
+
+```{r lie-numeric}
+lie_factor(c(18.0, 27.5), c(0.6, 5.3))
+```
+
+Given a plot, it computes the distortion introduced by a baseline that is not
+zero, which is by far the most common way a real published figure lies. A bar's
+length stops being the quantity it stands for.
+
+```{r lie-plot, fig.height = 3}
+means <- data.frame(
+  condition = c("Control", "Treated"),
+  outcome = c(100, 110)
+)
+
+honest <- ggplot(means, aes(condition, outcome)) +
+  geom_col_tufte(fill = "grey72") +
+  labs(x = NULL, y = "Outcome") +
+  theme_tufte()
+
+truncated <- honest + coord_cartesian(ylim = c(95, 115))
+
+c(honest = lie_factor(honest), truncated = lie_factor(truncated))
+```
+
+A ten percent difference drawn as a sixteen-fold one. Here they are side by
+side; the second is the figure that gets published.
+
+```{r lie-side, fig.height = 2.6}
+print(honest + labs(title = "Baseline at zero"))
+print(truncated + labs(title = "Baseline at 95"))
+```
+
+### Where it misleads
+
+The plot method only looks at bars. A truncated axis on a line chart or a dot
+plot is not necessarily a lie, because those marks encode position rather than
+length, and Tufte's own advice is that they may be cropped freely. So
+`lie_factor()` returns `1` for a scatterplot regardless of its limits. That is
+correct behaviour and easy to misread as a clean bill of health.
+
+## Data density
+
+The number of entries in the data matrix divided by the area of the data
+graphic, in square inches. Tufte's complaint about most published statistical
+graphics is that they are enormous and say almost nothing: a chart carrying four
+numbers over half a page would have been better as a sentence.
+
+```{r density}
+data_density(lean, width = 6.5, height = 4)
+```
+
+The entries are counted as rows drawn times distinct variables mapped to
+aesthetics, and the area is the panel rather than the whole figure, since that
+is what Tufte means by "the data graphic". Constants set outside `aes()` do not
+count, because they carry no data.
+
+```{r density-sparse}
+four_numbers <- data.frame(g = letters[1:4], v = c(3, 7, 5, 9))
+data_density(
+  ggplot(four_numbers, aes(g, v)) + geom_col_tufte() + theme_tufte(),
+  width = 6.5, height = 4
+)
+```
+
+Sixteen numbers per square inch sounds respectable until you notice the whole
+figure carries eight of them. The density measure rewards a plot for having many
+mapped variables even when those variables are the same column twice, so read it
+alongside the redundant-encoding check in the audit.
+
+## Checking that nothing is clipped
+
+Not a Tufte quantity, but the failure that ruins more figures than any of them.
+`ggplot2` does not wrap long text: it clips it at the device edge, silently, and
+a subtitle that fits on screen at the default device size is not a subtitle that
+fits in the saved file.
+
+`check_labels_fit()` renders at the size you intend to print and measures every
+text element against the space available.
+
+```{r fit}
+wordy <- lean + labs(
+  subtitle = paste(rep("A subtitle that runs on rather too long", 4),
+                   collapse = " ")
+)
+
+check_labels_fit(wordy, width = 6.5, height = 4)
+```
+
+It also catches axis labels that cannot sit side by side, which is the other
+common failure and the one that is hardest to see in a preview pane.
+
+```{r fit-axis}
+long_labels <- data.frame(
+  condition = c("Non-post-conflict baseline", "Post-conflict, high intensity",
+                "Post-conflict, low intensity"),
+  value = c(3.1, 4.8, 4.0)
+)
+
+check_labels_fit(
+  ggplot(long_labels, aes(condition, value)) + geom_col_tufte() + theme_tufte(),
+  width = 4, height = 3
+)
+```
+
+`save_tufte()` runs this check before it writes the file, so the warning arrives
+while you can still act on it.
+
+## Putting it together
+
+`tufte_audit()` runs all of the above plus the structural checks, and scores
+them.
+
+```{r audit-bad}
+bad <- ggplot(d, aes(g, y, fill = g)) +
+  geom_col(stat = "summary", fun = "mean")
+
+suppressWarnings(tufte_audit(bad, width = 6.5, height = 4))
+```
+
+Six separate problems, named: the tinted panel, the minor gridlines, a legend
+that should have been a direct label, the grouping variable encoded twice, no
+source note, and four numbers spread over seventeen square inches. The same
+data, drawn properly:
+
+```{r audit-good}
+good <- ggplot(d, aes(g, y)) +
+  geom_tufteboxplot() +
+  geom_rangeframe(sides = "l") +
+  labs(x = NULL, y = "Outcome") +
+  theme_tufte() +
+  label_source("Simulated data, n = 400")
+
+tufte_audit(good, width = 6.5, height = 4)
+```
+
+## What the score is not
+
+The score is the share of applicable checks passed, and it is a prompt rather
+than a verdict. A figure can pass every check and still be pointless, because
+Tufte's first principle is that content counts most of all, and no function
+evaluates that.
+
+`tufte_principles()` is the honest inventory. Its `audited` column marks which
+principles a function can verify and which it cannot, and the ones it cannot are
+listed anyway.
+
+```{r principles}
+p <- tufte_principles()
+p[!p$audited, c("principle", "source", "implemented_by")]
+```
+
+Showing comparisons, showing causality, showing multivariate data, and content
+counting most of all are not things a package can check. They are what the
+figure is for. What the audit is good for is the mechanical failures underneath
+them: the ones that are real, that are common, and that authors stop seeing
+after the fifth draft.

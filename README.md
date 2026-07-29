@@ -1,5 +1,9 @@
 # tufter
 
+**Documentation: <https://lobsterbush.github.io/tufter/>** — including a
+[gallery built entirely on simulated data](https://lobsterbush.github.io/tufter/articles/simulated-examples.html)
+and a walk through [what each measurement actually computes](https://lobsterbush.github.io/tufter/articles/measuring.html).
+
 Edward Tufte's principles of graphical design, as working `ggplot2` code and as
 measurements you can apply to a figure you have already drawn.
 
@@ -112,12 +116,39 @@ pointless.
 
 ## Relationship to other packages
 
-`ggthemes` has a `theme_tufte()`, a range frame and a Tufte box plot, and they
-are good. `tufter` differs in scope rather than in quality: it adds the
-measurement half, which is where Tufte's argument actually lives, along with
-slopegraphs, sparklines, the erased-gridline bar chart, the quartile frame and
-direct labelling. If you only want the theme, `ggthemes` is the lighter
-dependency.
+**Where this duplicates existing work.** [`ggthemes`](https://github.com/jrnold/ggthemes)
+has a `theme_tufte()`, a `geom_rangeframe()` and a `geom_tufteboxplot()`. It is
+actively maintained and widely used. If the theme is all you want, it is the
+lighter dependency, and you should use it. Note that loading both packages
+masks `theme_tufte()`.
+
+For labels that must not collide, [`directlabels`](https://cran.r-project.org/package=directlabels)
+and [`ggrepel`](https://cran.r-project.org/package=ggrepel) solve the general
+problem properly; `geom_text_last()` here is the narrow case of labelling the
+end of a series.
+
+**Where it fills a gap.** As far as I can find, no R package computes the
+data-ink ratio, the lie factor or data density, and none scores a plot against
+design principles. A search of every CRAN package title and description turns
+up no hits for "data-ink", "lie factor" or "chartjunk". The nearest neighbours
+do something adjacent but different: `ggcheck` introspects built ggplot objects
+to autograde student code, `ggalttext` does so to write alt text, and
+[`GGenemy`](https://cran.r-project.org/package=GGenemy) audits plots for
+*accessibility* — WCAG contrast, colour-vision deficiency — rather than for
+Tufte's criteria. The only implementation of the data-ink ratio I could find in
+any language is a Java repository last touched in 2010.
+
+Several Tufte forms are also currently unmaintained or absent in R.
+`CGPfunctions`, which provided `newggslopegraph()`, was removed from CRAN in
+November 2025; `leeper/slopegraph` has not moved since 2018; and `ggtufte`,
+Jeff Arnold's own attempt to spin the Tufte parts out of `ggthemes`, was
+abandoned in 2018. I could find no existing implementation of the bar chart
+with gridlines erased through the bars, no first-class dot-dash geom, and no
+Tufte colour palette (`ggthemes` ships Few, Cleveland, Tableau and Ptol
+palettes, but not one from Tufte).
+
+The measurement half is the reason this package exists. The drawing half is
+partly convenience and partly consolidation.
 
 ## Sources
 

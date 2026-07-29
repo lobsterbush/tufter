@@ -48,5 +48,5 @@ Suggests:
     vdiffr
 VignetteBuilder: knitr
 Config/testthat/edition: 3
-URL: https://github.com/lobsterbush/tufter
+URL: https://lobsterbush.github.io/tufter/, https://github.com/lobsterbush/tufter
 BugReports: https://github.com/lobsterbush/tufter/issues

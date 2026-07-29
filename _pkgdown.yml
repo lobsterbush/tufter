@@ -1,0 +1,90 @@
+url: https://lobsterbush.github.io/tufter/
+
+template:
+  bootstrap: 5
+  bslib:
+    base_font: {google: "Plus Jakarta Sans"}
+    heading_font: {google: "Cormorant Garamond"}
+    code_font: {google: "JetBrains Mono"}
+    primary: "#3730a3"
+    link-color: "#3730a3"
+    headings-font-weight: 600
+
+home:
+  title: Tufte's design principles as R code
+  description: >
+    Edward Tufte's principles of graphical design, as working ggplot2 code and
+    as measurements you can apply to a figure you have already drawn.
+
+navbar:
+  structure:
+    left: [intro, articles, reference, news]
+    right: [search, github]
+  components:
+    articles:
+      text: Articles
+      menu:
+      - text: Examples with simulated data
+        href: articles/simulated-examples.html
+      - text: Measuring a figure
+        href: articles/measuring.html
+
+authors:
+  Charles Crabtree:
+    href: https://charlescrabtree.org
+
+reference:
+- title: Drawing
+  desc: >
+    The graphical forms Tufte designed or advocated, as ggplot2 layers, themes,
+    scales and plot constructors.
+- subtitle: Themes
+  contents:
+  - theme_tufte
+  - theme_sparkline
+  - theme_slopegraph
+- subtitle: Frames and margins
+  desc: >
+    Replacements for the panel border, which is the same box whatever the
+    numbers are.
+  contents:
+  - geom_rangeframe
+  - quartile_breaks
+  - geom_dotdash
+- subtitle: Distributions and comparisons
+  contents:
+  - geom_tufteboxplot
+  - geom_col_tufte
+  - slopegraph
+  - facet_tufte
+- subtitle: Word-sized graphics
+  contents:
+  - sparkline
+  - sparklines
+  - sparkline_grob
+- subtitle: Colour and labelling
+  desc: >
+    Colour as a code rather than decoration, and words on the data rather than
+    in a legend.
+  contents:
+  - tufte_pal
+  - scale_colour_tufte
+  - geom_text_last
+  - label_source
+
+- title: Measuring
+  desc: >
+    The quantities Tufte defined, so that a finished figure can be scored
+    rather than admired.
+  contents:
+  - data_ink_ratio
+  - lie_factor
+  - data_density
+  - check_labels_fit
+  - tufte_audit
+
+- title: Reference and output
+  contents:
+  - tufte_principles
+  - save_tufte
+  - tufter-package
