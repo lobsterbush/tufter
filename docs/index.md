@@ -159,7 +159,17 @@ description turns up no hits for “data-ink”, “lie factor” or
 [`GGenemy`](https://cran.r-project.org/package=GGenemy) audits plots for
 *accessibility* — WCAG contrast, colour-vision deficiency — rather than
 for Tufte’s criteria. The only implementation of the data-ink ratio I
-could find in any language is a Java repository last touched in 2010.
+could find in any language is a Java repository, archived in 2025 and
+last worked on in 2010, which requires the user to segment the image by
+hand before it will count anything.
+
+A note on what the numbers are for. The empirical literature does not
+support maximising the data-ink ratio as an objective, and has not since
+the mid nineties. The measurements here are descriptive diagnostics,
+meant to tell you where a figure spends its ink, not a score to push
+towards one. The [measuring
+article](https://lobsterbush.github.io/tufter/articles/measuring.html#and-a-larger-caveat-the-principle-itself-is-contested)
+sets out that argument and the evidence against the principle.
 
 Several Tufte forms are also currently unmaintained or absent in R.
 `CGPfunctions`, which provided `newggslopegraph()`, was removed from

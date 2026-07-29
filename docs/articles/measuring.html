@@ -168,6 +168,37 @@ compare like with like.</p>
 whether one version of a figure is leaner than another, and unreliable
 as an absolute score.</p>
 </div>
+<div class="section level3">
+<h3 id="and-a-larger-caveat-the-principle-itself-is-contested">And a larger caveat: the principle itself is contested<a class="anchor" aria-label="anchor" href="#and-a-larger-caveat-the-principle-itself-is-contested"></a>
+</h3>
+<p>The three problems above are measurement error. There is a fourth
+problem, which is that maximising the data-ink ratio is not
+straightforwardly good, and the experimental evidence has said so for
+thirty years.</p>
+<p>Gillan and Richman (Human Factors, 1994) found that higher data-ink
+did make readers faster and more accurate, but concluded that the
+principle as stated is too simple: non-data ink is not one thing. An
+axis helps; a decorative background does not; and which is which depends
+on the task and the graph type. Inbar, Tractinsky and Meyer (2007) found
+that readers preferred graphs that were <em>not</em> minimalist,
+accepting moderate reduction and rejecting Tufte’s version of it.
+Bateman and colleagues, in “Useful Junk?” (CHI 2010), found that
+embellished charts were recalled better over the long run than plain
+ones. More recently the accessibility argument has been pressed hard: a
+hairline on a white background at low contrast is lean and also
+unreadable for a good number of people.</p>
+<p>I have not resolved any of that, and this package does not try to.
+The design consequence is that the numbers here are meant as
+<em>descriptive diagnostics</em>, not as an objective function. “This
+figure spends ninety-five percent of its ink on furniture” is a useful
+thing to know. “Therefore push the ratio to one” does not follow, and if
+you take it to the limit you will produce figures that are elegant,
+economical, and worse to read. The audit reports; you decide.</p>
+<p>This is also why <code><a href="../reference/theme_tufte.html">theme_tufte()</a></code> takes a <code>grid</code>
+argument rather than refusing to draw one. A faint grid is the honest
+choice whenever readers have to recover values rather than compare
+shapes.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="the-lie-factor">The lie factor<a class="anchor" aria-label="anchor" href="#the-lie-factor"></a>
