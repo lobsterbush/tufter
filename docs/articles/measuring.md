@@ -55,9 +55,9 @@ lean <- base + geom_rangeframe() + theme_tufte()
 data_ink_ratio(lean)
 #> 
 #> ── Data-ink ratio
-#> 74% of the ink in this figure varies with the data.
-#> • data ink: 9911 pixel-equivalents
-#> • non-data ink: 3412
+#> 81% of the ink in this figure varies with the data.
+#> • data ink: 10762 pixel-equivalents
+#> • non-data ink: 2560
 #> • measured at 6.5in x 4in, 150 dpi
 ```
 
@@ -88,7 +88,7 @@ c(
   )$ratio
 )
 #>     dense    sparse 
-#> 0.9758607 0.4125326
+#> 0.9899012 0.7331751
 ```
 
 **Redundant data-ink still counts as data-ink.** Tufte would subtract
@@ -107,7 +107,7 @@ vapply(
   function(w) data_ink_ratio(lean, width = w, height = w * 0.6)$ratio,
   numeric(1)
 )
-#> [1] 0.7215738 0.7440596 0.7103622
+#> [1] 0.7533856 0.8074221 0.8237521
 ```
 
 Treat it as a comparative instrument. It is reliable for judging whether
@@ -223,8 +223,8 @@ sentence.
 data_density(lean, width = 6.5, height = 4)
 #> 
 #> ── Data density
-#> 79.4 numbers per square inch of data graphic.
-#> • 800 rows x 2 mapped variables = 1600 entries
+#> 39.7 numbers per square inch of data graphic.
+#> • 400 rows x 2 mapped variables = 800 entries
 #> • over 20.14 square inches
 ```
 
@@ -394,7 +394,7 @@ tufte_audit(good, width = 6.5, height = 4)
 #> 14/15 checks passed (93%), at 6.5in x 4in.
 #> 
 #> ── Failing
-#> ✖ Data-ink ratio is 0.29: 29% of the ink in this figure varies with the data.
+#> ✖ Data-ink ratio is 0.38: 38% of the ink in this figure varies with the data.
 #> Maximise the data-ink ratio (VDQI ch. 4)
 #> 
 #> ── Passing

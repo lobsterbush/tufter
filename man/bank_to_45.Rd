@@ -64,5 +64,7 @@ save_tufte("figure.pdf", p, width = 6.5, height = b$height)
 }
 }
 \seealso{
-\code{\link{save_tufte}()}, which will bank for you if you ask it to.
+\code{\link{save_tufte}()}. Banking is not applied automatically:
+  pass the \code{height} it returns yourself, so that the choice stays
+  visible in your code.
 }

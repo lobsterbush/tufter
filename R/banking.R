@@ -30,7 +30,9 @@
 #'   \code{aspect} (height divided by width), the \code{height} that implies at
 #'   the given \code{width}, the \code{method} used, and \code{n_segments}, the
 #'   number of line segments the answer was computed from.
-#' @seealso \code{\link{save_tufte}()}, which will bank for you if you ask it to.
+#' @seealso \code{\link{save_tufte}()}. Banking is not applied automatically:
+#'   pass the \code{height} it returns yourself, so that the choice stays
+#'   visible in your code.
 #' @export
 #' @examples
 #' library(ggplot2)
@@ -61,8 +63,14 @@ bank_to_45 <- function(plot, width = 6.5,
   m <- segs$m
   aspect <- if (method == "median_slope") {
     med <- stats::median(m)
-    if (!is.finite(med) || med <= 0) {
+    if (is.na(med) || med <= 0) {
       .abort("Every segment in this plot is flat, so no aspect ratio banks it.")
+    }
+    if (is.infinite(med)) {
+      .abort(c(
+        "More than half the segments in this plot are vertical, so no aspect ratio banks them.",
+        i = "Try {.code method = \"average_orientation\"}, which tolerates verticals."
+      ))
     }
     1 / med
   } else {
@@ -122,20 +130,26 @@ print.tufte_banking <- function(x, ...) {
       d$group %||% 1L, d$PANEL %||% 1L, drop = TRUE
     )
     for (part in split(d, key)) {
-      part <- part[order(part$x), , drop = FALSE]
+      # Take the rows in the order they are drawn. Sorting by x would be
+      # harmless for a time series and destructive for any path that doubles
+      # back, such as a closed loop, where consecutive points are neighbours
+      # along the path rather than along the axis.
       dx <- diff(part$x)
       dy <- diff(part$y)
-      ok <- is.finite(dx) & is.finite(dy) & dx > 0
+      ok <- is.finite(dx) & is.finite(dy) & !(dx == 0 & dy == 0)
       if (!any(ok)) next
       # Normalise both deltas by the panel range, so the ratio is the slope of
       # a unit square panel and the aspect ratio scales it directly.
       ndx <- dx[ok] / rx
       ndy <- dy[ok] / ry
-      m <- c(m, abs(ndy / ndx))
+      # A vertical segment has infinite slope, which is a real value here and
+      # must not be dropped: discarding verticals would bias the median of any
+      # shape that has them.
+      m <- c(m, abs(ndy) / abs(ndx))
       len <- c(len, sqrt(ndx^2 + ndy^2))
     }
   }
-  keep <- is.finite(m) & is.finite(len)
+  keep <- !is.na(m) & is.finite(len)
   list(m = m[keep], len = len[keep])
 }
 

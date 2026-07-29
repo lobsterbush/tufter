@@ -479,11 +479,7 @@ tufte_audit(final, width = 6.5, height = 4)
 #> 
 #> ── Tufte audit ──
 #> 
-#> 14/15 checks passed (93%), at 6.5in x 4in.
-#> 
-#> ── Failing
-#> ✖ Data-ink ratio is 0.46: 46% of the ink in this figure varies with the data.
-#> Maximise the data-ink ratio (VDQI ch. 4)
+#> 15/15 checks passed (100%), at 6.5in x 4in.
 #> 
 #> ── Passing
 #> • Panel background carries no data
@@ -498,6 +494,7 @@ tufte_audit(final, width = 6.5, height = 4)
 #> • The figure says where its numbers came from
 #> • The figure tends toward the horizontal
 #> • Ink is dark enough to see
+#> • Most ink varies with the data
 #> • The figure earns its space
 #> • Nothing is clipped at the printed size
 ```

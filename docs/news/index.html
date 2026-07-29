@@ -71,7 +71,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -102,6 +102,34 @@
       <small>Source: <a href="https://github.com/lobsterbush/tufter/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.1" id="tufter-021">tufter 0.2.1<a class="anchor" aria-label="anchor" href="#tufter-021"></a></h2>
+<p>Bug fixes found by auditing the package against itself. Three of these changed reported numbers, so figures measured with 0.2.0 should be measured again.</p>
+<div class="section level3">
+<h3 id="measurement-correctness-0-2-1">Measurement correctness<a class="anchor" aria-label="anchor" href="#measurement-correctness-0-2-1"></a></h3>
+<ul><li>
+<code><a href="../reference/geom_rangeframe.html">geom_rangeframe()</a></code> and <code><a href="../reference/geom_rangeframe.html">geom_quartileframe()</a></code> returned an unnamed grob, so <code><a href="../reference/data_ink_ratio.html">data_ink_ratio()</a></code> counted the frame as furniture rather than as data. Adding a range frame therefore <em>lowered</em> the measured ratio, inverting the package’s own advice. Frames are now named like every other layer; the ratio for a framed scatterplot rises from 0.60 to 0.73.</li>
+<li>
+<code><a href="../reference/data_density.html">data_density()</a></code> summed rows across layers, so a range frame and a dot-dash drawn over the same thirty-two observations were counted as ninety-six entries. Layers are now grouped by the data they read, and a layer carrying its own data still counts separately.</li>
+<li>
+<code><a href="../reference/data_density.html">data_density()</a></code> counted <code>factor(cyl)</code> and <code>cyl</code> as two variables. Aesthetics are now resolved to the columns they actually read.</li>
+<li>
+<code><a href="../reference/bank_to_45.html">bank_to_45()</a></code> sorted points by x and discarded segments with no horizontal extent, which silently assumed every path was a function of x. A circle returned an aspect ratio of 0.016 instead of 1. Segments are now read in drawn order and verticals are kept as the infinite slopes they are. A path that is more than half vertical is refused rather than answered wrongly.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="fewer-false-alarms-0-2-1">Fewer false alarms<a class="anchor" aria-label="anchor" href="#fewer-false-alarms-0-2-1"></a></h3>
+<ul><li>
+<code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> no longer reports a continuous colour scale as “22 distinct colours”. A gradient is one code, not a set of competing hues.</li>
+<li>Redundant encoding is now detected through a transformation, so <code>x = factor(cyl)</code> with <code>colour = cyl</code> is caught.</li>
+<li>
+<code><a href="../reference/lie_factor.html">lie_factor()</a></code> returned 1 for a bar chart on a log scale, which read as a clean bill of health for one of the more distorting things you can do to a bar. It now returns <code>NA</code>, and the audit fails the plot with an explanation.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="documentation-0-2-1">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-2-1"></a></h3>
+<ul><li>
+<code><a href="../reference/bank_to_45.html">bank_to_45()</a></code> claimed <code><a href="../reference/save_tufte.html">save_tufte()</a></code> would bank for you. It will not, and never did; the cross-reference now says so.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="tufter-020">tufter 0.2.0<a class="anchor" aria-label="anchor" href="#tufter-020"></a></h2>
 <div class="section level3">

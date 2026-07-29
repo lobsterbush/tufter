@@ -224,6 +224,12 @@ lie_factor.ggplot <- function(x, ...) {
   bar_layers <- which(geoms %in% c("Bar", "Col", "ColTufte", "Rect"))
   if (length(bar_layers) == 0) return(1)
 
+  # On a transformed scale a bar's length is no longer proportional to anything
+  # the reader can recover, and there is no single number that describes the
+  # distortion. Returning 1 here would read as a clean bill of health for one
+  # of the more misleading things you can do to a bar chart.
+  if (.nonlinear_position_scale(built)) return(NA_real_)
+
   ranges <- built$layout$panel_params
   out <- vapply(bar_layers, function(i) {
     d <- built$data[[i]]
@@ -248,6 +254,22 @@ lie_factor.ggplot <- function(x, ...) {
   if (length(out) == 0) return(NA_real_)
   # Report the worst offender.
   out[which.max(abs(log(out)))]
+}
+
+# Name of the y scale's transformation, or NA if it cannot be determined.
+#' @noRd
+.y_transform_name <- function(built) {
+  ys <- tryCatch(built$layout$panel_scales_y[[1]], error = function(e) NULL)
+  if (is.null(ys)) return(NA_character_)
+  nm <- tryCatch(ys$get_transformation()$name, error = function(e) NULL)
+  if (is.null(nm)) nm <- tryCatch(ys$trans$name, error = function(e) NULL)
+  if (is.null(nm)) NA_character_ else as.character(nm)
+}
+
+#' @noRd
+.nonlinear_position_scale <- function(built) {
+  nm <- .y_transform_name(built)
+  !is.na(nm) && !nm %in% c("identity", "reverse")
 }
 
 #' @rdname lie_factor
@@ -284,9 +306,9 @@ data_density <- function(plot, width = 6.5, height = 4, panel_only = TRUE) {
   .check_gg(plot)
   built <- ggplot2::ggplot_build(plot)
 
-  rows <- sum(vapply(built$data, function(d) nrow(d), numeric(1)))
-  vars <- unique(unlist(lapply(.all_mappings(plot), .mapped_var)))
-  vars <- vars[!is.na(vars)]
+  rows <- .distinct_rows(plot, built)
+  vars <- unique(unlist(lapply(.all_mappings(plot), .mapped_base_vars)))
+  vars <- vars[!is.na(vars) & nzchar(vars)]
   n_vars <- max(length(vars), 1L)
   entries <- rows * n_vars
 
@@ -307,6 +329,47 @@ data_density <- function(plot, width = 6.5, height = 4, panel_only = TRUE) {
     ),
     class = "tufte_density"
   )
+}
+
+# How many rows of data the graphic actually carries.
+#
+# Summing rows across layers is wrong, because a range frame, a rug and a line
+# drawn over the same points all re-read the same data: three layers over
+# thirty-two observations are still thirty-two numbers, not ninety-six. Layers
+# are therefore grouped by the data they read, and each group contributes the
+# largest number of marks any one of its layers draws. A layer carrying its own
+# data, such as an annotation, counts separately, as it should.
+#' @noRd
+.distinct_rows <- function(plot, built) {
+  n <- length(plot$layers)
+  if (n == 0) return(nrow(plot$data %||% data.frame()))
+
+  sources <- lapply(plot$layers, function(l) {
+    if (is.null(l$data) || inherits(l$data, "waiver")) plot$data else l$data
+  })
+  drawn <- vapply(seq_len(n), function(i) {
+    d <- built$data[[i]]
+    if (is.null(d)) 0 else nrow(d)
+  }, numeric(1))
+
+  total <- 0
+  seen <- list()
+  for (i in seq_len(n)) {
+    match_at <- NA_integer_
+    for (j in seq_along(seen)) {
+      if (identical(seen[[j]]$source, sources[[i]])) {
+        match_at <- j
+        break
+      }
+    }
+    if (is.na(match_at)) {
+      seen[[length(seen) + 1]] <- list(source = sources[[i]], rows = drawn[i])
+    } else {
+      seen[[match_at]]$rows <- max(seen[[match_at]]$rows, drawn[i])
+    }
+  }
+  for (s in seen) total <- total + s$rows
+  total
 }
 
 #' @export

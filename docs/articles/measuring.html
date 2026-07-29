@@ -91,7 +91,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -185,9 +185,9 @@ not change when the data change.</p>
 <span><span class="fu"><a href="../reference/data_ink_ratio.html">data_ink_ratio</a></span><span class="op">(</span><span class="va">lean</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Data-ink ratio</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">74%</span> of the ink in this figure varies with the data.</span></span>
-<span><span class="co">#&gt; • data ink: <span style="color: #0000BB;">9911</span> pixel-equivalents</span></span>
-<span><span class="co">#&gt; • non-data ink: <span style="color: #0000BB;">3412</span></span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">81%</span> of the ink in this figure varies with the data.</span></span>
+<span><span class="co">#&gt; • data ink: <span style="color: #0000BB;">10762</span> pixel-equivalents</span></span>
+<span><span class="co">#&gt; • non-data ink: <span style="color: #0000BB;">2560</span></span></span>
 <span><span class="co">#&gt; • measured at 6.5in x 4in, 150 dpi</span></span></code></pre></div>
 <p>The same numbers, drawn with about seven times the share of the ink
 doing work.</p>
@@ -214,7 +214,7 @@ direction you would want the bias to run.</p>
 <span>  <span class="op">)</span><span class="op">$</span><span class="va">ratio</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;     dense    sparse </span></span>
-<span><span class="co">#&gt; 0.9758607 0.4125326</span></span></code></pre></div>
+<span><span class="co">#&gt; 0.9899012 0.7331751</span></span></code></pre></div>
 <p><strong>Redundant data-ink still counts as data-ink.</strong> Tufte
 would subtract ink that repeats information the reader already has. No
 measurement can tell whether a mark is repeating something, so this
@@ -229,7 +229,7 @@ compare like with like.</p>
 <span>  <span class="kw">function</span><span class="op">(</span><span class="va">w</span><span class="op">)</span> <span class="fu"><a href="../reference/data_ink_ratio.html">data_ink_ratio</a></span><span class="op">(</span><span class="va">lean</span>, width <span class="op">=</span> <span class="va">w</span>, height <span class="op">=</span> <span class="va">w</span> <span class="op">*</span> <span class="fl">0.6</span><span class="op">)</span><span class="op">$</span><span class="va">ratio</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0.7215738 0.7440596 0.7103622</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.7533856 0.8074221 0.8237521</span></span></code></pre></div>
 <p>Treat it as a comparative instrument. It is reliable for judging
 whether one version of a figure is leaner than another, and unreliable
 as an absolute score.</p>
@@ -330,8 +330,8 @@ sentence.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/data_density.html">data_density</a></span><span class="op">(</span><span class="va">lean</span>, width <span class="op">=</span> <span class="fl">6.5</span>, height <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Data density</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">79.4</span> numbers per square inch of data graphic.</span></span>
-<span><span class="co">#&gt; • 800 rows x 2 mapped variables = 1600 entries</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">39.7</span> numbers per square inch of data graphic.</span></span>
+<span><span class="co">#&gt; • 400 rows x 2 mapped variables = 800 entries</span></span>
 <span><span class="co">#&gt; • over 20.14 square inches</span></span></code></pre></div>
 <p>The entries are counted as rows drawn times distinct variables mapped
 to aesthetics, and the area is the panel rather than the whole figure,
@@ -484,7 +484,7 @@ square inches. The same data, drawn properly:</p>
 <span><span class="co">#&gt; <span style="font-weight: bold;">14/15</span> checks passed (93%), at 6.5in x 4in.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Failing</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Data-ink ratio is 0.29: 29% of the ink in this figure varies with the data.</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Data-ink ratio is 0.38: 38% of the ink in this figure varies with the data.</span></span>
 <span><span class="co">#&gt; <span style="font-style: italic;">Maximise the data-ink ratio (VDQI ch. 4)</span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Passing</span></span>

@@ -66,8 +66,8 @@ data_ink_ratio(base + theme_grey())
 data_ink_ratio(base + geom_rangeframe() + theme_tufte())
 #> 
 #> ── Data-ink ratio 
-#> 56% of the ink in this figure varies with the data.
-#> • data ink: 2700 pixel-equivalents
-#> • non-data ink: 2093
+#> 74% of the ink in this figure varies with the data.
+#> • data ink: 3548 pixel-equivalents
+#> • non-data ink: 1245
 #> • measured at 6.5in x 4in, 150 dpi
 ```

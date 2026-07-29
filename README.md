@@ -13,7 +13,7 @@ graphics can be *evaluated* rather than merely preferred, and he gives the
 quantities to do it with: the data-ink ratio, the lie factor, data density.
 `tufter` implements both halves.
 
-![Default ggplot2 next to the same plot with a quartile frame and theme_tufte, with measured data-ink ratios of 0.05 and 0.35](man/figures/README-before-after.png)
+![Default ggplot2 next to the same plot with a quartile frame and theme_tufte, with measured data-ink ratios of 0.05 and 0.48](man/figures/README-before-after.png)
 
 ## Installation
 
@@ -74,7 +74,7 @@ lean <- base + geom_rangeframe() + theme_tufte()
 
 data_ink_ratio(lean)
 #> ── Data-ink ratio
-#> 56% of the ink in this figure varies with the data.
+#> 74% of the ink in this figure varies with the data.
 ```
 
 ## The audit

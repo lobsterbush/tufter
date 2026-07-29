@@ -1,5 +1,58 @@
 # Changelog
 
+## tufter 0.2.1
+
+Bug fixes found by auditing the package against itself. Three of these
+changed reported numbers, so figures measured with 0.2.0 should be
+measured again.
+
+### Measurement correctness
+
+- [`geom_rangeframe()`](https://lobsterbush.github.io/tufter/reference/geom_rangeframe.md)
+  and
+  [`geom_quartileframe()`](https://lobsterbush.github.io/tufter/reference/geom_rangeframe.md)
+  returned an unnamed grob, so
+  [`data_ink_ratio()`](https://lobsterbush.github.io/tufter/reference/data_ink_ratio.md)
+  counted the frame as furniture rather than as data. Adding a range
+  frame therefore *lowered* the measured ratio, inverting the package’s
+  own advice. Frames are now named like every other layer; the ratio for
+  a framed scatterplot rises from 0.60 to 0.73.
+- [`data_density()`](https://lobsterbush.github.io/tufter/reference/data_density.md)
+  summed rows across layers, so a range frame and a dot-dash drawn over
+  the same thirty-two observations were counted as ninety-six entries.
+  Layers are now grouped by the data they read, and a layer carrying its
+  own data still counts separately.
+- [`data_density()`](https://lobsterbush.github.io/tufter/reference/data_density.md)
+  counted `factor(cyl)` and `cyl` as two variables. Aesthetics are now
+  resolved to the columns they actually read.
+- [`bank_to_45()`](https://lobsterbush.github.io/tufter/reference/bank_to_45.md)
+  sorted points by x and discarded segments with no horizontal extent,
+  which silently assumed every path was a function of x. A circle
+  returned an aspect ratio of 0.016 instead of 1. Segments are now read
+  in drawn order and verticals are kept as the infinite slopes they are.
+  A path that is more than half vertical is refused rather than answered
+  wrongly.
+
+### Fewer false alarms
+
+- [`tufte_audit()`](https://lobsterbush.github.io/tufter/reference/tufte_audit.md)
+  no longer reports a continuous colour scale as “22 distinct colours”.
+  A gradient is one code, not a set of competing hues.
+- Redundant encoding is now detected through a transformation, so
+  `x = factor(cyl)` with `colour = cyl` is caught.
+- [`lie_factor()`](https://lobsterbush.github.io/tufter/reference/lie_factor.md)
+  returned 1 for a bar chart on a log scale, which read as a clean bill
+  of health for one of the more distorting things you can do to a bar.
+  It now returns `NA`, and the audit fails the plot with an explanation.
+
+### Documentation
+
+- [`bank_to_45()`](https://lobsterbush.github.io/tufter/reference/bank_to_45.md)
+  claimed
+  [`save_tufte()`](https://lobsterbush.github.io/tufter/reference/save_tufte.md)
+  would bank for you. It will not, and never did; the cross-reference
+  now says so.
+
 ## tufter 0.2.0
 
 ### Measuring

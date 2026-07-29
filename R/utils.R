@@ -61,6 +61,17 @@ NULL
 # expression like factor(cyl) gives the whole expression, so that the same
 # transformation of the same column is recognised wherever it appears. A
 # literal returns NA, because a constant carries no data.
+# The columns an aesthetic actually reads. factor(cyl) and cyl both come back
+# as "cyl", which is what you want when counting how many variables a graphic
+# carries, and when asking whether one variable has been encoded twice.
+#' @noRd
+.mapped_base_vars <- function(quo) {
+  if (is.null(quo)) return(character(0))
+  expr <- if (rlang::is_quosure(quo)) rlang::quo_get_expr(quo) else quo
+  if (is.symbol(expr) || is.call(expr)) return(all.vars(expr))
+  character(0)
+}
+
 #' @noRd
 .mapped_var <- function(quo) {
   if (is.null(quo)) return(NA_character_)
@@ -79,8 +90,10 @@ NULL
 .hairline <- 0.3
 
 # Give a grob a unique name, as ggplot2 does internally for its own layers.
+# A zeroGrob is left alone: it draws nothing, so it needs no identity.
 #' @noRd
 .ggname <- function(prefix, grob) {
+  if (inherits(grob, "zeroGrob")) return(grob)
   grob$name <- grid::grobName(grob, prefix)
   grob
 }

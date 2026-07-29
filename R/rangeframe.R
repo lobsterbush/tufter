@@ -60,7 +60,10 @@ GeomRangeFrame <- ggplot2::ggproto(
   draw_panel = function(data, panel_params, coord, sides = "bl", na.rm = FALSE) {
     d <- coord$transform(data, panel_params)
     gp <- .frame_gpar(data)
-    .frame_grobs(d, sides, gp, breaks = "range")
+    # The name matters beyond tidiness: data_ink_ratio() identifies data layers
+    # by a "geom" prefix on the grob, and an unnamed frame would be charged to
+    # the furniture instead of to the data it reports.
+    .ggname("geom_rangeframe", .frame_grobs(d, sides, gp, breaks = "range"))
   }
 )
 
@@ -93,7 +96,10 @@ GeomQuartileFrame <- ggplot2::ggproto(
                         na.rm = FALSE) {
     d <- coord$transform(data, panel_params)
     gp <- .frame_gpar(data)
-    .frame_grobs(d, sides, gp, breaks = "quartile", gap = gap)
+    .ggname(
+      "geom_quartileframe",
+      .frame_grobs(d, sides, gp, breaks = "quartile", gap = gap)
+    )
   }
 )
 

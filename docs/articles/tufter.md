@@ -59,9 +59,9 @@ lean
 data_ink_ratio(lean)
 #> 
 #> ── Data-ink ratio
-#> 56% of the ink in this figure varies with the data.
-#> • data ink: 2700 pixel-equivalents
-#> • non-data ink: 2095
+#> 74% of the ink in this figure varies with the data.
+#> • data ink: 3549 pixel-equivalents
+#> • non-data ink: 1245
 #> • measured at 6.5in x 4in, 150 dpi
 ```
 

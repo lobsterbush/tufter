@@ -64,8 +64,9 @@ rather than guessing.
 
 ## See also
 
-[`save_tufte()`](https://lobsterbush.github.io/tufter/reference/save_tufte.md),
-which will bank for you if you ask it to.
+[`save_tufte()`](https://lobsterbush.github.io/tufter/reference/save_tufte.md).
+Banking is not applied automatically: pass the `height` it returns
+yourself, so that the choice stays visible in your code.
 
 ## Examples
 

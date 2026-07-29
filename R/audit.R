@@ -260,6 +260,15 @@ print.tufte_audit <- function(x, ...) {
   bars <- which(ctx$geoms %in% c("Bar", "Col", "ColTufte"))
   if (length(bars) == 0) return(NULL)
 
+  trans <- .y_transform_name(ctx$built)
+  if (!is.na(trans) && !trans %in% c("identity", "reverse")) {
+    return(.row(
+      "Graphical integrity", "VDQI ch. 2",
+      "Bars start at zero", "fail",
+      sprintf("The y axis uses a %s transformation, so bar length is not proportional to the quantity and doubling a bar does not mean doubling the value. Use points on a transformed scale, not bars.", trans)
+    ))
+  }
+
   lo <- suppressWarnings(min(vapply(ctx$built$layout$panel_params, function(pp) {
     r <- pp$y.range %||% (if (!is.null(pp$y)) pp$y$continuous_range else NULL)
     if (is.null(r)) NA_real_ else r[1]
@@ -334,6 +343,18 @@ print.tufte_audit <- function(x, ...) {
 
 #' @noRd
 .check_hues <- function(ctx) {
+  # A continuous colour scale is one code, however many shades it renders. The
+  # complaint this check exists to make is about categorical hues the reader
+  # has to hold in memory, so counting the pixels of a gradient would be a
+  # false alarm on every continuously shaded plot.
+  if (.has_continuous_colour(ctx$built)) {
+    return(.row(
+      "Layering and separation", "Envisioning Information ch. 3",
+      "Colour stays a code", "pass",
+      "Colour varies continuously, which is a single code rather than a set of competing hues."
+    ))
+  }
+
   cols <- unique(unlist(lapply(ctx$built$data, function(d) {
     c(if (!is.null(d$colour)) d$colour, if (!is.null(d$fill)) d$fill)
   })))
@@ -354,18 +375,30 @@ print.tufte_audit <- function(x, ...) {
 }
 
 #' @noRd
+.has_continuous_colour <- function(built) {
+  scales <- tryCatch(built$plot$scales$scales, error = function(e) NULL)
+  if (is.null(scales)) return(FALSE)
+  any(vapply(scales, function(s) {
+    aes <- tryCatch(s$aesthetics, error = function(e) character(0))
+    if (!any(c("colour", "color", "fill") %in% aes)) return(FALSE)
+    isFALSE(tryCatch(s$is_discrete(), error = function(e) NA))
+  }, logical(1)))
+}
+
+#' @noRd
 .check_redundant_encoding <- function(ctx) {
   maps <- .all_mappings(ctx$plot)
-  vars <- vapply(maps, .mapped_var, character(1))
-  names(vars) <- names(maps)
-  xv <- vars[names(vars) == "x"]
-  dup <- vars[names(vars) %in% c("fill", "colour", "color")]
-  dup <- dup[!is.na(dup)]
-  if (length(xv) && length(dup) && any(dup %in% xv)) {
+  by_aes <- function(which) {
+    unique(unlist(lapply(maps[names(maps) %in% which], .mapped_base_vars)))
+  }
+  xv <- by_aes("x")
+  dup <- by_aes(c("fill", "colour", "color"))
+  shared <- intersect(xv, dup)
+  if (length(shared)) {
     return(.row(
       "Erase redundant data-ink", "VDQI ch. 4",
       "No variable encoded twice", "fail",
-      sprintf("'%s' is mapped to both position and colour. The second encoding adds ink and a legend without adding information.", dup[dup %in% xv][1])
+      sprintf("'%s' is mapped to both position and colour. The second encoding adds ink and a legend without adding information.", shared[1])
     ))
   }
   .row(
