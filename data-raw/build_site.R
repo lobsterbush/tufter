@@ -30,6 +30,7 @@ build_private_site <- function(private_files = "WARP.md") {
   }
 
   pkgdown::build_site(preview = FALSE, install = TRUE)
+  strip_hidden_comments()
 
   leaked <- list.files("docs", pattern = "^WARP", recursive = TRUE)
   if (length(leaked)) {
@@ -38,6 +39,30 @@ build_private_site <- function(private_files = "WARP.md") {
     message("site built into docs/; no internal files present")
   }
   invisible(TRUE)
+}
+
+# Markdown passes HTML comments straight through to the built page, so a
+# section commented out in README.md is invisible to a reader but still sitting
+# in the page source for anyone who looks. Sections marked HIDDEN FOR NOW are
+# removed from the built HTML entirely; they stay in the repository source, so
+# uncommenting them there brings them back on the next build.
+strip_hidden_comments <- function() {
+  pattern <- "<!--\\s*HIDDEN FOR NOW.*?END OF HIDDEN SECTION\\s*-->"
+  files <- list.files("docs", pattern = "\\.(html|md)$", recursive = TRUE,
+                      full.names = TRUE)
+  n <- 0L
+  for (f in files) {
+    txt <- paste(readLines(f, warn = FALSE), collapse = "\n")
+    if (!grepl("HIDDEN FOR NOW", txt, fixed = TRUE)) next
+    out <- gsub(pattern, "", txt)
+    if (grepl("HIDDEN FOR NOW", out, fixed = TRUE)) {
+      warning("unmatched HIDDEN FOR NOW marker left in ", f)
+    }
+    writeLines(out, f)
+    n <- n + 1L
+  }
+  if (n) message("stripped hidden sections from ", n, " built file(s)")
+  invisible(n)
 }
 
 build_private_site()

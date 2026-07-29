@@ -16,6 +16,72 @@
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Examples with simulated data">
 <meta name="description" content="Every graphical form in the package, drawn from simulated data you can regenerate on your own machine.">
 <meta property="og:description" content="Every graphical form in the package, drawn from simulated data you can regenerate on your own machine.">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<script>
+(function () {
+  var KEY = "tufter-gate-v1";
+  var HASH = "b0df6b7092f74262b9b24590e8cc2c9f601b48a73194c7d18042dc140d0e27ca";
+  try {
+    if (window.sessionStorage && sessionStorage.getItem(KEY) === HASH) return;
+  } catch (e) { /* storage blocked; fall through to the prompt */ }
+
+  var hide = document.createElement("style");
+  hide.textContent = "html{visibility:hidden!important}";
+  document.head.appendChild(hide);
+
+  function digest(text) {
+    var bytes = new TextEncoder().encode(text);
+    return crypto.subtle.digest("SHA-256", bytes).then(function (buf) {
+      return Array.prototype.map.call(new Uint8Array(buf), function (b) {
+        return b.toString(16).padStart(2, "0");
+      }).join("");
+    });
+  }
+
+  function gate() {
+    document.title = "tufter";
+    document.body.innerHTML =
+      '<div style="min-height:100vh;display:flex;align-items:center;' +
+      'justify-content:center;font-family:system-ui,sans-serif;' +
+      'background:#fff;color:#1a1a1a">' +
+      '<form id="g" style="max-width:22rem;width:100%;padding:2rem">' +
+      '<h1 style="font-size:1.5rem;font-weight:600;margin:0 0 .5rem">tufter</h1>' +
+      '<p style="color:#555;margin:0 0 1.25rem;line-height:1.5">' +
+      'Documentation for an unreleased R package. Enter the password to continue.</p>' +
+      '<input id="p" type="password" autocomplete="current-password" ' +
+      'autofocus aria-label="Password" style="width:100%;padding:.6rem .7rem;' +
+      'border:1px solid #ccc;border-radius:6px;font-size:1rem;box-sizing:border-box">' +
+      '<p id="e" role="alert" style="color:#a1483c;min-height:1.4em;margin:.5rem 0 0;' +
+      'font-size:.9rem"></p>' +
+      '<button type="submit" style="margin-top:.5rem;width:100%;padding:.6rem;' +
+      'border:0;border-radius:6px;background:#3730a3;color:#fff;font-size:1rem;' +
+      'cursor:pointer">Continue</button>' +
+      '</form></div>';
+    hide.remove();
+
+    document.getElementById("g").addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var err = document.getElementById("e");
+      err.textContent = "";
+      digest(document.getElementById("p").value).then(function (h) {
+        if (h === HASH) {
+          try { sessionStorage.setItem(KEY, HASH); } catch (e) {}
+          location.reload();
+        } else {
+          err.textContent = "Not that one.";
+          document.getElementById("p").select();
+        }
+      });
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", gate);
+  } else {
+    gate();
+  }
+})();
+</script>
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>

@@ -184,51 +184,6 @@ Tufte).
 The measurement half is the reason this package exists. The drawing half
 is partly convenience and partly consolidation.
 
-## AI usage disclosure
-
-This package was written with substantial assistance from a large
-language model (Anthropic’s Claude, via Claude Code), and I think
-readers of the code are entitled to know which parts that covers and
-what was checked by a person.
-
-**What the model did.** It produced essentially all of the R source in
-`R/`, the test suite, the roxygen documentation, the vignette and the
-two articles, and the first draft of this README. It also carried out
-the survey of existing packages summarised in the section above.
-
-**What I did.** I specified the package: the decision to implement
-Tufte’s measurements rather than only his aesthetics, which principles
-to cover, and where the honest limits of the exercise lie. I reviewed
-the code and the prose, and I ran the checks below.
-
-**What was verified, and how.** All 150 tests pass and `R CMD check`
-returns no errors, warnings or notes. Every figure in the README, the
-vignette and the articles was rendered and inspected visually, which is
-how three real bugs were caught: a median dot drawn off the whisker in
-the offset box plot, colliding axis labels from
-[`quartile_breaks()`](https://lobsterbush.github.io/tufter/reference/quartile_breaks.md),
-and sparkline panels ordered alphabetically rather than as supplied. The
-[`data_ink_ratio()`](https://lobsterbush.github.io/tufter/reference/data_ink_ratio.md)
-results were sanity-checked against plots whose answer is known in
-advance, such as a plot with no data layers, which must return
-approximately zero.
-
-**What is not verified.** The empirical citations in the [measuring
-article](https://lobsterbush.github.io/tufter/articles/measuring.html#and-a-larger-caveat-the-principle-itself-is-contested)
-are named inline and their DOIs have **not** been checked against
-Crossref; do not carry them into a paper without verifying them first.
-The claim that no other package computes these quantities rests on a
-search of CRAN titles and descriptions plus GitHub, which cannot rule
-out an implementation that does not describe itself in those terms.
-Neither the model nor I have independently replicated the human-subjects
-findings cited against the data-ink principle.
-
-**Standing caveat.** Errors that survive are mine. If you find one,
-please [open an issue](https://github.com/lobsterbush/tufter/issues)
-rather than assuming the measurement is right because a computer
-produced it, which is advice this package would give about any number on
-a graph.
-
 ## Sources
 
 - Tufte, E. R. (2001). *The Visual Display of Quantitative Information*,

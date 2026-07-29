@@ -159,6 +159,11 @@ palettes, but not one from Tufte).
 The measurement half is the reason this package exists. The drawing half is
 partly convenience and partly consolidation.
 
+<!-- HIDDEN FOR NOW. Restore before any public release, and before any JOSS or
+     journal submission, where a disclosure of this kind is usually required.
+     Delete this comment marker and the closing one below the "Standing
+     caveat" paragraph to bring it back.
+
 ## AI usage disclosure
 
 This package was written with substantial assistance from a large language
@@ -197,6 +202,8 @@ replicated the human-subjects findings cited against the data-ink principle.
 [open an issue](https://github.com/lobsterbush/tufter/issues) rather than
 assuming the measurement is right because a computer produced it, which is
 advice this package would give about any number on a graph.
+
+     END OF HIDDEN SECTION -->
 
 ## Sources
 

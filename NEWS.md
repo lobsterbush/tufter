@@ -28,7 +28,11 @@ First release.
 * `tufte_audit()`, which runs all of the above plus the structural checks.
 * `tufte_principles()`, listing every principle and whether it can be audited.
 
+<!-- HIDDEN FOR NOW, alongside the disclosure itself in README.md.
+
 ## Documentation
 
 * Added an AI usage disclosure to the README, naming what was model-generated,
   what was human-verified and how, and what remains unverified.
+
+END OF HIDDEN SECTION -->
