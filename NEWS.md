@@ -27,3 +27,8 @@ First release.
   labels at the intended print size.
 * `tufte_audit()`, which runs all of the above plus the structural checks.
 * `tufte_principles()`, listing every principle and whether it can be audited.
+
+## Documentation
+
+* Added an AI usage disclosure to the README, naming what was model-generated,
+  what was human-verified and how, and what remains unverified.
