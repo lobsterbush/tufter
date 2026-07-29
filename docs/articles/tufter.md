@@ -5,7 +5,13 @@ that statistical graphics can be evaluated, not merely preferred. He
 gives quantities: the data-ink ratio, the lie factor, data density. This
 package takes that seriously in both directions. It supplies the
 graphical forms he designed, and it supplies the measurements, so that a
-figure you have drawn can be scored rather than admired.
+figure you have drawn can be examined rather than admired.
+
+It is careful about one distinction. Tufte states a criterion for some
+principles, a graphic either meeting it or not, and only a direction for
+others. The audit grades the first kind and measures the second, and
+there is no score, because collapsing the two would mean inventing
+thresholds and a weighting that are nowhere in his books.
 
 ## Start with a default plot
 
@@ -84,35 +90,46 @@ base +
 ## The audit
 
 [`tufte_audit()`](https://lobsterbush.github.io/tufter/reference/tufte_audit.md)
-runs every check the package knows how to make, structural and measured,
-and reports which principles the figure satisfies.
+reports the stated criteria a figure does not meet, each named with the
+principle and the chapter it comes from, and separately measures the
+quantities Tufte gives a direction for.
 
 ``` r
 tufte_audit(lean, width = 6.5, height = 4)
 #> 
 #> ── Tufte audit ──
 #> 
-#> 14/15 checks passed (93%), at 6.5in x 4in.
+#> At 6.5in x 4in: 1 stated criterion not met.
 #> 
-#> ── Failing
-#> ✖ No caption. A graphic should name its source on the graphic, so the claim can
-#>   be checked without hunting through the text. See label_source().
-#> Documentation (Beautiful Evidence ch. 6)
+#> ── Not met
+#> ✖ No caption. Tufte asks that evidence be thoroughly described and its sources
+#>   indicated on the graphic itself, so the claim can be checked without hunting
+#>   through the surrounding text. See label_source().
+#> Documentation - Beautiful Evidence ch. 6
 #> 
-#> ── Passing
-#> • Panel background carries no data
-#> • Grid is no heavier than the data
-#> • Frame reports the data range
+#> ── Measured, not graded
+#> Tufte states a direction for these, not a threshold. Read them against another
+#> draft of the same figure.
+#> • Data-ink ratio 0.74: 74% of the ink varies with the data. Tufte asks that
+#>   this be maximised within reason and names no threshold, so read it against
+#>   another draft of this figure rather than against a target.
+#> • Data density 3.2 numbers per square inch: 64 entries over 20.1 square inches.
+#>   Tufte ranks published graphics by this and sets no minimum.
+#> • 1 distinct colour in use. Tufte's advice on colour is qualitative, so this is
+#>   a count and not a verdict.
+#> • 1 series overlaid in one panel. facet_tufte() would show the same data as
+#>   small multiples; Tufte gives no number at which to switch.
+#> 
+#> ── Met
+#> • Panel carries no background fill
+#> • No minor gridlines
+#> • No full panel border
 #> • No pie chart
-#> • Lie factor near one
+#> • Lie factor within Tufte's band
 #> • No legend to decode
-#> • Colour stays a code
 #> • No variable encoded twice
-#> • Comparison by repetition
-#> • The figure tends toward the horizontal
-#> • Ink is dark enough to see
-#> • Most ink varies with the data
-#> • The figure earns its space
+#> • Wider than it is tall
+#> • Ink clears the WCAG contrast minimum
 #> • Nothing is clipped at the printed size
 ```
 
@@ -126,31 +143,44 @@ tufte_audit(lean + label_source("Motor Trend, 1974"), width = 6.5, height = 4)
 #> 
 #> ── Tufte audit ──
 #> 
-#> 15/15 checks passed (100%), at 6.5in x 4in.
+#> At 6.5in x 4in: 0 stated criteria not met.
 #> 
-#> ── Passing
-#> • Panel background carries no data
-#> • Grid is no heavier than the data
-#> • Frame reports the data range
+#> ── Measured, not graded
+#> Tufte states a direction for these, not a threshold. Read them against another
+#> draft of the same figure.
+#> • Data-ink ratio 0.66: 66% of the ink varies with the data. Tufte asks that
+#>   this be maximised within reason and names no threshold, so read it against
+#>   another draft of this figure rather than against a target.
+#> • Data density 3.4 numbers per square inch: 64 entries over 18.9 square inches.
+#>   Tufte ranks published graphics by this and sets no minimum.
+#> • 1 distinct colour in use. Tufte's advice on colour is qualitative, so this is
+#>   a count and not a verdict.
+#> • 1 series overlaid in one panel. facet_tufte() would show the same data as
+#>   small multiples; Tufte gives no number at which to switch.
+#> 
+#> ── Met
+#> • Panel carries no background fill
+#> • No minor gridlines
+#> • No full panel border
 #> • No pie chart
-#> • Lie factor near one
+#> • Lie factor within Tufte's band
 #> • No legend to decode
-#> • Colour stays a code
 #> • No variable encoded twice
-#> • Comparison by repetition
-#> • The figure says where its numbers came from
-#> • The figure tends toward the horizontal
-#> • Ink is dark enough to see
-#> • Most ink varies with the data
-#> • The figure earns its space
+#> • The figure names its source
+#> • Wider than it is tall
+#> • Ink clears the WCAG contrast minimum
 #> • Nothing is clipped at the printed size
 ```
 
-The score is a prompt, not a verdict. A figure can pass every check and
-still be pointless, because Tufte’s first principle is that content
-counts most of all, and no function evaluates that. What the audit is
-good for is the mechanical failures that authors stop seeing after the
-fifth draft.
+Notice what the audit does not do: it never grades the data-ink ratio or
+the data density. Tufte asks that both be pushed in a direction and
+names no threshold for either, so the audit reports them and leaves the
+judgement with you. Read them against another draft of the same figure.
+
+Meeting every stated criterion does not make a figure good. Tufte’s
+first principle is that content counts most of all, and no function
+evaluates that. What the audit is good for is the mechanical failures
+that authors stop seeing after the fifth draft.
 
 ## Graphical integrity
 

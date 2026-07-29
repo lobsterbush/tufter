@@ -40,7 +40,7 @@ tufte_pal <- function(palette = c("grey", "accent", "muted", "divergent")) {
     if (n > length(cols)) {
       .warn(c(
         "Palette {.val {palette}} has {length(cols)} colours but {n} were requested.",
-        i = "More than about six hues stops being a code and starts being decoration."
+        i = "The extra colours are interpolated, so neighbouring levels will be harder to tell apart than the palette intends."
       ))
       return(grDevices::colorRampPalette(cols)(n))
     }

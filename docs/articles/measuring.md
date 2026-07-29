@@ -322,7 +322,8 @@ you can still act on it.
 ## Putting it together
 
 [`tufte_audit()`](https://lobsterbush.github.io/tufter/reference/tufte_audit.md)
-runs all of the above plus the structural checks, and scores them.
+runs all of the above alongside the criteria Tufte states outright, and
+is careful about which is which.
 
 ``` r
 bad <- ggplot(d, aes(g, y, fill = g)) +
@@ -332,52 +333,58 @@ suppressWarnings(tufte_audit(bad, width = 6.5, height = 4))
 #> 
 #> ── Tufte audit ──
 #> 
-#> 8/15 checks passed (53%), at 6.5in x 4in.
+#> At 6.5in x 4in: 6 stated criteria not met.
 #> 
-#> ── Failing
-#> ✖ The panel is filled with #EBEBEBFF. A tinted panel is ink that never varies
-#>   with the data.
-#> Erase non-data ink (VDQI ch. 4)
-#> ✖ Minor gridlines are drawn. They divide space the reader is not reading to
-#>   that precision.
-#> Erase redundant data-ink (VDQI ch. 4)
-#> ✖ A legend with 2 entries makes the reader look away, hold a colour in memory,
-#>   and look back. With this few series, label them on the plot with
-#>   geom_text_last().
-#> Integrate word and image (Beautiful Evidence ch. 5)
-#> ✖ 'g' is mapped to both position and colour. The second encoding adds ink and a
-#>   legend without adding information.
-#> Erase redundant data-ink (VDQI ch. 4)
-#> ✖ No caption. A graphic should name its source on the graphic, so the claim can
-#>   be checked without hunting through the text. See label_source().
-#> Documentation (Beautiful Evidence ch. 6)
-#> ✖ data mark #00BFC4 at contrast 1.9 against the background, below the 3.0
-#>   minimum. Maximising data-ink is not a licence to draw in colours people
-#>   cannot see.
-#> Legibility (WCAG 2.1, against VDQI ch. 4)
-#> ✖ Data density is 0.2 numbers per square inch: 4 entries over 17.1 square
-#>   inches. A graphic this empty would be shorter as a sentence.
-#> Maximise data density (VDQI ch. 8)
+#> ── Not met
+#> ✖ The panel is filled with #EBEBEBFF. The fill is identical whatever the
+#>   numbers are, so it is non-data ink and Tufte's instruction is to erase it.
+#> Erase non-data ink - VDQI ch. 4
+#> ✖ Minor gridlines are drawn. They subdivide the scale past the precision anyone
+#>   reads from a graphic, and are non-data ink.
+#> Erase non-data ink - VDQI ch. 4
+#> ✖ A legend is drawn for named series. Tufte's instruction is that words belong
+#>   on the data rather than in a key the reader must hold in memory and look back
+#>   to: geom_text_last() labels each series in place, and where there are too
+#>   many to label, facet_tufte() shows them as small multiples instead.
+#> Integrate word and image - Beautiful Evidence ch. 5
+#> ✖ 'g' is mapped to both position and colour. The second encoding is redundant
+#>   data-ink: it adds ink and a legend without adding information.
+#> Erase redundant data-ink - VDQI ch. 4
+#> ✖ No caption. Tufte asks that evidence be thoroughly described and its sources
+#>   indicated on the graphic itself, so the claim can be checked without hunting
+#>   through the surrounding text. See label_source().
+#> Documentation - Beautiful Evidence ch. 6
+#> ✖ data mark #00BFC4 sits at contrast 1.9 against the background, below the
+#>   published minimum of 3.0. This is not one of Tufte's criteria; it is the
+#>   limit past which erasing ink stops being economy and becomes an unreadable
+#>   figure.
+#> Legibility - WCAG 2.1, not Tufte
 #> 
-#> ── Worth a look
-#> ℹ No frame at all. That is defensible, but geom_rangeframe() would give the
-#>   axis something to say.
+#> ── Measured, not graded
+#> Tufte states a direction for these, not a threshold. Read them against another
+#> draft of the same figure.
+#> • Data-ink ratio 0.80: 80% of the ink varies with the data. Tufte asks that
+#>   this be maximised within reason and names no threshold, so read it against
+#>   another draft of this figure rather than against a target.
+#> • Data density 0.2 numbers per square inch: 4 entries over 17.1 square inches.
+#>   Tufte ranks published graphics by this and sets no minimum.
+#> • 2 distinct colours in use. Tufte's advice on colour is qualitative, so this
+#>   is a count and not a verdict.
+#> • 2 series overlaid in one panel. facet_tufte() would show the same data as
+#>   small multiples; Tufte gives no number at which to switch.
 #> 
-#> ── Passing
+#> ── Met
+#> • No full panel border
 #> • No pie chart
-#> • Bars start at zero
-#> • Lie factor near one
-#> • Colour stays a code
-#> • Comparison by repetition
-#> • The figure tends toward the horizontal
-#> • Most ink varies with the data
+#> • Bars measured from zero
+#> • Lie factor within Tufte's band
+#> • Wider than it is tall
 #> • Nothing is clipped at the printed size
 ```
 
-Six separate problems, named: the tinted panel, the minor gridlines, a
-legend that should have been a direct label, the grouping variable
-encoded twice, no source note, and four numbers spread over seventeen
-square inches. The same data, drawn properly:
+Several stated criteria not met, each named with the principle it comes
+from, and separately a set of measurements with no verdict attached. The
+same data, drawn properly:
 
 ``` r
 good <- ggplot(d, aes(g, y)) +
@@ -391,26 +398,32 @@ tufte_audit(good, width = 6.5, height = 4)
 #> 
 #> ── Tufte audit ──
 #> 
-#> 14/15 checks passed (93%), at 6.5in x 4in.
+#> At 6.5in x 4in: 0 stated criteria not met.
 #> 
-#> ── Failing
-#> ✖ Data-ink ratio is 0.38: 38% of the ink in this figure varies with the data.
-#> Maximise the data-ink ratio (VDQI ch. 4)
+#> ── Measured, not graded
+#> Tufte states a direction for these, not a threshold. Read them against another
+#> draft of the same figure.
+#> • Data-ink ratio 0.38: 38% of the ink varies with the data. Tufte asks that
+#>   this be maximised within reason and names no threshold, so read it against
+#>   another draft of this figure rather than against a target.
+#> • Data density 39.8 numbers per square inch: 800 entries over 20.1 square
+#>   inches. Tufte ranks published graphics by this and sets no minimum.
+#> • 1 distinct colour in use. Tufte's advice on colour is qualitative, so this is
+#>   a count and not a verdict.
+#> • 2 series overlaid in one panel. facet_tufte() would show the same data as
+#>   small multiples; Tufte gives no number at which to switch.
 #> 
-#> ── Passing
-#> • Panel background carries no data
-#> • Grid is no heavier than the data
-#> • Frame reports the data range
+#> ── Met
+#> • Panel carries no background fill
+#> • No minor gridlines
+#> • No full panel border
 #> • No pie chart
-#> • Lie factor near one
+#> • Lie factor within Tufte's band
 #> • No legend to decode
-#> • Colour stays a code
 #> • No variable encoded twice
-#> • Comparison by repetition
-#> • The figure says where its numbers came from
-#> • The figure tends toward the horizontal
-#> • Ink is dark enough to see
-#> • The figure earns its space
+#> • The figure names its source
+#> • Wider than it is tall
+#> • Ink clears the WCAG contrast minimum
 #> • Nothing is clipped at the printed size
 ```
 
@@ -433,15 +446,15 @@ suppressWarnings(audit_figures(figures, measure = FALSE))
 #> 
 #> ── Tufte audit: 3 figures ──
 #> 
-#> ── Needing work, worst first
-#> bars (50%, 6 failing)
-#> Panel background carries no data, Grid is no heavier than the data, No legend
-#> to decode, No variable encoded twice, The figure says where its numbers came
-#> from, Ink is dark enough to see
-#> faint (91%, 1 failing)
-#> Ink is dark enough to see
+#> ── Stated criteria not met, most first
+#> bars (6 not met)
+#> Panel carries no background fill, No minor gridlines, No legend to decode, No
+#> variable encoded twice, The figure names its source, Ink clears the WCAG
+#> contrast minimum
+#> faint (1 not met)
+#> Ink clears the WCAG contrast minimum
 #> 
-#> ── Passing every check
+#> ── Meeting every stated criterion
 #> • scatter
 #> 
 #> ℹ Full detail for any one figure: `attr(x, "audits")[["<name>"]]`
@@ -451,17 +464,57 @@ It also takes a directory, so a replication package whose figures were
 saved with [`saveRDS()`](https://rdrr.io/r/base/readRDS.html) can be
 checked in one call.
 
-## What the score is not
+## Why there is no score
 
-The score is the share of applicable checks passed, and it is a prompt
-rather than a verdict. A figure can pass every check and still be
-pointless, because Tufte’s first principle is that content counts most
-of all, and no function evaluates that.
+An earlier version of this package reported a score: the share of checks
+passed. It is gone, for two reasons.
+
+The first is that it required inventing thresholds. Tufte gives a
+testable line for some principles and only a direction for others, and a
+pass or fail on the second kind can only come from the package author.
+The version of
+[`data_ink_ratio()`](https://lobsterbush.github.io/tufter/reference/data_ink_ratio.md)
+that failed a figure below 0.5 was asserting something Tufte never
+wrote, in his voice.
+[`tufte_principles()`](https://lobsterbush.github.io/tufter/reference/tufte_principles.md)
+now marks the difference in its `criterion` column, and the audit grades
+only the principles that carry one.
+
+``` r
+p <- tufte_principles()
+p[p$criterion, c("principle", "source")]
+#> # A tibble: 10 × 2
+#>    principle                        source                      
+#>    <chr>                            <chr>                       
+#>  1 Erase non-data ink               VDQI ch. 4                  
+#>  2 Erase redundant data-ink         VDQI ch. 4                  
+#>  3 Revise and edit                  VDQI ch. 4                  
+#>  4 The range-frame                  VDQI ch. 6                  
+#>  5 The lie factor                   VDQI ch. 2                  
+#>  6 Graphical integrity              VDQI ch. 2                  
+#>  7 Proportion and scale             VDQI ch. 9                  
+#>  8 Legibility                       WCAG 2.1, against VDQI ch. 4
+#>  9 Integrate word, number and image Beautiful Evidence ch. 5    
+#> 10 Documentation                    Beautiful Evidence ch. 6
+```
+
+The second is that a score needs a weighting. To say a figure is at
+seventy percent is to have decided how many missing source notes equal
+one pie chart, and Tufte offers no exchange rate. What the audit reports
+instead is a count of stated criteria not met, which is comparable
+across figures because every figure is counted against the same list,
+and a set of measurements to read against another draft of the same
+figure.
+
+None of this makes the remaining criteria beyond argument. They are my
+reading of what Tufte states outright, and the reading is visible in the
+source of each check rather than buried in a number.
 
 [`tufte_principles()`](https://lobsterbush.github.io/tufter/reference/tufte_principles.md)
 is the honest inventory. Its `audited` column marks which principles a
-function can verify and which it cannot, and the ones it cannot are
-listed anyway.
+function can reach at all, and its `criterion` column marks which of
+those Tufte states a testable line for. The ones no function can reach
+are listed anyway.
 
 ``` r
 p <- tufte_principles()

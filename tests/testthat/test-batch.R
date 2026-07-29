@@ -14,11 +14,13 @@ test_that("audit_figures scores a named list, worst first", {
   expect_s3_class(out, "tufte_audit_batch")
   expect_equal(nrow(out), 2L)
   expect_setequal(out$figure, c("good", "bad"))
-  # Sorted ascending by score, so the figure needing most work comes first.
+  # Ordered by count of unmet criteria, most first. A count is comparable
+  # across figures; a proportion would divide by a shifting denominator.
   expect_equal(out$figure[1], "bad")
-  expect_lt(out$score[1], out$score[2])
-  expect_gt(out$failed[out$figure == "bad"], 0)
+  expect_gt(out$violations[1], out$violations[2])
+  expect_equal(out$violations[out$figure == "good"], 0)
   expect_equal(out$failing[out$figure == "good"], "")
+  expect_false("score" %in% names(out))
 })
 
 test_that("the full audits are kept for drilling into", {
@@ -27,7 +29,8 @@ test_that("the full audits are kept for drilling into", {
   expect_named(audits, c("good", "bad"))
   expect_s3_class(audits$bad, "tufte_audit")
   # The summary row and the underlying audit must agree.
-  expect_equal(sum(audits$bad$status == "fail"), out$failed[out$figure == "bad"])
+  expect_equal(sum(audits$bad$status == "fail"),
+               out$violations[out$figure == "bad"])
 })
 
 test_that("a single plot and an unnamed list both work", {
@@ -47,7 +50,7 @@ test_that("per-figure sizes are honoured", {
   )
   audits <- attr(out, "audits")
   aspect_status <- function(a) {
-    a$status[a$check == "The figure tends toward the horizontal"]
+    a$status[a$check == "Wider than it is tall"]
   }
   expect_equal(aspect_status(audits$wide), "pass")
   expect_equal(aspect_status(audits$tall), "fail")
@@ -81,8 +84,8 @@ test_that("one broken figure does not sink the batch", {
   broken <- ggplot(mtcars, aes(wt, nonexistent_column)) + geom_point()
   out <- audit_figures(list(fine = lean(), broken = broken), measure = FALSE)
   expect_equal(nrow(out), 2L)
-  expect_true(is.na(out$score[out$figure == "broken"]))
-  expect_false(is.na(out$score[out$figure == "fine"]))
+  expect_true(is.na(out$violations[out$figure == "broken"]))
+  expect_false(is.na(out$violations[out$figure == "fine"]))
 })
 
 test_that("printing a batch does not error", {

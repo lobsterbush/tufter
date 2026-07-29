@@ -1,3 +1,62 @@
+# tufter 0.3.0
+
+The audit no longer invents thresholds, and no longer reports a score. This
+changes its output, so anything that read `attr(a, "score")` needs updating to
+`attr(a, "violations")`.
+
+## No invented thresholds
+
+Tufte states two different kinds of thing, and earlier versions collapsed them.
+For some principles he gives a criterion a graphic either meets or does not:
+bars measured from zero, the lie factor between 0.95 and 1.05, graphics wider
+than they are tall, non-data ink erased. Those are still graded. For others he
+gives only a direction, asking that the data-ink ratio be maximised "within
+reason" and that data density be increased, and names no threshold anywhere.
+
+Those are now measured and reported without a verdict. The cutoffs that used to
+grade them were the package author's, presented in Tufte's voice, and are gone:
+
+* a data-ink ratio below 0.5 no longer fails;
+* a data density below 2 numbers per square inch no longer fails;
+* a banked height more than a factor of two from the given one no longer fails,
+  since Cleveland states 45 degrees as the target and no tolerance around it;
+* more than seven hues no longer fails, and hues are counted instead;
+* more than six overlaid series no longer draws a remark;
+* a major gridline is no longer graded by an invented line weight;
+* an aspect ratio above 3:1 no longer draws a remark, since Tufte states the
+  criterion at 1 and nothing above it;
+* `quartile_breaks()` now returns the whole five-number summary by default. The
+  spacing at which labels collide depends on font and figure size, which a
+  breaks function cannot see, so `min_gap` is off unless you set it.
+
+The legend check no longer fails on a count. It fails when a legend names
+series that could have been labelled on the data, and merely reports a key for
+a continuous scale, where there are no series to name and Tufte keys the
+shading himself.
+
+## No score
+
+`tufte_audit()` reported the share of checks passed. Collapsing the two kinds
+of principle into one number needs a weighting between a pie chart and a
+missing source note, and Tufte offers no exchange rate. The `score` attribute
+is replaced by `violations`, a count of stated criteria not met.
+
+`audit_figures()` now orders figures by that count rather than by a proportion.
+A count is comparable across figures; the old proportion divided by a
+denominator that changed with the plot type, so it ranked figures on numbers
+that were not on the same scale.
+
+## Elsewhere
+
+* `tufte_principles()` gains a `criterion` column marking which principles
+  Tufte states a testable line for. Ten of twenty-six do.
+* The audit cites WCAG rather than Tufte for the contrast minimum, and
+  Cleveland rather than Tufte for banking, in the output itself.
+* `tufte_pal()` no longer claims a number at which hues stop being a code; it
+  warns only that the extra colours are interpolated.
+* `slopegraph()`'s `min_gap` is documented as a typesetting allowance rather
+  than a quantity from Tufte.
+
 # tufter 0.2.1
 
 Bug fixes found by auditing the package against itself. Three of these changed

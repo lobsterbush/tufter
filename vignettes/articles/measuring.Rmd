@@ -255,8 +255,8 @@ while you can still act on it.
 
 ## Putting it together
 
-`tufte_audit()` runs all of the above plus the structural checks, and scores
-them.
+`tufte_audit()` runs all of the above alongside the criteria Tufte states
+outright, and is careful about which is which.
 
 ```{r audit-bad}
 bad <- ggplot(d, aes(g, y, fill = g)) +
@@ -265,10 +265,9 @@ bad <- ggplot(d, aes(g, y, fill = g)) +
 suppressWarnings(tufte_audit(bad, width = 6.5, height = 4))
 ```
 
-Six separate problems, named: the tinted panel, the minor gridlines, a legend
-that should have been a direct label, the grouping variable encoded twice, no
-source note, and four numbers spread over seventeen square inches. The same
-data, drawn properly:
+Several stated criteria not met, each named with the principle it comes from,
+and separately a set of measurements with no verdict attached. The same data,
+drawn properly:
 
 ```{r audit-good}
 good <- ggplot(d, aes(g, y)) +
@@ -301,15 +300,37 @@ suppressWarnings(audit_figures(figures, measure = FALSE))
 It also takes a directory, so a replication package whose figures were saved
 with `saveRDS()` can be checked in one call.
 
-## What the score is not
+## Why there is no score
 
-The score is the share of applicable checks passed, and it is a prompt rather
-than a verdict. A figure can pass every check and still be pointless, because
-Tufte's first principle is that content counts most of all, and no function
-evaluates that.
+An earlier version of this package reported a score: the share of checks
+passed. It is gone, for two reasons.
+
+The first is that it required inventing thresholds. Tufte gives a testable line
+for some principles and only a direction for others, and a pass or fail on the
+second kind can only come from the package author. The version of
+`data_ink_ratio()` that failed a figure below 0.5 was asserting something Tufte
+never wrote, in his voice. `tufte_principles()` now marks the difference in its
+`criterion` column, and the audit grades only the principles that carry one.
+
+```{r criteria}
+p <- tufte_principles()
+p[p$criterion, c("principle", "source")]
+```
+
+The second is that a score needs a weighting. To say a figure is at seventy
+percent is to have decided how many missing source notes equal one pie chart,
+and Tufte offers no exchange rate. What the audit reports instead is a count of
+stated criteria not met, which is comparable across figures because every
+figure is counted against the same list, and a set of measurements to read
+against another draft of the same figure.
+
+None of this makes the remaining criteria beyond argument. They are my reading
+of what Tufte states outright, and the reading is visible in the source of each
+check rather than buried in a number.
 
 `tufte_principles()` is the honest inventory. Its `audited` column marks which
-principles a function can verify and which it cannot, and the ones it cannot are
+principles a function can reach at all, and its `criterion` column marks which
+of those Tufte states a testable line for. The ones no function can reach are
 listed anyway.
 
 ```{r principles}

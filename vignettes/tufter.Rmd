@@ -22,7 +22,13 @@ statistical graphics can be evaluated, not merely preferred. He gives
 quantities: the data-ink ratio, the lie factor, data density. This package
 takes that seriously in both directions. It supplies the graphical forms he
 designed, and it supplies the measurements, so that a figure you have drawn can
-be scored rather than admired.
+be examined rather than admired.
+
+It is careful about one distinction. Tufte states a criterion for some
+principles, a graphic either meeting it or not, and only a direction for
+others. The audit grades the first kind and measures the second, and there is
+no score, because collapsing the two would mean inventing thresholds and a
+weighting that are nowhere in his books.
 
 ## Start with a default plot
 
@@ -78,8 +84,9 @@ base +
 
 ## The audit
 
-`tufte_audit()` runs every check the package knows how to make, structural and
-measured, and reports which principles the figure satisfies.
+`tufte_audit()` reports the stated criteria a figure does not meet, each named
+with the principle and the chapter it comes from, and separately measures the
+quantities Tufte gives a direction for.
 
 ```{r audit}
 tufte_audit(lean, width = 6.5, height = 4)
@@ -92,10 +99,15 @@ say where its numbers came from. `label_source()` handles that.
 tufte_audit(lean + label_source("Motor Trend, 1974"), width = 6.5, height = 4)
 ```
 
-The score is a prompt, not a verdict. A figure can pass every check and still be
-pointless, because Tufte's first principle is that content counts most of all,
-and no function evaluates that. What the audit is good for is the mechanical
-failures that authors stop seeing after the fifth draft.
+Notice what the audit does not do: it never grades the data-ink ratio or the
+data density. Tufte asks that both be pushed in a direction and names no
+threshold for either, so the audit reports them and leaves the judgement with
+you. Read them against another draft of the same figure.
+
+Meeting every stated criterion does not make a figure good. Tufte's first
+principle is that content counts most of all, and no function evaluates that.
+What the audit is good for is the mechanical failures that authors stop seeing
+after the fifth draft.
 
 ## Graphical integrity
 

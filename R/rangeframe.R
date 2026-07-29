@@ -179,9 +179,13 @@ GeomQuartileFrame <- ggplot2::ggproto(
 #' should report the distribution, not a set of round numbers chosen by the
 #' plotting software.
 #'
-#' Quartiles that fall close together are dropped rather than printed on top of
-#' each other; see \code{min_gap}. The minimum and maximum are always kept,
-#' since they are the two values the range frame exists to report.
+#' All five values are returned by default, because the five-number summary is
+#' what a quartile frame reports. Where two of them fall close enough together
+#' that their labels overprint, \code{min_gap} will drop the crowded ones, but
+#' it is off unless you ask for it: the spacing at which labels collide depends
+#' on the font, the figure size and the number of digits, none of which a breaks
+#' function can see. \code{\link{check_labels_fit}()} measures the collision
+#' properly, at the size you intend to print.
 #'
 #' @param x Optional numeric vector. If supplied, the breaks are computed from
 #'   it once, which is what you want when the axis limits are wider than the
@@ -189,9 +193,10 @@ GeomQuartileFrame <- ggplot2::ggproto(
 #' @param digits Number of significant digits to round the breaks to. Defaults
 #'   to 3.
 #' @param min_gap Minimum spacing between breaks, as a fraction of the data
-#'   range. Breaks closer than this to the one before them are dropped, because
-#'   their labels would overlap. Defaults to \code{0.12}; set to \code{0} to
-#'   keep all five.
+#'   range; breaks closer than this to the one before them are dropped. Defaults
+#'   to \code{0}, which keeps the whole five-number summary. Any value you set
+#'   is a judgement about your own font and figure size, so it belongs in your
+#'   code rather than in a default here.
 #' @return A function suitable for the \code{breaks} argument of a continuous
 #'   scale.
 #' @export
@@ -202,7 +207,7 @@ GeomQuartileFrame <- ggplot2::ggproto(
 #'   geom_quartileframe() +
 #'   scale_y_continuous(breaks = quartile_breaks(mtcars$mpg)) +
 #'   theme_tufte()
-quartile_breaks <- function(x = NULL, digits = 3, min_gap = 0.12) {
+quartile_breaks <- function(x = NULL, digits = 3, min_gap = 0) {
   force(x)
   function(limits) {
     v <- if (is.null(x)) limits else x

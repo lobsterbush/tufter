@@ -71,7 +71,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -102,6 +102,40 @@
       <small>Source: <a href="https://github.com/lobsterbush/tufter/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.0" id="tufter-030">tufter 0.3.0<a class="anchor" aria-label="anchor" href="#tufter-030"></a></h2>
+<p>The audit no longer invents thresholds, and no longer reports a score. This changes its output, so anything that read <code>attr(a, "score")</code> needs updating to <code>attr(a, "violations")</code>.</p>
+<div class="section level3">
+<h3 id="no-invented-thresholds-0-3-0">No invented thresholds<a class="anchor" aria-label="anchor" href="#no-invented-thresholds-0-3-0"></a></h3>
+<p>Tufte states two different kinds of thing, and earlier versions collapsed them. For some principles he gives a criterion a graphic either meets or does not: bars measured from zero, the lie factor between 0.95 and 1.05, graphics wider than they are tall, non-data ink erased. Those are still graded. For others he gives only a direction, asking that the data-ink ratio be maximised “within reason” and that data density be increased, and names no threshold anywhere.</p>
+<p>Those are now measured and reported without a verdict. The cutoffs that used to grade them were the package author’s, presented in Tufte’s voice, and are gone:</p>
+<ul><li>a data-ink ratio below 0.5 no longer fails;</li>
+<li>a data density below 2 numbers per square inch no longer fails;</li>
+<li>a banked height more than a factor of two from the given one no longer fails, since Cleveland states 45 degrees as the target and no tolerance around it;</li>
+<li>more than seven hues no longer fails, and hues are counted instead;</li>
+<li>more than six overlaid series no longer draws a remark;</li>
+<li>a major gridline is no longer graded by an invented line weight;</li>
+<li>an aspect ratio above 3:1 no longer draws a remark, since Tufte states the criterion at 1 and nothing above it;</li>
+<li>
+<code><a href="../reference/quartile_breaks.html">quartile_breaks()</a></code> now returns the whole five-number summary by default. The spacing at which labels collide depends on font and figure size, which a breaks function cannot see, so <code>min_gap</code> is off unless you set it.</li>
+</ul><p>The legend check no longer fails on a count. It fails when a legend names series that could have been labelled on the data, and merely reports a key for a continuous scale, where there are no series to name and Tufte keys the shading himself.</p>
+</div>
+<div class="section level3">
+<h3 id="no-score-0-3-0">No score<a class="anchor" aria-label="anchor" href="#no-score-0-3-0"></a></h3>
+<p><code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> reported the share of checks passed. Collapsing the two kinds of principle into one number needs a weighting between a pie chart and a missing source note, and Tufte offers no exchange rate. The <code>score</code> attribute is replaced by <code>violations</code>, a count of stated criteria not met.</p>
+<p><code><a href="../reference/audit_figures.html">audit_figures()</a></code> now orders figures by that count rather than by a proportion. A count is comparable across figures; the old proportion divided by a denominator that changed with the plot type, so it ranked figures on numbers that were not on the same scale.</p>
+</div>
+<div class="section level3">
+<h3 id="elsewhere-0-3-0">Elsewhere<a class="anchor" aria-label="anchor" href="#elsewhere-0-3-0"></a></h3>
+<ul><li>
+<code><a href="../reference/tufte_principles.html">tufte_principles()</a></code> gains a <code>criterion</code> column marking which principles Tufte states a testable line for. Ten of twenty-six do.</li>
+<li>The audit cites WCAG rather than Tufte for the contrast minimum, and Cleveland rather than Tufte for banking, in the output itself.</li>
+<li>
+<code><a href="../reference/tufte_pal.html">tufte_pal()</a></code> no longer claims a number at which hues stop being a code; it warns only that the extra colours are interpolated.</li>
+<li>
+<code><a href="../reference/slopegraph.html">slopegraph()</a></code>’s <code>min_gap</code> is documented as a typesetting allowance rather than a quantity from Tufte.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.1" id="tufter-021">tufter 0.2.1<a class="anchor" aria-label="anchor" href="#tufter-021"></a></h2>
 <p>Bug fixes found by auditing the package against itself. Three of these changed reported numbers, so figures measured with 0.2.0 should be measured again.</p>

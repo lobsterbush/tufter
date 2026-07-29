@@ -96,8 +96,12 @@ spans only the data, so the frame reports the minimum and maximum for
 free. A quartile frame breaks that line at the quartiles, so the axis
 carries the whole five-number summary;
 [`quartile_breaks()`](https://lobsterbush.github.io/tufter/reference/quartile_breaks.md)
-puts the printed labels in the same places, and drops any that would
-collide.
+puts the printed labels in the same places. It keeps all five by
+default, because that is what the frame reports; if two of them are
+close enough to overprint at your font and figure size, set `min_gap`
+explicitly rather than trusting a default to guess it, and use
+[`check_labels_fit()`](https://lobsterbush.github.io/tufter/reference/check_labels_fit.md)
+to find out whether they collide at all.
 
 ``` r
 ggplot(experiment, aes(age, support)) +
@@ -462,10 +466,10 @@ ggplot(focus, aes(year, trust, group = country, colour = highlight)) +
 
 ## Auditing the result
 
-Every figure above can be scored.
+Every figure above can be audited.
 [`tufte_audit()`](https://lobsterbush.github.io/tufter/reference/tufte_audit.md)
-runs fifteen checks, structural and measured, and reports which
-principles the figure satisfies.
+reports the stated criteria a figure does not meet, and separately
+measures the quantities Tufte gives a direction for but no threshold.
 
 ``` r
 final <- ggplot(experiment, aes(condition, support)) +
@@ -479,23 +483,32 @@ tufte_audit(final, width = 6.5, height = 4)
 #> 
 #> ── Tufte audit ──
 #> 
-#> 15/15 checks passed (100%), at 6.5in x 4in.
+#> At 6.5in x 4in: 0 stated criteria not met.
 #> 
-#> ── Passing
-#> • Panel background carries no data
-#> • Grid is no heavier than the data
-#> • Frame reports the data range
+#> ── Measured, not graded
+#> Tufte states a direction for these, not a threshold. Read them against another
+#> draft of the same figure.
+#> • Data-ink ratio 0.52: 52% of the ink varies with the data. Tufte asks that
+#>   this be maximised within reason and names no threshold, so read it against
+#>   another draft of this figure rather than against a target.
+#> • Data density 88.3 numbers per square inch: 1800 entries over 20.4 square
+#>   inches. Tufte ranks published graphics by this and sets no minimum.
+#> • 1 distinct colour in use. Tufte's advice on colour is qualitative, so this is
+#>   a count and not a verdict.
+#> • 4 series overlaid in one panel. facet_tufte() would show the same data as
+#>   small multiples; Tufte gives no number at which to switch.
+#> 
+#> ── Met
+#> • Panel carries no background fill
+#> • No minor gridlines
+#> • No full panel border
 #> • No pie chart
-#> • Lie factor near one
+#> • Lie factor within Tufte's band
 #> • No legend to decode
-#> • Colour stays a code
 #> • No variable encoded twice
-#> • Comparison by repetition
-#> • The figure says where its numbers came from
-#> • The figure tends toward the horizontal
-#> • Ink is dark enough to see
-#> • Most ink varies with the data
-#> • The figure earns its space
+#> • The figure names its source
+#> • Wider than it is tall
+#> • Ink clears the WCAG contrast minimum
 #> • Nothing is clipped at the printed size
 ```
 

@@ -29,7 +29,9 @@
 #'   own slopegraphs use a single grey.
 #' @param min_gap Minimum vertical separation between labels, as a fraction of
 #'   the y range. Labels closer than this are nudged apart. Set to \code{0} to
-#'   disable.
+#'   disable. This is a typesetting allowance, not a quantity from Tufte: it
+#'   exists only so that two units with near-identical values do not print on
+#'   top of each other, and the right value depends on your font size.
 #' @return A \code{ggplot} object.
 #' @export
 #' @examples

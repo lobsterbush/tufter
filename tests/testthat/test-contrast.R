@@ -80,7 +80,10 @@ test_that("the audit fails a plot drawn too faintly to read", {
       geom_rangeframe() + theme_tufte() + label_source("x"),
     measure = FALSE
   )
-  legible <- a[a$check == "Ink is dark enough to see", ]
+  legible <- a[a$check == "Ink clears the WCAG contrast minimum", ]
   expect_equal(legible$status, "fail")
-  expect_match(legible$message, "cannot see")
+  expect_match(legible$message, "below the published minimum")
+  # The threshold is WCAG's, and the audit must say so rather than imply
+  # Tufte set it.
+  expect_match(legible$source, "not Tufte")
 })

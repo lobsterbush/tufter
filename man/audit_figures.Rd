@@ -15,14 +15,17 @@ file in it is read and any that contains a \code{ggplot} is audited.}
 Pass a vector as long as \code{plots} to give each its own size.}
 
 \item{measure}{Logical. Run the rendering-based measurements? Defaults to
-\code{TRUE}. Set to \code{FALSE} for a fast structural pass.}
+  \code{TRUE}. Set to \code{FALSE} for a fast structural pass.
+Figures are ordered by the number of stated criteria they fail, most first.
+That is a count and not a score: it is comparable across figures because
+every figure is being counted against the same criteria, whereas a
+proportion would divide by a denominator that changes with the plot type.}
 }
 \value{
 An object of class \code{tufte_audit_batch}: a tibble with one row
-  per figure, giving \code{figure}, \code{score}, \code{passed},
-  \code{failed} and \code{failing}, a comma-separated list of the checks that
-  did not pass. The full audits are attached as the \code{"audits"}
-  attribute, named by figure.
+  per figure, giving \code{figure}, \code{violations}, \code{met} and
+  \code{failing}, a comma-separated list of the criteria not met. The full
+  audits are attached as the \code{"audits"} attribute, named by figure.
 }
 \description{
 Running \code{\link{tufte_audit}()} on one plot is useful while you are

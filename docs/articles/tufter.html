@@ -89,7 +89,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -141,8 +141,13 @@ Information</em> is that statistical graphics can be evaluated, not
 merely preferred. He gives quantities: the data-ink ratio, the lie
 factor, data density. This package takes that seriously in both
 directions. It supplies the graphical forms he designed, and it supplies
-the measurements, so that a figure you have drawn can be scored rather
+the measurements, so that a figure you have drawn can be examined rather
 than admired.</p>
+<p>It is careful about one distinction. Tufte states a criterion for
+some principles, a graphic either meeting it or not, and only a
+direction for others. The audit grades the first kind and measures the
+second, and there is no score, because collapsing the two would mean
+inventing thresholds and a weighting that are nowhere in his books.</p>
 <div class="section level2">
 <h2 id="start-with-a-default-plot">Start with a default plot<a class="anchor" aria-label="anchor" href="#start-with-a-default-plot"></a>
 </h2>
@@ -204,35 +209,45 @@ breaks.</p>
 <div class="section level2">
 <h2 id="the-audit">The audit<a class="anchor" aria-label="anchor" href="#the-audit"></a>
 </h2>
-<p><code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> runs every check the package knows how to
-make, structural and measured, and reports which principles the figure
-satisfies.</p>
+<p><code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> reports the stated criteria a figure does
+not meet, each named with the principle and the chapter it comes from,
+and separately measures the quantities Tufte gives a direction for.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/tufte_audit.html">tufte_audit</a></span><span class="op">(</span><span class="va">lean</span>, width <span class="op">=</span> <span class="fl">6.5</span>, height <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Tufte audit</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">14/15</span> checks passed (93%), at 6.5in x 4in.</span></span>
+<span><span class="co">#&gt; At 6.5in x 4in: <span style="font-weight: bold;">1</span> stated criterion not met.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Failing</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> No caption. A graphic should name its source on the graphic, so the claim can</span></span>
-<span><span class="co">#&gt;   be checked without hunting through the text. See label_source().</span></span>
-<span><span class="co">#&gt; <span style="font-style: italic;">Documentation (Beautiful Evidence ch. 6)</span></span></span>
+<span><span class="co">#&gt; ── Not met</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> No caption. Tufte asks that evidence be thoroughly described and its sources</span></span>
+<span><span class="co">#&gt;   indicated on the graphic itself, so the claim can be checked without hunting</span></span>
+<span><span class="co">#&gt;   through the surrounding text. See label_source().</span></span>
+<span><span class="co">#&gt; <span style="font-style: italic;">Documentation - Beautiful Evidence ch. 6</span></span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Passing</span></span>
-<span><span class="co">#&gt; • Panel background carries no data</span></span>
-<span><span class="co">#&gt; • Grid is no heavier than the data</span></span>
-<span><span class="co">#&gt; • Frame reports the data range</span></span>
+<span><span class="co">#&gt; ── Measured, not graded</span></span>
+<span><span class="co">#&gt; <span style="font-style: italic;">Tufte states a direction for these, not a threshold. Read them against another</span></span></span>
+<span><span class="co">#&gt; <span style="font-style: italic;">draft of the same figure.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Data-ink ratio 0.74: 74% of the ink varies with the data. Tufte asks that</span></span>
+<span><span class="co">#&gt;   this be maximised within reason and names no threshold, so read it against</span></span>
+<span><span class="co">#&gt;   another draft of this figure rather than against a target.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Data density 3.2 numbers per square inch: 64 entries over 20.1 square inches.</span></span>
+<span><span class="co">#&gt;   Tufte ranks published graphics by this and sets no minimum.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> 1 distinct colour in use. Tufte's advice on colour is qualitative, so this is</span></span>
+<span><span class="co">#&gt;   a count and not a verdict.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> 1 series overlaid in one panel. facet_tufte() would show the same data as</span></span>
+<span><span class="co">#&gt;   small multiples; Tufte gives no number at which to switch.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Met</span></span>
+<span><span class="co">#&gt; • Panel carries no background fill</span></span>
+<span><span class="co">#&gt; • No minor gridlines</span></span>
+<span><span class="co">#&gt; • No full panel border</span></span>
 <span><span class="co">#&gt; • No pie chart</span></span>
-<span><span class="co">#&gt; • Lie factor near one</span></span>
+<span><span class="co">#&gt; • Lie factor within Tufte's band</span></span>
 <span><span class="co">#&gt; • No legend to decode</span></span>
-<span><span class="co">#&gt; • Colour stays a code</span></span>
 <span><span class="co">#&gt; • No variable encoded twice</span></span>
-<span><span class="co">#&gt; • Comparison by repetition</span></span>
-<span><span class="co">#&gt; • The figure tends toward the horizontal</span></span>
-<span><span class="co">#&gt; • Ink is dark enough to see</span></span>
-<span><span class="co">#&gt; • Most ink varies with the data</span></span>
-<span><span class="co">#&gt; • The figure earns its space</span></span>
+<span><span class="co">#&gt; • Wider than it is tall</span></span>
+<span><span class="co">#&gt; • Ink clears the WCAG contrast minimum</span></span>
 <span><span class="co">#&gt; • Nothing is clipped at the printed size</span></span></code></pre></div>
 <p>The remaining failure is the one no theme can fix for you: the figure
 does not say where its numbers came from. <code><a href="../reference/label_source.html">label_source()</a></code>
@@ -242,29 +257,42 @@ handles that.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Tufte audit</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">15/15</span> checks passed (100%), at 6.5in x 4in.</span></span>
+<span><span class="co">#&gt; At 6.5in x 4in: <span style="font-weight: bold;">0</span> stated criteria not met.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Passing</span></span>
-<span><span class="co">#&gt; • Panel background carries no data</span></span>
-<span><span class="co">#&gt; • Grid is no heavier than the data</span></span>
-<span><span class="co">#&gt; • Frame reports the data range</span></span>
+<span><span class="co">#&gt; ── Measured, not graded</span></span>
+<span><span class="co">#&gt; <span style="font-style: italic;">Tufte states a direction for these, not a threshold. Read them against another</span></span></span>
+<span><span class="co">#&gt; <span style="font-style: italic;">draft of the same figure.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Data-ink ratio 0.66: 66% of the ink varies with the data. Tufte asks that</span></span>
+<span><span class="co">#&gt;   this be maximised within reason and names no threshold, so read it against</span></span>
+<span><span class="co">#&gt;   another draft of this figure rather than against a target.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Data density 3.4 numbers per square inch: 64 entries over 18.9 square inches.</span></span>
+<span><span class="co">#&gt;   Tufte ranks published graphics by this and sets no minimum.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> 1 distinct colour in use. Tufte's advice on colour is qualitative, so this is</span></span>
+<span><span class="co">#&gt;   a count and not a verdict.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> 1 series overlaid in one panel. facet_tufte() would show the same data as</span></span>
+<span><span class="co">#&gt;   small multiples; Tufte gives no number at which to switch.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Met</span></span>
+<span><span class="co">#&gt; • Panel carries no background fill</span></span>
+<span><span class="co">#&gt; • No minor gridlines</span></span>
+<span><span class="co">#&gt; • No full panel border</span></span>
 <span><span class="co">#&gt; • No pie chart</span></span>
-<span><span class="co">#&gt; • Lie factor near one</span></span>
+<span><span class="co">#&gt; • Lie factor within Tufte's band</span></span>
 <span><span class="co">#&gt; • No legend to decode</span></span>
-<span><span class="co">#&gt; • Colour stays a code</span></span>
 <span><span class="co">#&gt; • No variable encoded twice</span></span>
-<span><span class="co">#&gt; • Comparison by repetition</span></span>
-<span><span class="co">#&gt; • The figure says where its numbers came from</span></span>
-<span><span class="co">#&gt; • The figure tends toward the horizontal</span></span>
-<span><span class="co">#&gt; • Ink is dark enough to see</span></span>
-<span><span class="co">#&gt; • Most ink varies with the data</span></span>
-<span><span class="co">#&gt; • The figure earns its space</span></span>
+<span><span class="co">#&gt; • The figure names its source</span></span>
+<span><span class="co">#&gt; • Wider than it is tall</span></span>
+<span><span class="co">#&gt; • Ink clears the WCAG contrast minimum</span></span>
 <span><span class="co">#&gt; • Nothing is clipped at the printed size</span></span></code></pre></div>
-<p>The score is a prompt, not a verdict. A figure can pass every check
-and still be pointless, because Tufte’s first principle is that content
-counts most of all, and no function evaluates that. What the audit is
-good for is the mechanical failures that authors stop seeing after the
-fifth draft.</p>
+<p>Notice what the audit does not do: it never grades the data-ink ratio
+or the data density. Tufte asks that both be pushed in a direction and
+names no threshold for either, so the audit reports them and leaves the
+judgement with you. Read them against another draft of the same
+figure.</p>
+<p>Meeting every stated criterion does not make a figure good. Tufte’s
+first principle is that content counts most of all, and no function
+evaluates that. What the audit is good for is the mechanical failures
+that authors stop seeing after the fifth draft.</p>
 </div>
 <div class="section level2">
 <h2 id="graphical-integrity">Graphical integrity<a class="anchor" aria-label="anchor" href="#graphical-integrity"></a>

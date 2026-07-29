@@ -1,7 +1,7 @@
 Package: tufter
 Type: Package
 Title: Implement Edward Tufte's Principles of Graphical Design
-Version: 0.2.1
+Version: 0.3.0
 Authors@R: person("Charles", "Crabtree",
                   email = "charles.crabtree@monash.edu",
                   role = c("aut", "cre"),

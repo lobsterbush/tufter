@@ -28,14 +28,18 @@ audit_figures(plots, width = 6.5, height = 4, measure = TRUE)
 - measure:
 
   Logical. Run the rendering-based measurements? Defaults to `TRUE`. Set
-  to `FALSE` for a fast structural pass.
+  to `FALSE` for a fast structural pass. Figures are ordered by the
+  number of stated criteria they fail, most first. That is a count and
+  not a score: it is comparable across figures because every figure is
+  being counted against the same criteria, whereas a proportion would
+  divide by a denominator that changes with the plot type.
 
 ## Value
 
 An object of class `tufte_audit_batch`: a tibble with one row per
-figure, giving `figure`, `score`, `passed`, `failed` and `failing`, a
-comma-separated list of the checks that did not pass. The full audits
-are attached as the `"audits"` attribute, named by figure.
+figure, giving `figure`, `violations`, `met` and `failing`, a
+comma-separated list of the criteria not met. The full audits are
+attached as the `"audits"` attribute, named by figure.
 
 ## Details
 
@@ -60,12 +64,12 @@ audit_figures(figures, measure = FALSE)
 #> 
 #> ── Tufte audit: 2 figures ──
 #> 
-#> ── Needing work, worst first 
-#> boxes (73%, 3 failing)
-#> Panel background carries no data, Grid is no heavier than the data, The figure
-#> says where its numbers came from
-#> scatter (91%, 1 failing)
-#> The figure says where its numbers came from
+#> ── Stated criteria not met, most first 
+#> boxes (3 not met)
+#> Panel carries no background fill, No minor gridlines, The figure names its
+#> source
+#> scatter (1 not met)
+#> The figure names its source
 #> 
 #> ℹ Full detail for any one figure: `attr(x, "audits")[["<name>"]]`
 ```

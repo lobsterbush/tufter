@@ -98,7 +98,10 @@ A panel border is the same box whatever the numbers are. A range frame spans
 only the data, so the frame reports the minimum and maximum for free. A
 quartile frame breaks that line at the quartiles, so the axis carries the whole
 five-number summary; `quartile_breaks()` puts the printed labels in the same
-places, and drops any that would collide.
+places. It keeps all five by default, because that is what the frame reports;
+if two of them are close enough to overprint at your font and figure size, set
+`min_gap` explicitly rather than trusting a default to guess it, and use
+`check_labels_fit()` to find out whether they collide at all.
 
 ```{r frames}
 ggplot(experiment, aes(age, support)) +
@@ -403,8 +406,9 @@ ggplot(focus, aes(year, trust, group = country, colour = highlight)) +
 
 ## Auditing the result
 
-Every figure above can be scored. `tufte_audit()` runs fifteen checks,
-structural and measured, and reports which principles the figure satisfies.
+Every figure above can be audited. `tufte_audit()` reports the stated criteria
+a figure does not meet, and separately measures the quantities Tufte gives a
+direction for but no threshold.
 
 ```{r audit}
 final <- ggplot(experiment, aes(condition, support)) +

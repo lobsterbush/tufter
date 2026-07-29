@@ -91,7 +91,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -415,8 +415,8 @@ so the warning arrives while you can still act on it.</p>
 <div class="section level2">
 <h2 id="putting-it-together">Putting it together<a class="anchor" aria-label="anchor" href="#putting-it-together"></a>
 </h2>
-<p><code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> runs all of the above plus the structural
-checks, and scores them.</p>
+<p><code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> runs all of the above alongside the
+criteria Tufte states outright, and is careful about which is which.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bad</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">y</span>, fill <span class="op">=</span> <span class="va">g</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span>stat <span class="op">=</span> <span class="st">"summary"</span>, fun <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></span>
@@ -425,50 +425,56 @@ checks, and scores them.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Tufte audit</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">8/15</span> checks passed (53%), at 6.5in x 4in.</span></span>
+<span><span class="co">#&gt; At 6.5in x 4in: <span style="font-weight: bold;">6</span> stated criteria not met.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Failing</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> The panel is filled with #EBEBEBFF. A tinted panel is ink that never varies</span></span>
-<span><span class="co">#&gt;   with the data.</span></span>
-<span><span class="co">#&gt; <span style="font-style: italic;">Erase non-data ink (VDQI ch. 4)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Minor gridlines are drawn. They divide space the reader is not reading to</span></span>
-<span><span class="co">#&gt;   that precision.</span></span>
-<span><span class="co">#&gt; <span style="font-style: italic;">Erase redundant data-ink (VDQI ch. 4)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> A legend with 2 entries makes the reader look away, hold a colour in memory,</span></span>
-<span><span class="co">#&gt;   and look back. With this few series, label them on the plot with</span></span>
-<span><span class="co">#&gt;   geom_text_last().</span></span>
-<span><span class="co">#&gt; <span style="font-style: italic;">Integrate word and image (Beautiful Evidence ch. 5)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> 'g' is mapped to both position and colour. The second encoding adds ink and a</span></span>
-<span><span class="co">#&gt;   legend without adding information.</span></span>
-<span><span class="co">#&gt; <span style="font-style: italic;">Erase redundant data-ink (VDQI ch. 4)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> No caption. A graphic should name its source on the graphic, so the claim can</span></span>
-<span><span class="co">#&gt;   be checked without hunting through the text. See label_source().</span></span>
-<span><span class="co">#&gt; <span style="font-style: italic;">Documentation (Beautiful Evidence ch. 6)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> data mark #00BFC4 at contrast 1.9 against the background, below the 3.0</span></span>
-<span><span class="co">#&gt;   minimum. Maximising data-ink is not a licence to draw in colours people</span></span>
-<span><span class="co">#&gt;   cannot see.</span></span>
-<span><span class="co">#&gt; <span style="font-style: italic;">Legibility (WCAG 2.1, against VDQI ch. 4)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Data density is 0.2 numbers per square inch: 4 entries over 17.1 square</span></span>
-<span><span class="co">#&gt;   inches. A graphic this empty would be shorter as a sentence.</span></span>
-<span><span class="co">#&gt; <span style="font-style: italic;">Maximise data density (VDQI ch. 8)</span></span></span>
+<span><span class="co">#&gt; ── Not met</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> The panel is filled with #EBEBEBFF. The fill is identical whatever the</span></span>
+<span><span class="co">#&gt;   numbers are, so it is non-data ink and Tufte's instruction is to erase it.</span></span>
+<span><span class="co">#&gt; <span style="font-style: italic;">Erase non-data ink - VDQI ch. 4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Minor gridlines are drawn. They subdivide the scale past the precision anyone</span></span>
+<span><span class="co">#&gt;   reads from a graphic, and are non-data ink.</span></span>
+<span><span class="co">#&gt; <span style="font-style: italic;">Erase non-data ink - VDQI ch. 4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> A legend is drawn for named series. Tufte's instruction is that words belong</span></span>
+<span><span class="co">#&gt;   on the data rather than in a key the reader must hold in memory and look back</span></span>
+<span><span class="co">#&gt;   to: geom_text_last() labels each series in place, and where there are too</span></span>
+<span><span class="co">#&gt;   many to label, facet_tufte() shows them as small multiples instead.</span></span>
+<span><span class="co">#&gt; <span style="font-style: italic;">Integrate word and image - Beautiful Evidence ch. 5</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> 'g' is mapped to both position and colour. The second encoding is redundant</span></span>
+<span><span class="co">#&gt;   data-ink: it adds ink and a legend without adding information.</span></span>
+<span><span class="co">#&gt; <span style="font-style: italic;">Erase redundant data-ink - VDQI ch. 4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> No caption. Tufte asks that evidence be thoroughly described and its sources</span></span>
+<span><span class="co">#&gt;   indicated on the graphic itself, so the claim can be checked without hunting</span></span>
+<span><span class="co">#&gt;   through the surrounding text. See label_source().</span></span>
+<span><span class="co">#&gt; <span style="font-style: italic;">Documentation - Beautiful Evidence ch. 6</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> data mark #00BFC4 sits at contrast 1.9 against the background, below the</span></span>
+<span><span class="co">#&gt;   published minimum of 3.0. This is not one of Tufte's criteria; it is the</span></span>
+<span><span class="co">#&gt;   limit past which erasing ink stops being economy and becomes an unreadable</span></span>
+<span><span class="co">#&gt;   figure.</span></span>
+<span><span class="co">#&gt; <span style="font-style: italic;">Legibility - WCAG 2.1, not Tufte</span></span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Worth a look</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> No frame at all. That is defensible, but geom_rangeframe() would give the</span></span>
-<span><span class="co">#&gt;   axis something to say.</span></span>
+<span><span class="co">#&gt; ── Measured, not graded</span></span>
+<span><span class="co">#&gt; <span style="font-style: italic;">Tufte states a direction for these, not a threshold. Read them against another</span></span></span>
+<span><span class="co">#&gt; <span style="font-style: italic;">draft of the same figure.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Data-ink ratio 0.80: 80% of the ink varies with the data. Tufte asks that</span></span>
+<span><span class="co">#&gt;   this be maximised within reason and names no threshold, so read it against</span></span>
+<span><span class="co">#&gt;   another draft of this figure rather than against a target.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Data density 0.2 numbers per square inch: 4 entries over 17.1 square inches.</span></span>
+<span><span class="co">#&gt;   Tufte ranks published graphics by this and sets no minimum.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> 2 distinct colours in use. Tufte's advice on colour is qualitative, so this</span></span>
+<span><span class="co">#&gt;   is a count and not a verdict.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> 2 series overlaid in one panel. facet_tufte() would show the same data as</span></span>
+<span><span class="co">#&gt;   small multiples; Tufte gives no number at which to switch.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Passing</span></span>
+<span><span class="co">#&gt; ── Met</span></span>
+<span><span class="co">#&gt; • No full panel border</span></span>
 <span><span class="co">#&gt; • No pie chart</span></span>
-<span><span class="co">#&gt; • Bars start at zero</span></span>
-<span><span class="co">#&gt; • Lie factor near one</span></span>
-<span><span class="co">#&gt; • Colour stays a code</span></span>
-<span><span class="co">#&gt; • Comparison by repetition</span></span>
-<span><span class="co">#&gt; • The figure tends toward the horizontal</span></span>
-<span><span class="co">#&gt; • Most ink varies with the data</span></span>
+<span><span class="co">#&gt; • Bars measured from zero</span></span>
+<span><span class="co">#&gt; • Lie factor within Tufte's band</span></span>
+<span><span class="co">#&gt; • Wider than it is tall</span></span>
 <span><span class="co">#&gt; • Nothing is clipped at the printed size</span></span></code></pre></div>
-<p>Six separate problems, named: the tinted panel, the minor gridlines,
-a legend that should have been a direct label, the grouping variable
-encoded twice, no source note, and four numbers spread over seventeen
-square inches. The same data, drawn properly:</p>
+<p>Several stated criteria not met, each named with the principle it
+comes from, and separately a set of measurements with no verdict
+attached. The same data, drawn properly:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">good</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">y</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_tufteboxplot.html">geom_tufteboxplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -481,26 +487,32 @@ square inches. The same data, drawn properly:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Tufte audit</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">14/15</span> checks passed (93%), at 6.5in x 4in.</span></span>
+<span><span class="co">#&gt; At 6.5in x 4in: <span style="font-weight: bold;">0</span> stated criteria not met.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Failing</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Data-ink ratio is 0.38: 38% of the ink in this figure varies with the data.</span></span>
-<span><span class="co">#&gt; <span style="font-style: italic;">Maximise the data-ink ratio (VDQI ch. 4)</span></span></span>
+<span><span class="co">#&gt; ── Measured, not graded</span></span>
+<span><span class="co">#&gt; <span style="font-style: italic;">Tufte states a direction for these, not a threshold. Read them against another</span></span></span>
+<span><span class="co">#&gt; <span style="font-style: italic;">draft of the same figure.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Data-ink ratio 0.38: 38% of the ink varies with the data. Tufte asks that</span></span>
+<span><span class="co">#&gt;   this be maximised within reason and names no threshold, so read it against</span></span>
+<span><span class="co">#&gt;   another draft of this figure rather than against a target.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Data density 39.8 numbers per square inch: 800 entries over 20.1 square</span></span>
+<span><span class="co">#&gt;   inches. Tufte ranks published graphics by this and sets no minimum.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> 1 distinct colour in use. Tufte's advice on colour is qualitative, so this is</span></span>
+<span><span class="co">#&gt;   a count and not a verdict.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> 2 series overlaid in one panel. facet_tufte() would show the same data as</span></span>
+<span><span class="co">#&gt;   small multiples; Tufte gives no number at which to switch.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Passing</span></span>
-<span><span class="co">#&gt; • Panel background carries no data</span></span>
-<span><span class="co">#&gt; • Grid is no heavier than the data</span></span>
-<span><span class="co">#&gt; • Frame reports the data range</span></span>
+<span><span class="co">#&gt; ── Met</span></span>
+<span><span class="co">#&gt; • Panel carries no background fill</span></span>
+<span><span class="co">#&gt; • No minor gridlines</span></span>
+<span><span class="co">#&gt; • No full panel border</span></span>
 <span><span class="co">#&gt; • No pie chart</span></span>
-<span><span class="co">#&gt; • Lie factor near one</span></span>
+<span><span class="co">#&gt; • Lie factor within Tufte's band</span></span>
 <span><span class="co">#&gt; • No legend to decode</span></span>
-<span><span class="co">#&gt; • Colour stays a code</span></span>
 <span><span class="co">#&gt; • No variable encoded twice</span></span>
-<span><span class="co">#&gt; • Comparison by repetition</span></span>
-<span><span class="co">#&gt; • The figure says where its numbers came from</span></span>
-<span><span class="co">#&gt; • The figure tends toward the horizontal</span></span>
-<span><span class="co">#&gt; • Ink is dark enough to see</span></span>
-<span><span class="co">#&gt; • The figure earns its space</span></span>
+<span><span class="co">#&gt; • The figure names its source</span></span>
+<span><span class="co">#&gt; • Wider than it is tall</span></span>
+<span><span class="co">#&gt; • Ink clears the WCAG contrast minimum</span></span>
 <span><span class="co">#&gt; • Nothing is clipped at the printed size</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -522,15 +534,15 @@ at.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Tufte audit: 3 figures</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Needing work, worst first</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">bars</span> (50%, 6 failing)</span></span>
-<span><span class="co">#&gt; <span style="font-style: italic;">Panel background carries no data, Grid is no heavier than the data, No legend</span></span></span>
-<span><span class="co">#&gt; <span style="font-style: italic;">to decode, No variable encoded twice, The figure says where its numbers came</span></span></span>
-<span><span class="co">#&gt; <span style="font-style: italic;">from, Ink is dark enough to see</span></span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">faint</span> (91%, 1 failing)</span></span>
-<span><span class="co">#&gt; <span style="font-style: italic;">Ink is dark enough to see</span></span></span>
+<span><span class="co">#&gt; ── Stated criteria not met, most first</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">bars</span> (6 not met)</span></span>
+<span><span class="co">#&gt; <span style="font-style: italic;">Panel carries no background fill, No minor gridlines, No legend to decode, No</span></span></span>
+<span><span class="co">#&gt; <span style="font-style: italic;">variable encoded twice, The figure names its source, Ink clears the WCAG</span></span></span>
+<span><span class="co">#&gt; <span style="font-style: italic;">contrast minimum</span></span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">faint</span> (1 not met)</span></span>
+<span><span class="co">#&gt; <span style="font-style: italic;">Ink clears the WCAG contrast minimum</span></span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Passing every check</span></span>
+<span><span class="co">#&gt; ── Meeting every stated criterion</span></span>
 <span><span class="co">#&gt; • scatter</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Full detail for any one figure: `attr(x, "audits")[["&lt;name&gt;"]]`</span></span></code></pre></div>
@@ -538,16 +550,50 @@ at.</p>
 were saved with <code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS()</a></code> can be checked in one call.</p>
 </div>
 <div class="section level2">
-<h2 id="what-the-score-is-not">What the score is not<a class="anchor" aria-label="anchor" href="#what-the-score-is-not"></a>
+<h2 id="why-there-is-no-score">Why there is no score<a class="anchor" aria-label="anchor" href="#why-there-is-no-score"></a>
 </h2>
-<p>The score is the share of applicable checks passed, and it is a
-prompt rather than a verdict. A figure can pass every check and still be
-pointless, because Tufte’s first principle is that content counts most
-of all, and no function evaluates that.</p>
-<p><code><a href="../reference/tufte_principles.html">tufte_principles()</a></code> is the honest inventory. Its
-<code>audited</code> column marks which principles a function can verify
-and which it cannot, and the ones it cannot are listed anyway.</p>
+<p>An earlier version of this package reported a score: the share of
+checks passed. It is gone, for two reasons.</p>
+<p>The first is that it required inventing thresholds. Tufte gives a
+testable line for some principles and only a direction for others, and a
+pass or fail on the second kind can only come from the package author.
+The version of <code><a href="../reference/data_ink_ratio.html">data_ink_ratio()</a></code> that failed a figure below
+0.5 was asserting something Tufte never wrote, in his voice.
+<code><a href="../reference/tufte_principles.html">tufte_principles()</a></code> now marks the difference in its
+<code>criterion</code> column, and the audit grades only the principles
+that carry one.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tufte_principles.html">tufte_principles</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">p</span><span class="op">[</span><span class="va">p</span><span class="op">$</span><span class="va">criterion</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"principle"</span>, <span class="st">"source"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 × 2</span></span></span>
+<span><span class="co">#&gt;    principle                        source                      </span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Erase non-data ink               VDQI ch. 4                  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Erase redundant data-ink         VDQI ch. 4                  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Revise and edit                  VDQI ch. 4                  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> The range-frame                  VDQI ch. 6                  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> The lie factor                   VDQI ch. 2                  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Graphical integrity              VDQI ch. 2                  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Proportion and scale             VDQI ch. 9                  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Legibility                       WCAG 2.1, against VDQI ch. 4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Integrate word, number and image Beautiful Evidence ch. 5    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Documentation                    Beautiful Evidence ch. 6</span></span></code></pre></div>
+<p>The second is that a score needs a weighting. To say a figure is at
+seventy percent is to have decided how many missing source notes equal
+one pie chart, and Tufte offers no exchange rate. What the audit reports
+instead is a count of stated criteria not met, which is comparable
+across figures because every figure is counted against the same list,
+and a set of measurements to read against another draft of the same
+figure.</p>
+<p>None of this makes the remaining criteria beyond argument. They are
+my reading of what Tufte states outright, and the reading is visible in
+the source of each check rather than buried in a number.</p>
+<p><code><a href="../reference/tufte_principles.html">tufte_principles()</a></code> is the honest inventory. Its
+<code>audited</code> column marks which principles a function can reach
+at all, and its <code>criterion</code> column marks which of those Tufte
+states a testable line for. The ones no function can reach are listed
+anyway.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tufte_principles.html">tufte_principles</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">p</span><span class="op">[</span><span class="op">!</span><span class="va">p</span><span class="op">$</span><span class="va">audited</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"principle"</span>, <span class="st">"source"</span>, <span class="st">"implemented_by"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 9 × 3</span></span></span>

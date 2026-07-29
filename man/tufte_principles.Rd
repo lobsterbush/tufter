@@ -12,17 +12,30 @@ Defaults to \code{FALSE}.}
 }
 \value{
 A tibble with columns \code{principle}, \code{source},
-  \code{statement}, \code{implemented_by} and \code{audited}.
+  \code{statement}, \code{implemented_by}, \code{audited} and
+  \code{criterion}.
 }
 \description{
 Returns the table this package is built around: each principle, the book it
-comes from, the function or functions that put it into practice, and whether
-\code{\link{tufte_audit}()} can check it automatically. Principles that no
-function can check are listed too, with \code{audited} set to \code{FALSE},
-because the honest version of "implements all of Tufte's principles" says
-which ones a package cannot reach.
+comes from, the function that puts it into practice, whether
+\code{\link{tufte_audit}()} can check it, and whether Tufte states a
+criterion a graphic either meets or does not.
+}
+\details{
+The \code{criterion} column is the important one. Tufte gives a testable
+line for some principles: bars are measured from zero, the lie factor lies
+between 0.95 and 1.05, graphics are wider than they are tall. For others he
+gives only a direction, asking that the data-ink ratio be maximised "within
+reason" and that data density be increased, and names no threshold. The audit
+grades the first kind and merely measures the second, because any line drawn
+across the second kind would be the package author's and not Tufte's.
+
+Principles no function can reach are listed too, with \code{audited} set to
+\code{FALSE}, because the honest version of "implements all of Tufte's
+principles" says which ones it cannot.
 }
 \examples{
 tufte_principles()
-subset(tufte_principles(), !audited)$principle
+# Principles Tufte states a testable criterion for:
+subset(tufte_principles(), criterion)$principle
 }

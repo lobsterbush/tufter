@@ -60,8 +60,8 @@ remotes::install_github("lobsterbush/tufter")
 | [`bank_to_45()`](https://lobsterbush.github.io/tufter/reference/bank_to_45.md) | The aspect ratio that puts the slopes nearest 45 degrees, where they are judged best |
 | [`check_contrast()`](https://lobsterbush.github.io/tufter/reference/check_contrast.md), [`contrast_ratio()`](https://lobsterbush.github.io/tufter/reference/contrast_ratio.md) | Whether the ink is dark enough to see, against the WCAG minima |
 | [`check_labels_fit()`](https://lobsterbush.github.io/tufter/reference/check_labels_fit.md) | Whether any text will be clipped at the printed size |
-| [`tufte_audit()`](https://lobsterbush.github.io/tufter/reference/tufte_audit.md) | All of the above, plus the structural checks, scored |
-| [`audit_figures()`](https://lobsterbush.github.io/tufter/reference/audit_figures.md) | The same across every figure in a paper, worst first |
+| [`tufte_audit()`](https://lobsterbush.github.io/tufter/reference/tufte_audit.md) | All of the above, plus the criteria Tufte states, graded or measured as he states them |
+| [`audit_figures()`](https://lobsterbush.github.io/tufter/reference/audit_figures.md) | The same across every figure in a paper, most unmet criteria first |
 
 ![Four graphical forms: the box plot with the box erased, a bar chart
 with gridlines erased through the bars, a slopegraph, and stacked
@@ -94,31 +94,56 @@ data_ink_ratio(lean)
 ``` r
 tufte_audit(ggplot(mtcars, aes(wt, mpg)) + geom_point())
 #> ── Tufte audit ──
-#> 10/14 checks passed (71%), at 6.5in x 4in.
+#> At 6.5in x 4in: 3 stated criteria not met.
 #>
-#> ── Failing
-#> ✖ The panel is filled with #EBEBEBFF. A tinted panel is ink that never
-#>   varies with the data.
-#>   Erase non-data ink (VDQI ch. 4)
-#> ✖ Minor gridlines are drawn. They divide space the reader is not reading
-#>   to that precision.
-#>   Erase redundant data-ink (VDQI ch. 4)
-#> ✖ No caption. A graphic should name its source on the graphic, so the claim
-#>   can be checked without hunting through the text. See label_source().
-#>   Documentation (Beautiful Evidence ch. 6)
-#> ✖ Data-ink ratio is 0.06: 6% of the ink in this figure varies with the data.
-#>   Maximise the data-ink ratio (VDQI ch. 4)
+#> ── Not met
+#> ✖ The panel is filled with #EBEBEBFF. The fill is identical whatever the
+#>   numbers are, so it is non-data ink and Tufte's instruction is to erase it.
+#>   Erase non-data ink - VDQI ch. 4
+#> ✖ Minor gridlines are drawn. They subdivide the scale past the precision
+#>   anyone reads from a graphic, and are non-data ink.
+#>   Erase non-data ink - VDQI ch. 4
+#> ✖ No caption. Tufte asks that evidence be thoroughly described and its
+#>   sources indicated on the graphic itself. See label_source().
+#>   Documentation - Beautiful Evidence ch. 6
+#>
+#> ── Measured, not graded
+#> Tufte states a direction for these, not a threshold.
+#> • Data-ink ratio 0.06: 6% of the ink varies with the data.
+#> • Data density 3.1 numbers per square inch.
+#> • 1 distinct colour in use.
+#> • 1 series overlaid in one panel.
 ```
+
+There is no score, and that is deliberate. Tufte states two different
+kinds of thing. For some principles he gives a criterion a graphic
+either meets or does not: bars are measured from zero, the lie factor
+lies between 0.95 and 1.05, graphics are wider than they are tall,
+non-data ink comes off the page. Those are graded. For others he gives
+only a direction, asking that the data-ink ratio be maximised “within
+reason” and that data density be increased, and names no threshold
+anywhere. Those are measured and reported without a verdict.
+
+Earlier versions of this package invented cutoffs for the second kind,
+which put a number of mine in the same voice as a principle of his. They
+are gone. Collapsing the two kinds into one number would need a
+weighting between a pie chart and a missing source note, and Tufte
+offers no exchange rate.
+
+[`tufte_principles()`](https://lobsterbush.github.io/tufter/reference/tufte_principles.md)
+marks which is which in its `criterion` column.
 
 For a whole paper at once,
 [`audit_figures()`](https://lobsterbush.github.io/tufter/reference/audit_figures.md)
-takes the list of plots you built and returns them worst first, with the
-failing checks named.
+orders figures by how many stated criteria each one fails. That is a
+count rather than a proportion, so it is comparable across figures; a
+percentage would divide by a denominator that changes with the plot
+type.
 
 It catches the failures that matter and that authors stop seeing after
-the fifth draft: a pie chart, a bar baseline that is not zero, a
-variable encoded twice, a legend with four entries that should have been
-direct labels, a subtitle that will be clipped at the size you are about
+the fifth draft: a pie chart, a bar baseline that is not zero, a bar
+chart on a log scale, a variable encoded twice, a legend where direct
+labels belong, a subtitle that will be clipped at the size you are about
 to save.
 
 ## What it will not tell you
@@ -136,8 +161,9 @@ p[!p$audited, c("principle", "implemented_by")]
 #> Content counts most of all  you
 ```
 
-The score is a prompt, not a verdict. A figure can pass every check and
-still be pointless.
+A figure can meet every stated criterion and still be pointless, because
+Tufte’s first principle is that content counts most of all and no
+function evaluates that.
 
 ## Relationship to other packages
 

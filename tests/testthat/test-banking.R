@@ -80,17 +80,20 @@ test_that("banking validates its input and prints", {
   expect_message(print(b), "Banking")
 })
 
-test_that("the audit banks when there are lines and stays quiet otherwise", {
+test_that("the audit reports a banked height but never grades it", {
   d <- data.frame(t = 1:200, v = sin(seq(0, 20 * pi, length.out = 200)))
   p <- ggplot(d, aes(t, v)) + geom_line() + theme_tufte()
 
-  # A tall panel for a very steep series should be flagged.
-  tall <- tufte_audit(p, width = 4, height = 8, measure = FALSE)
-  expect_equal(tall$status[tall$check == "Slopes are readable at this shape"],
-               "fail")
+  a <- tufte_audit(p, width = 4, height = 8, measure = FALSE)
+  banked <- a[a$check == "Banked height", ]
+  # Cleveland gives 45 degrees as the target and states no tolerance around
+  # it, so any pass or fail here would be the package author's line, not his.
+  expect_equal(banked$status, "report")
+  expect_match(banked$message, "45 degrees")
+  expect_match(banked$source, "not Tufte")
 
-  # A scatterplot has no slopes, so the check does not appear at all.
+  # A scatterplot has no slopes, so the measurement does not appear at all.
   none <- tufte_audit(ggplot(mtcars, aes(wt, mpg)) + geom_point(),
                       measure = FALSE)
-  expect_false("Slopes are readable at this shape" %in% none$check)
+  expect_false("Banked height" %in% none$check)
 })

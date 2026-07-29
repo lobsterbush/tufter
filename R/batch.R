@@ -16,11 +16,15 @@
 #'   Pass a vector as long as \code{plots} to give each its own size.
 #' @param measure Logical. Run the rendering-based measurements? Defaults to
 #'   \code{TRUE}. Set to \code{FALSE} for a fast structural pass.
+#' Figures are ordered by the number of stated criteria they fail, most first.
+#' That is a count and not a score: it is comparable across figures because
+#' every figure is being counted against the same criteria, whereas a
+#' proportion would divide by a denominator that changes with the plot type.
+#'
 #' @return An object of class \code{tufte_audit_batch}: a tibble with one row
-#'   per figure, giving \code{figure}, \code{score}, \code{passed},
-#'   \code{failed} and \code{failing}, a comma-separated list of the checks that
-#'   did not pass. The full audits are attached as the \code{"audits"}
-#'   attribute, named by figure.
+#'   per figure, giving \code{figure}, \code{violations}, \code{met} and
+#'   \code{failing}, a comma-separated list of the criteria not met. The full
+#'   audits are attached as the \code{"audits"} attribute, named by figure.
 #' @seealso \code{\link{tufte_audit}()} for a single plot.
 #' @export
 #' @examples
@@ -53,8 +57,7 @@ audit_figures <- function(plots, width = 6.5, height = 4, measure = TRUE) {
     if (inherits(a, "error")) {
       audits[[i]] <- NULL
       rows[[i]] <- data.frame(
-        figure = names(plots)[i], score = NA_real_, passed = NA_integer_,
-        failed = NA_integer_,
+        figure = names(plots)[i], violations = NA_integer_, met = NA_integer_,
         failing = paste("could not be audited:", conditionMessage(a)),
         stringsAsFactors = FALSE
       )
@@ -64,16 +67,15 @@ audit_figures <- function(plots, width = 6.5, height = 4, measure = TRUE) {
     fails <- a$check[a$status == "fail"]
     rows[[i]] <- data.frame(
       figure = names(plots)[i],
-      score = round(attr(a, "score"), 3),
-      passed = sum(a$status == "pass"),
-      failed = length(fails),
+      violations = length(fails),
+      met = sum(a$status == "pass"),
       failing = if (length(fails)) paste(fails, collapse = ", ") else "",
       stringsAsFactors = FALSE
     )
   }
 
   out <- tibble::as_tibble(do.call(rbind, rows))
-  out <- out[order(out$score, na.last = FALSE), , drop = FALSE]
+  out <- out[order(-out$violations, na.last = FALSE), , drop = FALSE]
 
   structure(
     out,
@@ -84,24 +86,24 @@ audit_figures <- function(plots, width = 6.5, height = 4, measure = TRUE) {
 
 #' @export
 print.tufte_audit_batch <- function(x, ...) {
-  worst <- x[!is.na(x$score) & x$score < 1, , drop = FALSE]
-  clean <- x[!is.na(x$score) & x$score >= 1, , drop = FALSE]
-  broken <- x[is.na(x$score), , drop = FALSE]
+  worst <- x[!is.na(x$violations) & x$violations > 0, , drop = FALSE]
+  clean <- x[!is.na(x$violations) & x$violations == 0, , drop = FALSE]
+  broken <- x[is.na(x$violations), , drop = FALSE]
 
   cli::cli_h2("Tufte audit: {nrow(x)} figure{?s}")
 
   if (nrow(worst) > 0) {
-    cli::cli_h3("Needing work, worst first")
+    cli::cli_h3("Stated criteria not met, most first")
     for (i in seq_len(nrow(worst))) {
       cli::cli_text(
         "{.strong {worst$figure[i]}} ",
-        "({round(100 * worst$score[i])}%, {worst$failed[i]} failing)"
+        "({worst$violations[i]} not met)"
       )
       cli::cli_text("  {.emph {worst$failing[i]}}")
     }
   }
   if (nrow(clean) > 0) {
-    cli::cli_h3("Passing every check")
+    cli::cli_h3("Meeting every stated criterion")
     cli::cli_ul(clean$figure)
   }
   if (nrow(broken) > 0) {

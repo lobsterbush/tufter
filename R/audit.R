@@ -1,25 +1,39 @@
 #' Audit a plot against Tufte's principles
 #'
-#' Runs every check the package knows how to make against an existing
-#' \code{ggplot}, and reports which of Tufte's principles it satisfies. Some
-#' checks are structural, and read the plot's specification. Others are
-#' measurements, and render the plot to take them.
+#' Reports what a plot does against what Tufte actually wrote, and is careful
+#' about the difference between the two kinds of thing he wrote.
 #'
-#' The score is the share of applicable checks passed. It is a prompt, not a
-#' verdict: a plot can pass every check and still be pointless, since Tufte's
-#' first principle is that content counts most of all, and no function can
-#' evaluate that. What the audit is good for is catching the failures that are
-#' mechanical, and that authors stop seeing after the fifth draft.
+#' For some principles Tufte states a criterion a graphic either meets or does
+#' not: bars are measured from zero, the lie factor lies between 0.95 and 1.05,
+#' graphics tend toward the horizontal, non-data ink comes off the page. Those
+#' are reported as met or not met.
+#'
+#' For others he states only a direction. He asks that the data-ink ratio be
+#' maximised "within reason" and that data density be increased, and he nowhere
+#' says how much is enough, because the answer depends on the content. Those are
+#' measured and reported without a verdict. Earlier versions of this package
+#' invented thresholds for them, which put a number of mine in the same voice as
+#' a principle of his; the numbers were never his and are now gone.
+#'
+#' The consequence is that there is no score. Counting satisfied principles
+#' would mean weighting them against each other, and Tufte offers no exchange
+#' rate between a pie chart and a missing source note. What the audit gives you
+#' is a list of stated criteria that are not met, and a set of measurements to
+#' compare against another draft of the same figure.
 #'
 #' @param plot A \code{ggplot} object.
-#' @param width,height Intended printed size in inches, used by the checks that
-#'   depend on it. Defaults to 6.5 by 4.
+#' @param width,height Intended printed size in inches, used by the checks and
+#'   measurements that depend on it. Defaults to 6.5 by 4.
 #' @param measure Logical. Run the rendering-based measurements, which are the
 #'   slow part? Defaults to \code{TRUE}.
-#' @return An object of class \code{tufte_audit}: a tibble of checks with a
-#'   \code{score} attribute and the underlying measurements attached.
-#' @seealso \code{\link{tufte_principles}()} for the full list of principles
-#'   and the functions that implement them.
+#' @return An object of class \code{tufte_audit}: a tibble with one row per
+#'   check, whose \code{status} is \code{"fail"} for a stated criterion that is
+#'   not met, \code{"pass"} for one that is, \code{"report"} for a measurement
+#'   Tufte gives no threshold for, and \code{"skip"} for a check that could not
+#'   run. The number of unmet criteria is attached as the \code{"violations"}
+#'   attribute.
+#' @seealso \code{\link{tufte_principles}()}, which marks which principles carry
+#'   a stated criterion and which do not.
 #' @export
 #' @examples
 #' library(ggplot2)
@@ -48,24 +62,22 @@ tufte_audit <- function(plot, width = 6.5, height = 4, measure = TRUE) {
     `bar baseline` = .check_baseline,
     `lie factor` = .check_lie_factor,
     `legend` = .check_legend,
-    `hues` = .check_hues,
     `redundant encoding` = .check_redundant_encoding,
-    `small multiples` = .check_small_multiples,
     `documentation` = .check_documentation,
     `aspect ratio` = .check_aspect,
-    `banking` = .check_banking,
     `contrast` = .check_contrast,
+    `label fit` = .check_fit,
     `data-ink ratio` = .check_data_ink,
     `data density` = .check_density,
-    `label fit` = .check_fit
+    `banking` = .check_banking,
+    `hues` = .check_hues,
+    `overlaid series` = .check_series
   )
 
   rows <- lapply(names(checks), function(nm) {
     out <- tryCatch(checks[[nm]](ctx), error = function(e) {
-      list(principle = "(check unavailable)", source = NA_character_,
-           check = nm, status = "skip",
-           message = paste0("The ", nm, " check could not run: ",
-                            conditionMessage(e)))
+      .row("(check unavailable)", NA_character_, nm, "skip",
+           paste0("The ", nm, " check could not run: ", conditionMessage(e)))
     })
     if (is.null(out)) return(NULL)
     out
@@ -79,12 +91,9 @@ tufte_audit <- function(plot, width = 6.5, height = 4, measure = TRUE) {
     )
   })))
 
-  applicable <- tab$status %in% c("pass", "fail")
-  score <- if (any(applicable)) mean(tab$status[applicable] == "pass") else NA_real_
-
   structure(
     tab,
-    score = score,
+    violations = sum(tab$status == "fail"),
     plot_size = c(width = width, height = height),
     class = c("tufte_audit", class(tab))
   )
@@ -92,41 +101,41 @@ tufte_audit <- function(plot, width = 6.5, height = 4, measure = TRUE) {
 
 #' @export
 print.tufte_audit <- function(x, ...) {
-  score <- attr(x, "score")
   sz <- attr(x, "plot_size")
-
-  cli::cli_h2("Tufte audit")
-  if (is.finite(score)) {
-    n_ok <- sum(x$status == "pass")
-    n_app <- sum(x$status %in% c("pass", "fail"))
-    cli::cli_text(
-      "{.strong {n_ok}/{n_app}} checks passed ({round(100 * score)}%), ",
-      "at {sz[['width']]}in x {sz[['height']]}in."
-    )
-  }
+  violations <- attr(x, "violations")
 
   fails <- x[x$status == "fail", , drop = FALSE]
-  notes <- x[x$status == "note", , drop = FALSE]
+  reports <- x[x$status == "report", , drop = FALSE]
   passes <- x[x$status == "pass", , drop = FALSE]
+  skipped <- x[x$status == "skip", , drop = FALSE]
+
+  cli::cli_h2("Tufte audit")
+  cli::cli_text(
+    "At {sz[['width']]}in x {sz[['height']]}in: ",
+    "{.strong {violations}} stated criteri{?on/a} not met."
+  )
 
   if (nrow(fails) > 0) {
-    cli::cli_h3("Failing")
+    cli::cli_h3("Not met")
     for (i in seq_len(nrow(fails))) {
       cli::cli_bullets(c("x" = "{fails$message[i]}"))
-      cli::cli_text("  {.emph {fails$principle[i]} ({fails$source[i]})}")
+      cli::cli_text("  {.emph {fails$principle[i]} - {fails$source[i]}}")
     }
   }
-  if (nrow(notes) > 0) {
-    cli::cli_h3("Worth a look")
-    for (i in seq_len(nrow(notes))) {
-      cli::cli_bullets(c("i" = "{notes$message[i]}"))
+  if (nrow(reports) > 0) {
+    cli::cli_h3("Measured, not graded")
+    cli::cli_text(
+      "{.emph Tufte states a direction for these, not a threshold. Read them ",
+      "against another draft of the same figure.}"
+    )
+    for (i in seq_len(nrow(reports))) {
+      cli::cli_bullets(c("*" = "{reports$message[i]}"))
     }
   }
   if (nrow(passes) > 0) {
-    cli::cli_h3("Passing")
+    cli::cli_h3("Met")
     cli::cli_ul(passes$check)
   }
-  skipped <- x[x$status == "skip", , drop = FALSE]
   if (nrow(skipped) > 0) {
     cli::cli_h3("Could not be checked")
     cli::cli_ul(skipped$message)
@@ -134,7 +143,7 @@ print.tufte_audit <- function(x, ...) {
   invisible(x)
 }
 
-# ---- individual checks ------------------------------------------------------
+# ---- shared helpers ---------------------------------------------------------
 
 #' @noRd
 .resolved_theme <- function(plot) {
@@ -162,6 +171,8 @@ print.tufte_audit <- function(x, ...) {
        status = status, message = message)
 }
 
+# ---- criteria Tufte states -------------------------------------------------
+
 #' @noRd
 .check_panel_background <- function(ctx) {
   bg <- ctx$theme$panel.background
@@ -170,10 +181,10 @@ print.tufte_audit <- function(x, ...) {
     !fill %in% c("white", "transparent", "#FFFFFF", "#ffffff")
   .row(
     "Erase non-data ink", "VDQI ch. 4",
-    "Panel background carries no data",
+    "Panel carries no background fill",
     if (opaque) "fail" else "pass",
     if (opaque) {
-      sprintf("The panel is filled with %s. A tinted panel is ink that never varies with the data.", fill)
+      sprintf("The panel is filled with %s. The fill is identical whatever the numbers are, so it is non-data ink and Tufte's instruction is to erase it.", fill)
     } else {
       "The panel has no background fill."
     }
@@ -182,32 +193,18 @@ print.tufte_audit <- function(x, ...) {
 
 #' @noRd
 .check_gridlines <- function(ctx) {
-  major <- ctx$theme$panel.grid.major
   minor <- ctx$theme$panel.grid.minor
-  has_minor <- !.is_blank(minor)
-  has_major <- !.is_blank(major)
-  lwd <- .el_get(major, "linewidth") %||% 0.5
-
-  if (has_minor) {
+  if (!.is_blank(minor)) {
     return(.row(
-      "Erase redundant data-ink", "VDQI ch. 4",
-      "Grid is no heavier than the data",
-      "fail",
-      "Minor gridlines are drawn. They divide space the reader is not reading to that precision."
-    ))
-  }
-  if (has_major && lwd > 0.4) {
-    return(.row(
-      "Erase redundant data-ink", "VDQI ch. 4",
-      "Grid is no heavier than the data",
-      "note",
-      sprintf("Major gridlines are drawn at linewidth %.2f. A grid should be a hairline the eye can ignore, or erased through the bars with geom_col_tufte().", lwd)
+      "Erase non-data ink", "VDQI ch. 4",
+      "No minor gridlines", "fail",
+      "Minor gridlines are drawn. They subdivide the scale past the precision anyone reads from a graphic, and are non-data ink."
     ))
   }
   .row(
-    "Erase redundant data-ink", "VDQI ch. 4",
-    "Grid is no heavier than the data", "pass",
-    "The grid is absent or hairline-weight."
+    "Erase non-data ink", "VDQI ch. 4",
+    "No minor gridlines", "pass",
+    "No minor gridlines."
   )
 }
 
@@ -216,27 +213,17 @@ print.tufte_audit <- function(x, ...) {
   border <- ctx$theme$panel.border
   has_border <- !.is_blank(border) &&
     !identical(.el_get(border, "colour"), NA)
-  has_rangeframe <- any(ctx$geoms %in% c("RangeFrame", "QuartileFrame"))
-
-  if (has_border && !has_rangeframe) {
+  if (has_border) {
     return(.row(
       "The range-frame", "VDQI ch. 6",
-      "Frame reports the data range",
-      "fail",
-      "A full panel border is drawn. Replace it with geom_rangeframe(), which spans only the range the data occupy and so reports the minimum and maximum for free."
-    ))
-  }
-  if (has_rangeframe) {
-    return(.row(
-      "The range-frame", "VDQI ch. 6",
-      "Frame reports the data range", "pass",
-      "A range or quartile frame is in use."
+      "No full panel border", "fail",
+      "A full panel border is drawn. The box is the same box whatever the data are; geom_rangeframe() replaces it with a line spanning only the range the data occupy, which reports the extremes for free."
     ))
   }
   .row(
     "The range-frame", "VDQI ch. 6",
-    "Frame reports the data range", "note",
-    "No frame at all. That is defensible, but geom_rangeframe() would give the axis something to say."
+    "No full panel border", "pass",
+    "No full panel border."
   )
 }
 
@@ -246,12 +233,12 @@ print.tufte_audit <- function(x, ...) {
   bars <- any(ctx$geoms %in% c("Bar", "Col", "ColTufte"))
   if (polar && bars) {
     return(.row(
-      "Graphical integrity", "VDQI ch. 5",
+      "Graphical integrity", "VDQI ch. 11",
       "No pie chart", "fail",
-      "This is a pie chart. Readers judge angles and areas far worse than they judge positions along a common scale; a dot plot or a small table shows the same numbers better."
+      "This is a pie chart. Tufte's judgement is that the only design worse than one pie chart is several of them: readers compare angles and areas far less accurately than positions along a common scale."
     ))
   }
-  .row("Graphical integrity", "VDQI ch. 5", "No pie chart", "pass",
+  .row("Graphical integrity", "VDQI ch. 11", "No pie chart", "pass",
        "No pie chart.")
 }
 
@@ -264,8 +251,8 @@ print.tufte_audit <- function(x, ...) {
   if (!is.na(trans) && !trans %in% c("identity", "reverse")) {
     return(.row(
       "Graphical integrity", "VDQI ch. 2",
-      "Bars start at zero", "fail",
-      sprintf("The y axis uses a %s transformation, so bar length is not proportional to the quantity and doubling a bar does not mean doubling the value. Use points on a transformed scale, not bars.", trans)
+      "Bars measured from zero", "fail",
+      sprintf("The y axis uses a %s transformation, so the length of a bar is no longer proportional to the quantity it represents. Use points on a transformed scale, not bars.", trans)
     ))
   }
 
@@ -277,11 +264,11 @@ print.tufte_audit <- function(x, ...) {
   if (is.finite(lo) && lo > 0) {
     return(.row(
       "Graphical integrity", "VDQI ch. 2",
-      "Bars start at zero", "fail",
-      sprintf("The y axis starts at %.3g, so bar length is no longer proportional to the quantity. Either start at zero or use points instead of bars.", lo)
+      "Bars measured from zero", "fail",
+      sprintf("The y axis starts at %.3g, so bar length is not proportional to the quantity. Tufte's rule is that the representation of numbers as physically measured on the graphic should be directly proportional to the quantities represented.", lo)
     ))
   }
-  .row("Graphical integrity", "VDQI ch. 2", "Bars start at zero", "pass",
+  .row("Graphical integrity", "VDQI ch. 2", "Bars measured from zero", "pass",
        "Bars are measured from zero.")
 }
 
@@ -289,89 +276,54 @@ print.tufte_audit <- function(x, ...) {
 .check_lie_factor <- function(ctx) {
   lf <- tryCatch(lie_factor(ctx$plot), error = function(e) NA_real_)
   if (!is.finite(lf)) return(NULL)
+  # The 0.95 to 1.05 band is Tufte's own, stated in VDQI: outside it he treats
+  # the graphic as substantially distorted.
   if (lf < 0.95 || lf > 1.05) {
     return(.row(
       "The lie factor", "VDQI ch. 2",
-      "Lie factor near one", "fail",
-      sprintf("Lie factor is %.2f: the effect shown is %.0f%% of the effect in the data.", lf, 100 * lf)
+      "Lie factor within Tufte's band", "fail",
+      sprintf("Lie factor is %.2f. Tufte treats anything outside 0.95 to 1.05 as substantial distortion; the effect shown here is %.0f%% of the effect in the data.", lf, 100 * lf)
     ))
   }
-  .row("The lie factor", "VDQI ch. 2", "Lie factor near one", "pass",
-       sprintf("Lie factor is %.2f.", lf))
+  .row("The lie factor", "VDQI ch. 2", "Lie factor within Tufte's band", "pass",
+       sprintf("Lie factor is %.2f, inside Tufte's 0.95 to 1.05 band.", lf))
 }
 
 #' @noRd
 .check_legend <- function(ctx) {
   pos <- ctx$theme$legend.position %||% "right"
-  if (identical(pos, "none")) {
+  if (identical(pos, "none") || .legend_hues(ctx$built) == 0) {
     return(.row(
       "Integrate word and image", "Beautiful Evidence ch. 5",
       "No legend to decode", "pass",
       "No legend: the plot labels itself or needs no key."
     ))
   }
-  keys <- .legend_keys(ctx$built)
-  if (keys == 0) {
+  # A continuous scale has no series to name, so direct labelling is not on
+  # offer and Tufte's instruction does not reach it. Tufte keys continuous
+  # shading himself, in the maps of Envisioning Information.
+  if (.has_continuous_colour(ctx$built)) {
     return(.row(
       "Integrate word and image", "Beautiful Evidence ch. 5",
-      "No legend to decode", "pass", "No legend is drawn."
-    ))
-  }
-  if (keys <= 6) {
-    return(.row(
-      "Integrate word and image", "Beautiful Evidence ch. 5",
-      "No legend to decode", "fail",
-      sprintf("A legend with %d entries makes the reader look away, hold a colour in memory, and look back. With this few series, label them on the plot with geom_text_last().", keys)
+      "No legend to decode", "report",
+      "A key is drawn for a continuous scale. There are no named series to label on the data, so this is not the legend Tufte objects to."
     ))
   }
   .row(
     "Integrate word and image", "Beautiful Evidence ch. 5",
-    "No legend to decode", "note",
-    sprintf("%d legend entries. Too many to label directly, which is usually a sign the plot should be small multiples instead.", keys)
+    "No legend to decode", "fail",
+    "A legend is drawn for named series. Tufte's instruction is that words belong on the data rather than in a key the reader must hold in memory and look back to: geom_text_last() labels each series in place, and where there are too many to label, facet_tufte() shows them as small multiples instead."
   )
 }
 
 #' @noRd
-.legend_keys <- function(built) {
+.legend_hues <- function(built) {
   cols <- unique(unlist(lapply(built$data, function(d) {
     c(if (!is.null(d$colour)) d$colour, if (!is.null(d$fill)) d$fill)
   })))
-  cols <- cols[!is.na(cols)]
+  cols <- cols[!is.na(cols) & cols != "NA"]
   n <- length(unique(cols))
   if (n <= 1) 0L else as.integer(n)
-}
-
-#' @noRd
-.check_hues <- function(ctx) {
-  # A continuous colour scale is one code, however many shades it renders. The
-  # complaint this check exists to make is about categorical hues the reader
-  # has to hold in memory, so counting the pixels of a gradient would be a
-  # false alarm on every continuously shaded plot.
-  if (.has_continuous_colour(ctx$built)) {
-    return(.row(
-      "Layering and separation", "Envisioning Information ch. 3",
-      "Colour stays a code", "pass",
-      "Colour varies continuously, which is a single code rather than a set of competing hues."
-    ))
-  }
-
-  cols <- unique(unlist(lapply(ctx$built$data, function(d) {
-    c(if (!is.null(d$colour)) d$colour, if (!is.null(d$fill)) d$fill)
-  })))
-  cols <- unique(cols[!is.na(cols) & cols != "NA"])
-  n <- length(cols)
-  if (n > 7) {
-    return(.row(
-      "Layering and separation", "Envisioning Information ch. 3",
-      "Colour stays a code", "fail",
-      sprintf("%d distinct colours. Past about six, hue stops being a code the reader can hold and becomes decoration; try grey with one accent, or small multiples.", n)
-    ))
-  }
-  .row(
-    "Layering and separation", "Envisioning Information ch. 3",
-    "Colour stays a code", "pass",
-    sprintf("%d colour%s in use.", n, if (n == 1) "" else "s")
-  )
 }
 
 #' @noRd
@@ -391,14 +343,12 @@ print.tufte_audit <- function(x, ...) {
   by_aes <- function(which) {
     unique(unlist(lapply(maps[names(maps) %in% which], .mapped_base_vars)))
   }
-  xv <- by_aes("x")
-  dup <- by_aes(c("fill", "colour", "color"))
-  shared <- intersect(xv, dup)
+  shared <- intersect(by_aes("x"), by_aes(c("fill", "colour", "color")))
   if (length(shared)) {
     return(.row(
       "Erase redundant data-ink", "VDQI ch. 4",
       "No variable encoded twice", "fail",
-      sprintf("'%s' is mapped to both position and colour. The second encoding adds ink and a legend without adding information.", shared[1])
+      sprintf("'%s' is mapped to both position and colour. The second encoding is redundant data-ink: it adds ink and a legend without adding information.", shared[1])
     ))
   }
   .row(
@@ -409,45 +359,17 @@ print.tufte_audit <- function(x, ...) {
 }
 
 #' @noRd
-.check_small_multiples <- function(ctx) {
-  faceted <- !inherits(ctx$plot$facet, "FacetNull")
-  groups <- max(vapply(ctx$built$data, function(d) {
-    if (is.null(d$group)) 0L else length(unique(d$group[d$group > 0]))
-  }, integer(1)), 0L)
-
-  if (faceted) {
-    return(.row(
-      "Small multiples", "Envisioning Information ch. 4",
-      "Comparison by repetition", "pass",
-      "The plot uses small multiples."
-    ))
-  }
-  if (groups > 6) {
-    return(.row(
-      "Small multiples", "Envisioning Information ch. 4",
-      "Comparison by repetition", "note",
-      sprintf("%d series are overlaid in one panel. Past half a dozen, the lines start hiding each other; facet_tufte() shows the same data as a comparable series of panels.", groups)
-    ))
-  }
-  .row(
-    "Small multiples", "Envisioning Information ch. 4",
-    "Comparison by repetition", "pass",
-    "Few enough series to read in one panel."
-  )
-}
-
-#' @noRd
 .check_documentation <- function(ctx) {
   cap <- ctx$plot$labels$caption
   has_cap <- !is.null(cap) && nzchar(as.character(cap)[1])
   .row(
     "Documentation", "Beautiful Evidence ch. 6",
-    "The figure says where its numbers came from",
+    "The figure names its source",
     if (has_cap) "pass" else "fail",
     if (has_cap) {
       "A caption documents the figure."
     } else {
-      "No caption. A graphic should name its source on the graphic, so the claim can be checked without hunting through the text. See label_source()."
+      "No caption. Tufte asks that evidence be thoroughly described and its sources indicated on the graphic itself, so the claim can be checked without hunting through the surrounding text. See label_source()."
     }
   )
 }
@@ -455,49 +377,19 @@ print.tufte_audit <- function(x, ...) {
 #' @noRd
 .check_aspect <- function(ctx) {
   ratio <- ctx$width / ctx$height
+  # Tufte states the direction and the comparison: graphics should tend toward
+  # the horizontal, greater in length than height. That gives a criterion at
+  # 1, and no criterion anywhere else, so nothing else is graded here.
   if (ratio < 1) {
     return(.row(
-      "Aspect ratio", "VDQI ch. 9",
-      "The figure tends toward the horizontal", "fail",
-      sprintf("The figure is taller than it is wide (%.2f:1). Causal and temporal comparisons read left to right; graphics should tend toward the horizontal, near 1.5:1.", ratio)
+      "Proportion and scale", "VDQI ch. 9",
+      "Wider than it is tall", "fail",
+      sprintf("The figure is %.2f times as wide as it is tall, so it is taller than it is wide. Tufte's rule is that graphics should tend toward the horizontal, greater in length than height.", ratio)
     ))
   }
-  if (ratio > 3) {
-    return(.row(
-      "Aspect ratio", "VDQI ch. 9",
-      "The figure tends toward the horizontal", "note",
-      sprintf("The figure is %.2f:1, which flattens vertical detail. That is right for a sparkline and wrong for most else.", ratio)
-    ))
-  }
-  .row("Aspect ratio", "VDQI ch. 9",
-       "The figure tends toward the horizontal", "pass",
-       sprintf("Aspect ratio %.2f:1.", ratio))
-}
-
-#' @noRd
-.check_banking <- function(ctx) {
-  b <- tryCatch(bank_to_45(ctx$plot, width = ctx$width),
-                error = function(e) NULL)
-  if (is.null(b) || !is.finite(b$aspect)) return(NULL)
-
-  current <- ctx$height / ctx$width
-  off <- b$aspect / current
-  if (!is.finite(off) || off <= 0) return(NULL)
-
-  if (off > 2 || off < 0.5) {
-    return(.row(
-      "Bank to 45 degrees", "Cleveland, after VDQI ch. 9",
-      "Slopes are readable at this shape", "fail",
-      sprintf("At %gin x %gin the slopes in this plot sit far from 45 degrees, where they are judged most accurately. Banking suggests %.2fin tall rather than %gin. See bank_to_45().",
-              ctx$width, ctx$height, b$height, ctx$height)
-    ))
-  }
-  .row(
-    "Bank to 45 degrees", "Cleveland, after VDQI ch. 9",
-    "Slopes are readable at this shape", "pass",
-    sprintf("Slopes sit near 45 degrees; banking would suggest %.2fin tall against the %gin given.",
-            b$height, ctx$height)
-  )
+  .row("Proportion and scale", "VDQI ch. 9",
+       "Wider than it is tall", "pass",
+       sprintf("The figure is %.2f times as wide as it is tall.", ratio))
 }
 
 #' @noRd
@@ -508,60 +400,18 @@ print.tufte_audit <- function(x, ...) {
   bad <- cc[!cc$passes, , drop = FALSE]
   if (nrow(bad) > 0) {
     return(.row(
-      "Legibility", "WCAG 2.1, against VDQI ch. 4",
-      "Ink is dark enough to see", "fail",
-      sprintf("%s at contrast %.1f against the background, below the %.1f minimum. Maximising data-ink is not a licence to draw in colours people cannot see.",
+      "Legibility", "WCAG 2.1, not Tufte",
+      "Ink clears the WCAG contrast minimum", "fail",
+      sprintf("%s sits at contrast %.1f against the background, below the published minimum of %.1f. This is not one of Tufte's criteria; it is the limit past which erasing ink stops being economy and becomes an unreadable figure.",
               paste0(bad$role[1], " ", bad$colour[1]), bad$ratio[1],
               bad$threshold[1])
     ))
   }
   .row(
-    "Legibility", "WCAG 2.1, against VDQI ch. 4",
-    "Ink is dark enough to see", "pass",
-    sprintf("Every colour clears its contrast minimum; the faintest is %.1f to 1.",
+    "Legibility", "WCAG 2.1, not Tufte",
+    "Ink clears the WCAG contrast minimum", "pass",
+    sprintf("Every colour clears its published minimum; the faintest is %.1f to 1.",
             min(cc$ratio))
-  )
-}
-
-#' @noRd
-.check_data_ink <- function(ctx) {
-  if (!isTRUE(ctx$measure)) return(NULL)
-  di <- tryCatch(
-    data_ink_ratio(ctx$plot, width = ctx$width, height = ctx$height),
-    error = function(e) NULL
-  )
-  if (is.null(di) || !is.finite(di$ratio)) return(NULL)
-
-  status <- if (di$ratio >= 0.5) "pass" else "fail"
-  .row(
-    "Maximise the data-ink ratio", "VDQI ch. 4",
-    "Most ink varies with the data", status,
-    sprintf("Data-ink ratio is %.2f: %.0f%% of the ink in this figure varies with the data.",
-            di$ratio, 100 * di$ratio)
-  )
-}
-
-#' @noRd
-.check_density <- function(ctx) {
-  if (!isTRUE(ctx$measure)) return(NULL)
-  dd <- tryCatch(
-    data_density(ctx$plot, width = ctx$width, height = ctx$height),
-    error = function(e) NULL
-  )
-  if (is.null(dd) || !is.finite(dd$density)) return(NULL)
-
-  if (dd$density < 2) {
-    return(.row(
-      "Maximise data density", "VDQI ch. 8",
-      "The figure earns its space", "fail",
-      sprintf("Data density is %.1f numbers per square inch: %d entries over %.1f square inches. A graphic this empty would be shorter as a sentence.",
-              dd$density, dd$entries, dd$area)
-    ))
-  }
-  .row(
-    "Maximise data density", "VDQI ch. 8",
-    "The figure earns its space", "pass",
-    sprintf("Data density is %.1f numbers per square inch.", dd$density)
   )
 }
 
@@ -587,5 +437,96 @@ print.tufte_audit <- function(x, ...) {
     "Revise and edit", "VDQI ch. 9",
     "Nothing is clipped at the printed size", "pass",
     "Every text element fits inside the canvas."
+  )
+}
+
+# ---- measurements Tufte gives no threshold for ------------------------------
+
+#' @noRd
+.check_data_ink <- function(ctx) {
+  if (!isTRUE(ctx$measure)) return(NULL)
+  di <- tryCatch(
+    data_ink_ratio(ctx$plot, width = ctx$width, height = ctx$height),
+    error = function(e) NULL
+  )
+  if (is.null(di) || !is.finite(di$ratio)) return(NULL)
+
+  .row(
+    "Maximise the data-ink ratio", "VDQI ch. 4",
+    "Data-ink ratio", "report",
+    sprintf("Data-ink ratio %.2f: %.0f%% of the ink varies with the data. Tufte asks that this be maximised within reason and names no threshold, so read it against another draft of this figure rather than against a target.",
+            di$ratio, 100 * di$ratio)
+  )
+}
+
+#' @noRd
+.check_density <- function(ctx) {
+  if (!isTRUE(ctx$measure)) return(NULL)
+  dd <- tryCatch(
+    data_density(ctx$plot, width = ctx$width, height = ctx$height),
+    error = function(e) NULL
+  )
+  if (is.null(dd) || !is.finite(dd$density)) return(NULL)
+
+  .row(
+    "Maximise data density", "VDQI ch. 8",
+    "Data density", "report",
+    sprintf("Data density %.1f numbers per square inch: %d entries over %.1f square inches. Tufte ranks published graphics by this and sets no minimum.",
+            dd$density, dd$entries, dd$area)
+  )
+}
+
+#' @noRd
+.check_banking <- function(ctx) {
+  b <- tryCatch(bank_to_45(ctx$plot, width = ctx$width),
+                error = function(e) NULL)
+  if (is.null(b) || !is.finite(b$aspect)) return(NULL)
+
+  .row(
+    "Bank to 45 degrees", "Cleveland, not Tufte",
+    "Banked height", "report",
+    sprintf("Slopes bank to 45 degrees at %.2fin tall for a %gin width; you have specified %gin. Cleveland gives 45 degrees as the target and states no tolerance around it.",
+            b$height, ctx$width, ctx$height)
+  )
+}
+
+#' @noRd
+.check_hues <- function(ctx) {
+  if (.has_continuous_colour(ctx$built)) {
+    return(.row(
+      "Colour and information", "Envisioning Information ch. 5",
+      "Distinct hues", "report",
+      "Colour varies continuously, which is one code rather than a set of competing hues."
+    ))
+  }
+  n <- .legend_hues(ctx$built)
+  .row(
+    "Colour and information", "Envisioning Information ch. 5",
+    "Distinct hues", "report",
+    sprintf("%d distinct colour%s in use. Tufte's advice on colour is qualitative, so this is a count and not a verdict.",
+            max(n, 1L), if (max(n, 1L) == 1) "" else "s")
+  )
+}
+
+#' @noRd
+.check_series <- function(ctx) {
+  faceted <- !inherits(ctx$plot$facet, "FacetNull")
+  # An ungrouped layer carries group -1, which is one series and not none.
+  groups <- max(vapply(ctx$built$data, function(d) {
+    if (is.null(d$group)) 0L else length(unique(d$group[d$group > 0]))
+  }, integer(1)), 1L)
+
+  if (faceted) {
+    return(.row(
+      "Small multiples", "Envisioning Information ch. 4",
+      "Overlaid series", "report",
+      "The plot uses small multiples."
+    ))
+  }
+  .row(
+    "Small multiples", "Envisioning Information ch. 4",
+    "Overlaid series", "report",
+    sprintf("%d series overlaid in one panel. facet_tufte() would show the same data as small multiples; Tufte gives no number at which to switch.",
+            groups)
   )
 }

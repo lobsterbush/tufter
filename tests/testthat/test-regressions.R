@@ -124,17 +124,24 @@ test_that("a continuous colour scale is one code, not many hues", {
     ggplot(mtcars, aes(wt, mpg, colour = hp)) + geom_point() + theme_tufte(),
     measure = FALSE
   )
-  hues <- a[a$check == "Colour stays a code", ]
-  expect_equal(hues$status, "pass")
+  hues <- a[a$check == "Distinct hues", ]
   expect_match(hues$message, "continuously")
+  # Counting the shades of a gradient as competing hues was the false alarm;
+  # grading them at all would be a second one, since Tufte's advice on colour
+  # is qualitative and names no number.
+  expect_equal(hues$status, "report")
+})
 
-  # A genuinely over-coloured discrete plot must still fail.
+test_that("hues are counted and never graded, however many there are", {
   many <- data.frame(g = factor(letters[1:12]), v = 1:12)
-  a2 <- tufte_audit(
+  a <- tufte_audit(
     ggplot(many, aes(g, v, colour = g)) + geom_point() + theme_tufte(),
     measure = FALSE
   )
-  expect_equal(a2$status[a2$check == "Colour stays a code"], "fail")
+  hues <- a[a$check == "Distinct hues", ]
+  expect_equal(hues$status, "report")
+  expect_match(hues$message, "12 distinct colours")
+  expect_match(hues$message, "not a verdict")
 })
 
 test_that("redundant encoding is caught through a transformation", {
@@ -154,7 +161,7 @@ test_that("a log-scaled bar chart is not reported as honest", {
   expect_true(is.na(lie_factor(logged)))
 
   a <- tufte_audit(logged, measure = FALSE)
-  baseline <- a[a$check == "Bars start at zero", ]
+  baseline <- a[a$check == "Bars measured from zero", ]
   expect_equal(baseline$status, "fail")
   expect_match(baseline$message, "transformation")
 
@@ -168,5 +175,5 @@ test_that("points on a transformed scale are left alone", {
   p <- ggplot(mtcars, aes(wt, mpg)) + geom_point() + scale_y_log10()
   expect_equal(lie_factor(p), 1)
   a <- tufte_audit(p, measure = FALSE)
-  expect_false("Bars start at zero" %in% a$check)
+  expect_false("Bars measured from zero" %in% a$check)
 })

@@ -9,34 +9,48 @@ tufte_audit(plot, width = 6.5, height = 4, measure = TRUE)
 \arguments{
 \item{plot}{A \code{ggplot} object.}
 
-\item{width, height}{Intended printed size in inches, used by the checks that
-depend on it. Defaults to 6.5 by 4.}
+\item{width, height}{Intended printed size in inches, used by the checks and
+measurements that depend on it. Defaults to 6.5 by 4.}
 
 \item{measure}{Logical. Run the rendering-based measurements, which are the
 slow part? Defaults to \code{TRUE}.}
 }
 \value{
-An object of class \code{tufte_audit}: a tibble of checks with a
-  \code{score} attribute and the underlying measurements attached.
+An object of class \code{tufte_audit}: a tibble with one row per
+  check, whose \code{status} is \code{"fail"} for a stated criterion that is
+  not met, \code{"pass"} for one that is, \code{"report"} for a measurement
+  Tufte gives no threshold for, and \code{"skip"} for a check that could not
+  run. The number of unmet criteria is attached as the \code{"violations"}
+  attribute.
 }
 \description{
-Runs every check the package knows how to make against an existing
-\code{ggplot}, and reports which of Tufte's principles it satisfies. Some
-checks are structural, and read the plot's specification. Others are
-measurements, and render the plot to take them.
+Reports what a plot does against what Tufte actually wrote, and is careful
+about the difference between the two kinds of thing he wrote.
 }
 \details{
-The score is the share of applicable checks passed. It is a prompt, not a
-verdict: a plot can pass every check and still be pointless, since Tufte's
-first principle is that content counts most of all, and no function can
-evaluate that. What the audit is good for is catching the failures that are
-mechanical, and that authors stop seeing after the fifth draft.
+For some principles Tufte states a criterion a graphic either meets or does
+not: bars are measured from zero, the lie factor lies between 0.95 and 1.05,
+graphics tend toward the horizontal, non-data ink comes off the page. Those
+are reported as met or not met.
+
+For others he states only a direction. He asks that the data-ink ratio be
+maximised "within reason" and that data density be increased, and he nowhere
+says how much is enough, because the answer depends on the content. Those are
+measured and reported without a verdict. Earlier versions of this package
+invented thresholds for them, which put a number of mine in the same voice as
+a principle of his; the numbers were never his and are now gone.
+
+The consequence is that there is no score. Counting satisfied principles
+would mean weighting them against each other, and Tufte offers no exchange
+rate between a pie chart and a missing source note. What the audit gives you
+is a list of stated criteria that are not met, and a set of measurements to
+compare against another draft of the same figure.
 }
 \examples{
 library(ggplot2)
 tufte_audit(ggplot(mtcars, aes(wt, mpg)) + geom_point())
 }
 \seealso{
-\code{\link{tufte_principles}()} for the full list of principles
-  and the functions that implement them.
+\code{\link{tufte_principles}()}, which marks which principles carry
+  a stated criterion and which do not.
 }

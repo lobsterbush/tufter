@@ -33,8 +33,11 @@ test_that("palettes return the requested number of colours", {
   expect_identical(tufte_colors("muted"), tufte_colours("muted"))
 })
 
-test_that("asking a discrete palette for too many colours warns", {
-  expect_warning(tufte_pal("muted")(20), "decoration")
+test_that("asking a discrete palette for more colours than it has warns", {
+  # The warning says what actually happens, that the extra colours are
+  # interpolated. It must not assert a number at which hues stop working:
+  # Tufte's advice on colour is qualitative and names none.
+  expect_warning(tufte_pal("muted")(20), "interpolated")
 })
 
 test_that("tufte scales attach to a plot", {
@@ -52,7 +55,7 @@ test_that("tufte scales attach to a plot", {
 })
 
 test_that("quartile_breaks returns the five-number summary", {
-  b <- quartile_breaks(mtcars$mpg, min_gap = 0)(range(mtcars$mpg))
+  b <- quartile_breaks(mtcars$mpg)(range(mtcars$mpg))
   expect_equal(length(b), 5)
   expect_equal(min(b), signif(min(mtcars$mpg), 3))
   expect_equal(max(b), signif(max(mtcars$mpg), 3))
@@ -63,17 +66,19 @@ test_that("quartile_breaks returns the five-number summary", {
   expect_length(quartile_breaks()(numeric(0)), 0)
 })
 
-test_that("quartile_breaks drops labels that would collide", {
-  # mtcars$wt has Q1 = 2.58, median = 3.325 and Q3 = 3.61: the last two sit
-  # close enough together that their labels would overprint.
-  all_five <- quartile_breaks(mtcars$wt, min_gap = 0)(range(mtcars$wt))
-  thinned <- quartile_breaks(mtcars$wt)(range(mtcars$wt))
-
+test_that("quartile_breaks keeps all five unless thinning is asked for", {
+  # The default must be the whole five-number summary: the spacing at which
+  # labels collide depends on font and figure size, which a breaks function
+  # cannot see, so no default may assume it.
+  all_five <- quartile_breaks(mtcars$wt)(range(mtcars$wt))
   expect_length(all_five, 5)
+
+  # mtcars$wt has a median and Q3 close enough to overprint at most sizes, so
+  # an explicit min_gap drops one.
+  thinned <- quartile_breaks(mtcars$wt, min_gap = 0.12)(range(mtcars$wt))
   expect_lt(length(thinned), length(all_five))
   # The extremes always survive, because they are what the frame reports.
   expect_equal(range(thinned), range(all_five))
-  # Nothing that survives is closer than the gap.
   span <- diff(range(all_five))
   expect_true(all(diff(thinned) >= 0.12 * span - 1e-9))
 })

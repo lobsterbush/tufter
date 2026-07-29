@@ -91,7 +91,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -227,7 +227,11 @@ frame spans only the data, so the frame reports the minimum and maximum
 for free. A quartile frame breaks that line at the quartiles, so the
 axis carries the whole five-number summary;
 <code><a href="../reference/quartile_breaks.html">quartile_breaks()</a></code> puts the printed labels in the same
-places, and drops any that would collide.</p>
+places. It keeps all five by default, because that is what the frame
+reports; if two of them are close enough to overprint at your font and
+figure size, set <code>min_gap</code> explicitly rather than trusting a
+default to guess it, and use <code><a href="../reference/check_labels_fit.html">check_labels_fit()</a></code> to find out
+whether they collide at all.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">experiment</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">support</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.25</span>, size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
@@ -538,9 +542,9 @@ that carries the argument:</p>
 <div class="section level2">
 <h2 id="auditing-the-result">Auditing the result<a class="anchor" aria-label="anchor" href="#auditing-the-result"></a>
 </h2>
-<p>Every figure above can be scored. <code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> runs
-fifteen checks, structural and measured, and reports which principles
-the figure satisfies.</p>
+<p>Every figure above can be audited. <code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> reports
+the stated criteria a figure does not meet, and separately measures the
+quantities Tufte gives a direction for but no threshold.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">final</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">experiment</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">condition</span>, <span class="va">support</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_tufteboxplot.html">geom_tufteboxplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -553,23 +557,32 @@ the figure satisfies.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Tufte audit</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">15/15</span> checks passed (100%), at 6.5in x 4in.</span></span>
+<span><span class="co">#&gt; At 6.5in x 4in: <span style="font-weight: bold;">0</span> stated criteria not met.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Passing</span></span>
-<span><span class="co">#&gt; • Panel background carries no data</span></span>
-<span><span class="co">#&gt; • Grid is no heavier than the data</span></span>
-<span><span class="co">#&gt; • Frame reports the data range</span></span>
+<span><span class="co">#&gt; ── Measured, not graded</span></span>
+<span><span class="co">#&gt; <span style="font-style: italic;">Tufte states a direction for these, not a threshold. Read them against another</span></span></span>
+<span><span class="co">#&gt; <span style="font-style: italic;">draft of the same figure.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Data-ink ratio 0.52: 52% of the ink varies with the data. Tufte asks that</span></span>
+<span><span class="co">#&gt;   this be maximised within reason and names no threshold, so read it against</span></span>
+<span><span class="co">#&gt;   another draft of this figure rather than against a target.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Data density 88.3 numbers per square inch: 1800 entries over 20.4 square</span></span>
+<span><span class="co">#&gt;   inches. Tufte ranks published graphics by this and sets no minimum.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> 1 distinct colour in use. Tufte's advice on colour is qualitative, so this is</span></span>
+<span><span class="co">#&gt;   a count and not a verdict.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> 4 series overlaid in one panel. facet_tufte() would show the same data as</span></span>
+<span><span class="co">#&gt;   small multiples; Tufte gives no number at which to switch.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Met</span></span>
+<span><span class="co">#&gt; • Panel carries no background fill</span></span>
+<span><span class="co">#&gt; • No minor gridlines</span></span>
+<span><span class="co">#&gt; • No full panel border</span></span>
 <span><span class="co">#&gt; • No pie chart</span></span>
-<span><span class="co">#&gt; • Lie factor near one</span></span>
+<span><span class="co">#&gt; • Lie factor within Tufte's band</span></span>
 <span><span class="co">#&gt; • No legend to decode</span></span>
-<span><span class="co">#&gt; • Colour stays a code</span></span>
 <span><span class="co">#&gt; • No variable encoded twice</span></span>
-<span><span class="co">#&gt; • Comparison by repetition</span></span>
-<span><span class="co">#&gt; • The figure says where its numbers came from</span></span>
-<span><span class="co">#&gt; • The figure tends toward the horizontal</span></span>
-<span><span class="co">#&gt; • Ink is dark enough to see</span></span>
-<span><span class="co">#&gt; • Most ink varies with the data</span></span>
-<span><span class="co">#&gt; • The figure earns its space</span></span>
+<span><span class="co">#&gt; • The figure names its source</span></span>
+<span><span class="co">#&gt; • Wider than it is tall</span></span>
+<span><span class="co">#&gt; • Ink clears the WCAG contrast minimum</span></span>
 <span><span class="co">#&gt; • Nothing is clipped at the printed size</span></span></code></pre></div>
 <p>The <a href="measuring.html">measuring article</a> goes through what
 each of those checks is actually computing, and where the numbers can

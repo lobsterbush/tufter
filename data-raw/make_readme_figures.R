@@ -33,8 +33,11 @@ before <- base +
        subtitle = sprintf("data-ink ratio %.2f",
                           data_ink_ratio(base)$ratio))
 
+# min_gap is set here rather than defaulted in the function: at this font and
+# figure size mtcars$wt has two quartiles close enough to overprint, and that
+# is a judgement about this figure, not a general rule.
 after_p <- base + geom_quartileframe() +
-  scale_x_continuous(breaks = quartile_breaks(mtcars$wt)) +
+  scale_x_continuous(breaks = quartile_breaks(mtcars$wt, min_gap = 0.12)) +
   scale_y_continuous(breaks = quartile_breaks(mtcars$mpg)) +
   theme_tufte()
 after <- after_p +
