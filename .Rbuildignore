@@ -1,0 +1,11 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^WARP\.md$
+^README\.Rmd$
+^\.github$
+^_pkgdown\.yml$
+^docs$
+^\.dev$
+^cran-comments\.md$
+^data-raw$
+^Rplots\.pdf$

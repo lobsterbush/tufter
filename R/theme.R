@@ -1,0 +1,156 @@
+#' A maximum data-ink theme
+#'
+#' Strips every element of the plot that does not itself carry data: the panel
+#' background, the grid, the panel border, and the legend frame. This is the
+#' theme half of Tufte's instruction to maximise the share of ink that varies
+#' with the data, and to erase the rest.
+#'
+#' The default has no axis lines at all, on the assumption that you will add a
+#' \code{\link{geom_rangeframe}()} or \code{\link{geom_quartileframe}()}, which
+#' carries information the panel border does not. Set \code{axis_lines = TRUE}
+#' if you want conventional full-length axes instead.
+#'
+#' A faint grid is sometimes the honest choice: when readers must recover
+#' values from the plot rather than compare shapes. Tufte's own bar charts keep
+#' gridlines but erase them where they cross the bars, which is what
+#' \code{\link{geom_col_tufte}()} does. \code{grid = "y"} or \code{"x"} gives
+#' you a hairline grid on one axis only.
+#'
+#' @param base_size Base font size in points. Defaults to 12.
+#' @param base_family Base font family. Defaults to \code{""} (the device
+#'   default). \code{"serif"} is closer to Tufte's own books.
+#' @param ticks Logical. Draw axis tick marks? Defaults to \code{TRUE}; ticks
+#'   are data-ink in the weak sense that they locate values.
+#' @param axis_lines Logical. Draw conventional axis lines? Defaults to
+#'   \code{FALSE}, since \code{geom_rangeframe()} is the better choice.
+#' @param grid One of \code{"none"} (the default), \code{"x"}, \code{"y"} or
+#'   \code{"both"}. Draws a hairline grid where you ask for one.
+#' @return A \code{ggplot2} theme object.
+#' @seealso \code{\link{theme_sparkline}()}, \code{\link{theme_slopegraph}()}
+#' @export
+#' @examples
+#' library(ggplot2)
+#' ggplot(mtcars, aes(wt, mpg)) +
+#'   geom_point() +
+#'   geom_rangeframe() +
+#'   theme_tufte()
+theme_tufte <- function(base_size = 12,
+                        base_family = "",
+                        ticks = TRUE,
+                        axis_lines = FALSE,
+                        grid = c("none", "x", "y", "both")) {
+  grid <- match.arg(grid)
+
+  grid_line <- ggplot2::element_line(
+    colour = "grey92", linewidth = .hairline, lineend = "butt"
+  )
+
+  th <- ggplot2::theme_bw(base_size = base_size, base_family = base_family) +
+    ggplot2::theme(
+      line = ggplot2::element_line(colour = "black", linewidth = .hairline),
+      rect = ggplot2::element_blank(),
+      text = ggplot2::element_text(colour = "black", family = base_family),
+
+      panel.background = ggplot2::element_blank(),
+      panel.border     = ggplot2::element_blank(),
+      panel.grid.major = ggplot2::element_blank(),
+      panel.grid.minor = ggplot2::element_blank(),
+      plot.background  = ggplot2::element_blank(),
+
+      axis.line  = ggplot2::element_blank(),
+      axis.ticks = ggplot2::element_line(colour = "black", linewidth = .hairline),
+      axis.text  = ggplot2::element_text(size = ggplot2::rel(0.9), colour = "grey20"),
+      axis.title = ggplot2::element_text(size = ggplot2::rel(1)),
+
+      legend.background = ggplot2::element_blank(),
+      legend.key        = ggplot2::element_blank(),
+      legend.title      = ggplot2::element_text(size = ggplot2::rel(0.9)),
+      legend.position   = "bottom",
+
+      strip.background = ggplot2::element_blank(),
+      strip.text       = ggplot2::element_text(size = ggplot2::rel(0.9), hjust = 0),
+
+      plot.title    = ggplot2::element_text(size = ggplot2::rel(1.1), hjust = 0,
+                                            face = "plain"),
+      plot.subtitle = ggplot2::element_text(size = ggplot2::rel(0.95), hjust = 0,
+                                            colour = "grey30"),
+      plot.caption  = ggplot2::element_text(size = ggplot2::rel(0.8), hjust = 0,
+                                            colour = "grey40"),
+      plot.title.position   = "plot",
+      plot.caption.position = "plot"
+    )
+
+  if (!ticks) {
+    th <- th + ggplot2::theme(axis.ticks = ggplot2::element_blank())
+  }
+  if (axis_lines) {
+    th <- th + ggplot2::theme(
+      axis.line = ggplot2::element_line(colour = "black", linewidth = .hairline)
+    )
+  }
+  if (grid %in% c("x", "both")) {
+    th <- th + ggplot2::theme(panel.grid.major.x = grid_line)
+  }
+  if (grid %in% c("y", "both")) {
+    th <- th + ggplot2::theme(panel.grid.major.y = grid_line)
+  }
+
+  th
+}
+
+#' A theme for sparklines
+#'
+#' Removes everything. A sparkline is a word-sized graphic meant to sit inside
+#' running text, so it has no axes, no labels, no frame, and almost no margin.
+#'
+#' @inheritParams theme_tufte
+#' @return A \code{ggplot2} theme object.
+#' @export
+#' @examples
+#' library(ggplot2)
+#' d <- data.frame(t = 1:50, v = cumsum(rnorm(50)))
+#' ggplot(d, aes(t, v)) + geom_line() + theme_sparkline()
+theme_sparkline <- function(base_size = 9, base_family = "") {
+  ggplot2::theme_void(base_size = base_size, base_family = base_family) +
+    ggplot2::theme(
+      legend.position = "none",
+      plot.margin = ggplot2::margin(1, 1, 1, 1, "pt"),
+      strip.text.y.left = ggplot2::element_text(
+        angle = 0, hjust = 1, size = ggplot2::rel(0.9)
+      ),
+      panel.spacing.y = grid::unit(2, "pt")
+    )
+}
+
+#' A theme for slopegraphs
+#'
+#' A slopegraph carries its scale in the printed values at each end of every
+#' line, so the y axis is redundant and is removed. Only the category labels at
+#' the top survive.
+#'
+#' @inheritParams theme_tufte
+#' @return A \code{ggplot2} theme object.
+#' @export
+#' @examples
+#' library(ggplot2)
+#' ggplot() + theme_slopegraph()
+theme_slopegraph <- function(base_size = 11, base_family = "") {
+  ggplot2::theme_void(base_size = base_size, base_family = base_family) +
+    ggplot2::theme(
+      legend.position = "none",
+      axis.text.x = ggplot2::element_text(
+        size = ggplot2::rel(1), colour = "black", face = "bold",
+        margin = ggplot2::margin(b = 6)
+      ),
+      axis.ticks = ggplot2::element_blank(),
+      plot.title = ggplot2::element_text(hjust = 0, size = ggplot2::rel(1.15),
+                                         margin = ggplot2::margin(b = 4)),
+      plot.subtitle = ggplot2::element_text(hjust = 0, colour = "grey30",
+                                            margin = ggplot2::margin(b = 10)),
+      plot.caption = ggplot2::element_text(hjust = 0, colour = "grey40",
+                                           size = ggplot2::rel(0.85)),
+      plot.title.position = "plot",
+      plot.caption.position = "plot",
+      plot.margin = ggplot2::margin(10, 10, 10, 10)
+    )
+}
