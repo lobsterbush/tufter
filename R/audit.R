@@ -53,6 +53,8 @@ tufte_audit <- function(plot, width = 6.5, height = 4, measure = TRUE) {
     `small multiples` = .check_small_multiples,
     `documentation` = .check_documentation,
     `aspect ratio` = .check_aspect,
+    `banking` = .check_banking,
+    `contrast` = .check_contrast,
     `data-ink ratio` = .check_data_ink,
     `data density` = .check_density,
     `label fit` = .check_fit
@@ -437,6 +439,55 @@ print.tufte_audit <- function(x, ...) {
   .row("Aspect ratio", "VDQI ch. 9",
        "The figure tends toward the horizontal", "pass",
        sprintf("Aspect ratio %.2f:1.", ratio))
+}
+
+#' @noRd
+.check_banking <- function(ctx) {
+  b <- tryCatch(bank_to_45(ctx$plot, width = ctx$width),
+                error = function(e) NULL)
+  if (is.null(b) || !is.finite(b$aspect)) return(NULL)
+
+  current <- ctx$height / ctx$width
+  off <- b$aspect / current
+  if (!is.finite(off) || off <= 0) return(NULL)
+
+  if (off > 2 || off < 0.5) {
+    return(.row(
+      "Bank to 45 degrees", "Cleveland, after VDQI ch. 9",
+      "Slopes are readable at this shape", "fail",
+      sprintf("At %gin x %gin the slopes in this plot sit far from 45 degrees, where they are judged most accurately. Banking suggests %.2fin tall rather than %gin. See bank_to_45().",
+              ctx$width, ctx$height, b$height, ctx$height)
+    ))
+  }
+  .row(
+    "Bank to 45 degrees", "Cleveland, after VDQI ch. 9",
+    "Slopes are readable at this shape", "pass",
+    sprintf("Slopes sit near 45 degrees; banking would suggest %.2fin tall against the %gin given.",
+            b$height, ctx$height)
+  )
+}
+
+#' @noRd
+.check_contrast <- function(ctx) {
+  cc <- tryCatch(check_contrast(ctx$plot), error = function(e) NULL)
+  if (is.null(cc) || nrow(cc) == 0) return(NULL)
+
+  bad <- cc[!cc$passes, , drop = FALSE]
+  if (nrow(bad) > 0) {
+    return(.row(
+      "Legibility", "WCAG 2.1, against VDQI ch. 4",
+      "Ink is dark enough to see", "fail",
+      sprintf("%s at contrast %.1f against the background, below the %.1f minimum. Maximising data-ink is not a licence to draw in colours people cannot see.",
+              paste0(bad$role[1], " ", bad$colour[1]), bad$ratio[1],
+              bad$threshold[1])
+    ))
+  }
+  .row(
+    "Legibility", "WCAG 2.1, against VDQI ch. 4",
+    "Ink is dark enough to see", "pass",
+    sprintf("Every colour clears its contrast minimum; the faintest is %.1f to 1.",
+            min(cc$ratio))
+  )
 }
 
 #' @noRd

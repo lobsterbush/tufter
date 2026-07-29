@@ -20,6 +20,7 @@ existing plot against all of them at once.
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://lobsterbush.github.io/tufter/}
   \item \url{https://github.com/lobsterbush/tufter}
   \item Report bugs at \url{https://github.com/lobsterbush/tufter/issues}
 }

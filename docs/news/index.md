@@ -1,5 +1,39 @@
 # Changelog
 
+## tufter 0.2.0
+
+### Measuring
+
+- [`bank_to_45()`](https://lobsterbush.github.io/tufter/reference/bank_to_45.md)
+  computes the aspect ratio that brings a plot’s slopes nearest 45
+  degrees, where slope is judged most accurately. Two methods:
+  Cleveland’s median absolute slope, and mean absolute orientation,
+  optionally weighted by segment length.
+- [`check_contrast()`](https://lobsterbush.github.io/tufter/reference/check_contrast.md)
+  and
+  [`contrast_ratio()`](https://lobsterbush.github.io/tufter/reference/contrast_ratio.md)
+  measure every colour a plot draws with against its background, using
+  the WCAG 2.1 minima. Transparency is composited first, so a colour is
+  judged as the reader sees it. Erasing ink is only a virtue up to the
+  point where what remains can still be seen.
+- [`audit_figures()`](https://lobsterbush.github.io/tufter/reference/audit_figures.md)
+  runs the audit across every figure in a paper, given a list of plots
+  or a directory of saved ones, and returns them worst first with the
+  failing checks named.
+
+### Drawing
+
+- [`geom_cleveland_dot()`](https://lobsterbush.github.io/tufter/reference/geom_cleveland_dot.md)
+  draws a dot plot with leader lines. This is the second answer to a bar
+  chart whose baseline is not zero, and until now the audit recommended
+  it without the package providing it.
+
+### Auditing
+
+- [`tufte_audit()`](https://lobsterbush.github.io/tufter/reference/tufte_audit.md)
+  gains two checks: whether the given aspect ratio banks the slopes near
+  45 degrees, and whether the ink is dark enough to see.
+
 ## tufter 0.1.0
 
 First release.

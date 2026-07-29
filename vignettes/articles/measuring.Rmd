@@ -281,6 +281,26 @@ good <- ggplot(d, aes(g, y)) +
 tufte_audit(good, width = 6.5, height = 4)
 ```
 
+## Every figure in the paper at once
+
+Auditing one plot is useful while you are drawing it. Auditing all of them, the
+evening before you submit, is when it earns its keep, because the figure with
+the truncated subtitle is never the one you were looking at.
+
+```{r batch}
+figures <- list(
+  scatter = good,
+  bars = bad,
+  faint = ggplot(d, aes(x, y)) +
+    geom_point(colour = "grey85") + theme_tufte() + label_source("Simulated")
+)
+
+suppressWarnings(audit_figures(figures, measure = FALSE))
+```
+
+It also takes a directory, so a replication package whose figures were saved
+with `saveRDS()` can be checked in one call.
+
 ## What the score is not
 
 The score is the share of applicable checks passed, and it is a prompt rather

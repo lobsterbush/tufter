@@ -91,7 +91,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -281,6 +281,96 @@ if they do not, and <code><a href="../reference/lie_factor.html">lie_factor()</a
 the figure exaggerates.</p>
 </div>
 <div class="section level2">
+<h2 id="dots-when-a-zero-baseline-is-not-wanted">Dots, when a zero baseline is not wanted<a class="anchor" aria-label="anchor" href="#dots-when-a-zero-baseline-is-not-wanted"></a>
+</h2>
+<p>Sometimes zero is a long way from the data and starting there wastes
+most of the panel. That is the case for using dots rather than bars: a
+dot encodes its value by position, so it can be read against a scale
+that excludes zero without lying about proportions, and it costs a
+fraction of the ink. Cleveland’s leader lines let the eye run along a
+row without drifting into the next one.</p>
+<p>Sort before plotting. An alphabetical dot plot throws away the form’s
+main advantage, which is that rank is visible at a glance.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">support</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/aggregate.html" class="external-link">aggregate</a></span><span class="op">(</span><span class="va">support</span> <span class="op">~</span> <span class="va">condition</span>, <span class="va">experiment</span>, <span class="va">mean</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">support</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">support</span>, <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/reorder.factor.html" class="external-link">reorder</a></span><span class="op">(</span><span class="va">condition</span>, <span class="va">support</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/geom_cleveland_dot.html">geom_cleveland_dot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Mean support (1-7)"</span>, y <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/theme_tufte.html">theme_tufte</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/label_source.html">label_source</a></span><span class="op">(</span><span class="st">"Simulated data, n = 900"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="simulated-examples_files/figure-html/cleveland-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level2">
+<h2 id="banking-the-aspect-ratio">Banking the aspect ratio<a class="anchor" aria-label="anchor" href="#banking-the-aspect-ratio"></a>
+</h2>
+<p>The same series looks like a gentle drift or a cliff depending only
+on how tall the panel is, and neither reading is the data’s fault.
+Cleveland’s rule is that slope is judged most accurately near 45
+degrees, and the aspect ratio is what puts it there.
+<code><a href="../reference/bank_to_45.html">bank_to_45()</a></code> computes the height that does it.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cycles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  month <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">240</span>,</span>
+<span>  value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span> <span class="op">*</span> <span class="va">pi</span>, length.out <span class="op">=</span> <span class="fl">240</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, length.out <span class="op">=</span> <span class="fl">240</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">series</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">cycles</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">month</span>, <span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/geom_rangeframe.html">geom_rangeframe</a></span><span class="op">(</span>sides <span class="op">=</span> <span class="st">"l"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Month"</span>, y <span class="op">=</span> <span class="st">"Index"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/theme_tufte.html">theme_tufte</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">banked</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bank_to_45.html">bank_to_45</a></span><span class="op">(</span><span class="va">series</span>, width <span class="op">=</span> <span class="fl">6.5</span><span class="op">)</span></span>
+<span><span class="va">banked</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Banking to 45 degrees</span></span>
+<span><span class="co">#&gt; Aspect ratio <span style="font-weight: bold;">0.133</span> (height / width), from 239 segments by <span style="color: #0000BB;">"median_slope"</span>.</span></span>
+<span><span class="co">#&gt; At 6.5in wide, draw it <span style="font-weight: bold;">0.86in</span> tall.</span></span></code></pre></div>
+<p>Drawn at roughly that height, the panel is short and wide, the rising
+and falling flanks of each cycle sit near 45 degrees, and the slow
+upward drift underneath the oscillation is the first thing you see:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">series</span></span></code></pre></div>
+<p><img src="simulated-examples_files/figure-html/banked-figure-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<p>Here is the same data in a conventionally proportioned panel. Nothing
+is hidden, and for reading the individual cycles it is arguably the
+better picture. But the vertical stretch exaggerates every flank towards
+the vertical, the oscillation dominates, and the trend it is riding on
+takes noticeably longer to notice:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">series</span></span></code></pre></div>
+<p><img src="simulated-examples_files/figure-html/unbanked-figure-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<p>Which of those you want depends on the question. Banking is a rule
+for reading <em>slopes</em>, so it helps when the rate of change is the
+finding and hurts when the levels are. It is a defensible default and
+not an obligation.</p>
+</div>
+<div class="section level2">
+<h2 id="is-it-dark-enough-to-read">Is it dark enough to read?<a class="anchor" aria-label="anchor" href="#is-it-dark-enough-to-read"></a>
+</h2>
+<p>Erasing ink is a virtue only up to the point where what survives can
+still be seen. <code><a href="../reference/check_contrast.html">check_contrast()</a></code> measures every colour the
+plot draws with against the background, using the WCAG minima of 4.5 to
+1 for text and 3 to 1 for marks.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/check_contrast.html">check_contrast</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">experiment</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">support</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"grey80"</span>, size <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="../reference/theme_tufte.html">theme_tufte</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 5</span></span></span>
+<span><span class="co">#&gt;   role       colour    ratio threshold passes</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> data mark  grey80     1.61       3   FALSE </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> caption    grey40     5.74       4.5 TRUE  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> subtitle   grey30     8.45       4.5 TRUE  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> axis text  grey20    12.6        4.5 TRUE  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> strip text #1A1A1AFF 17.4        4.5 TRUE</span></span></code></pre></div>
+<p>Grey 80 on white is elegant and, for a good number of readers,
+invisible.</p>
+</div>
+<div class="section level2">
 <h2 id="small-multiples">Small multiples<a class="anchor" aria-label="anchor" href="#small-multiples"></a>
 </h2>
 <p>The answer to multivariate data is repetition rather than
@@ -288,7 +378,7 @@ complication: the same graphic, at the same scale, once per condition.
 <code><a href="../reference/facet_tufte.html">facet_tufte()</a></code> fixes the scales, and warns if you try to
 free them, because free scales destroy the comparison the design exists
 to make.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">experiment</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">support</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.3</span>, size <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"lm"</span>, se <span class="op">=</span> <span class="cn">FALSE</span>, colour <span class="op">=</span> <span class="st">"grey20"</span>, linewidth <span class="op">=</span> <span class="fl">0.4</span>,</span>
@@ -305,7 +395,7 @@ to make.</p>
 <p>A legend makes the reader look away, hold a colour in memory, look
 back, and match. <code><a href="../reference/geom_text_last.html">geom_text_last()</a></code> puts the name where the
 eye already is: at the end of the line.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">countries</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Australia"</span>, <span class="st">"Japan"</span>, <span class="st">"Korea"</span>, <span class="st">"New Zealand"</span><span class="op">)</span></span>
 <span><span class="va">panel</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">countries</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span></span>
@@ -344,7 +434,7 @@ is a line; the slope is the change, the height is the level, and the
 crossings show which units changed rank. Every number is printed on the
 graphic, which makes the y axis redundant, so it goes. The table and the
 figure become the same object.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">7</span><span class="op">)</span></span>
 <span><span class="va">units</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Victoria"</span>, <span class="st">"New South Wales"</span>, <span class="st">"Queensland"</span>, <span class="st">"South Australia"</span>,</span>
 <span>           <span class="st">"Western Australia"</span>, <span class="st">"Tasmania"</span><span class="op">)</span></span>
@@ -366,7 +456,7 @@ figure become the same object.</p>
 <p><code>direction_colour = TRUE</code> colours the lines by whether the
 unit rose or fell, which is worth it only when the direction is the
 finding.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/slopegraph.html">slopegraph</a></span><span class="op">(</span><span class="va">wave</span>, <span class="va">wave</span>, <span class="va">value</span>, <span class="va">state</span>, direction_colour <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="simulated-examples_files/figure-html/slopegraph-colour-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
@@ -378,7 +468,7 @@ with the normal range as a grey band, dots at the extremes, and the
 final value printed at the end. Each series keeps its own vertical
 scale, because a sparkline reports the shape of one series rather than
 inviting comparison of levels.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">21</span><span class="op">)</span></span>
 <span><span class="va">indicators</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Turnout"</span>, <span class="st">"Trust in parliament"</span>, <span class="st">"Union density"</span>, <span class="st">"Newspaper readership"</span><span class="op">)</span>,</span>
@@ -396,7 +486,7 @@ inviting comparison of levels.</p>
 <p>A single sparkline, at the size it is meant to be printed, is
 <code><a href="../reference/sparkline.html">sparkline()</a></code>. <code><a href="../reference/sparkline_grob.html">sparkline_grob()</a></code> returns a grob,
 so one can be dropped into a table cell or an inline chunk.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/sparkline.html">sparkline</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cumsum.html" class="external-link">cumsum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">60</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fl">20</span><span class="op">)</span></span></code></pre></div>
 <p><img src="simulated-examples_files/figure-html/sparkline-one-1.png" class="r-plt" alt="" width="240px" style="display: block; margin: auto;"></p>
@@ -411,7 +501,7 @@ plus one signal red, for when exactly one series matters and the rest
 are context. <code>"muted"</code> is desaturated earth tones that sit
 behind annotation without fighting it. <code>"divergent"</code> handles
 signed quantities with a neutral rather than a white midpoint.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"grey"</span>, <span class="st">"accent"</span>, <span class="st">"muted"</span>, <span class="st">"divergent"</span><span class="op">)</span></span>
 <span><span class="va">swatches</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">pals</span>, <span class="kw">function</span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tufte_pal.html">tufte_pal</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span><span class="op">(</span><span class="fl">5</span><span class="op">)</span></span>
@@ -427,7 +517,7 @@ signed quantities with a neutral rather than a white midpoint.</p>
 <p><img src="simulated-examples_files/figure-html/palettes-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <p>Used in anger, with grey for context and one accent for the series
 that carries the argument:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">focus</span> <span class="op">&lt;-</span> <span class="va">panel</span></span>
 <span><span class="va">focus</span><span class="op">$</span><span class="va">highlight</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">focus</span><span class="op">$</span><span class="va">country</span> <span class="op">==</span> <span class="st">"Korea"</span>, <span class="st">"Korea"</span>, <span class="st">"Other"</span><span class="op">)</span></span>
 <span></span>
@@ -451,7 +541,7 @@ that carries the argument:</p>
 <p>Every figure above can be scored. <code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> runs
 fifteen checks, structural and measured, and reports which principles
 the figure satisfies.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">final</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">experiment</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">condition</span>, <span class="va">support</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_tufteboxplot.html">geom_tufteboxplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_rangeframe.html">geom_rangeframe</a></span><span class="op">(</span>sides <span class="op">=</span> <span class="st">"l"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -463,7 +553,7 @@ the figure satisfies.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Tufte audit</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">13/14</span> checks passed (93%), at 6.5in x 4in.</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">14/15</span> checks passed (93%), at 6.5in x 4in.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Failing</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Data-ink ratio is 0.46: 46% of the ink in this figure varies with the data.</span></span>
@@ -481,6 +571,7 @@ the figure satisfies.</p>
 <span><span class="co">#&gt; • Comparison by repetition</span></span>
 <span><span class="co">#&gt; • The figure says where its numbers came from</span></span>
 <span><span class="co">#&gt; • The figure tends toward the horizontal</span></span>
+<span><span class="co">#&gt; • Ink is dark enough to see</span></span>
 <span><span class="co">#&gt; • The figure earns its space</span></span>
 <span><span class="co">#&gt; • Nothing is clipped at the printed size</span></span></code></pre></div>
 <p>The <a href="measuring.html">measuring article</a> goes through what

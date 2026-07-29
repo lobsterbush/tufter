@@ -332,7 +332,7 @@ suppressWarnings(tufte_audit(bad, width = 6.5, height = 4))
 #> 
 #> ── Tufte audit ──
 #> 
-#> 8/14 checks passed (57%), at 6.5in x 4in.
+#> 8/15 checks passed (53%), at 6.5in x 4in.
 #> 
 #> ── Failing
 #> ✖ The panel is filled with #EBEBEBFF. A tinted panel is ink that never varies
@@ -351,6 +351,10 @@ suppressWarnings(tufte_audit(bad, width = 6.5, height = 4))
 #> ✖ No caption. A graphic should name its source on the graphic, so the claim can
 #>   be checked without hunting through the text. See label_source().
 #> Documentation (Beautiful Evidence ch. 6)
+#> ✖ data mark #00BFC4 at contrast 1.9 against the background, below the 3.0
+#>   minimum. Maximising data-ink is not a licence to draw in colours people
+#>   cannot see.
+#> Legibility (WCAG 2.1, against VDQI ch. 4)
 #> ✖ Data density is 0.2 numbers per square inch: 4 entries over 17.1 square
 #>   inches. A graphic this empty would be shorter as a sentence.
 #> Maximise data density (VDQI ch. 8)
@@ -387,7 +391,7 @@ tufte_audit(good, width = 6.5, height = 4)
 #> 
 #> ── Tufte audit ──
 #> 
-#> 13/14 checks passed (93%), at 6.5in x 4in.
+#> 14/15 checks passed (93%), at 6.5in x 4in.
 #> 
 #> ── Failing
 #> ✖ Data-ink ratio is 0.29: 29% of the ink in this figure varies with the data.
@@ -405,9 +409,47 @@ tufte_audit(good, width = 6.5, height = 4)
 #> • Comparison by repetition
 #> • The figure says where its numbers came from
 #> • The figure tends toward the horizontal
+#> • Ink is dark enough to see
 #> • The figure earns its space
 #> • Nothing is clipped at the printed size
 ```
+
+## Every figure in the paper at once
+
+Auditing one plot is useful while you are drawing it. Auditing all of
+them, the evening before you submit, is when it earns its keep, because
+the figure with the truncated subtitle is never the one you were looking
+at.
+
+``` r
+figures <- list(
+  scatter = good,
+  bars = bad,
+  faint = ggplot(d, aes(x, y)) +
+    geom_point(colour = "grey85") + theme_tufte() + label_source("Simulated")
+)
+
+suppressWarnings(audit_figures(figures, measure = FALSE))
+#> 
+#> ── Tufte audit: 3 figures ──
+#> 
+#> ── Needing work, worst first
+#> bars (50%, 6 failing)
+#> Panel background carries no data, Grid is no heavier than the data, No legend
+#> to decode, No variable encoded twice, The figure says where its numbers came
+#> from, Ink is dark enough to see
+#> faint (91%, 1 failing)
+#> Ink is dark enough to see
+#> 
+#> ── Passing every check
+#> • scatter
+#> 
+#> ℹ Full detail for any one figure: `attr(x, "audits")[["<name>"]]`
+```
+
+It also takes a directory, so a replication package whose figures were
+saved with [`saveRDS()`](https://rdrr.io/r/base/readRDS.html) can be
+checked in one call.
 
 ## What the score is not
 
@@ -424,17 +466,18 @@ listed anyway.
 ``` r
 p <- tufte_principles()
 p[!p$audited, c("principle", "source", "implemented_by")]
-#> # A tibble: 8 × 3
+#> # A tibble: 9 × 3
 #>   principle                  source                        implemented_by       
 #>   <chr>                      <chr>                         <chr>                
 #> 1 The dot-dash plot          VDQI ch. 6                    geom_dotdash()       
 #> 2 Shrink the graphic         VDQI ch. 8                    sparkline(), sparkli…
-#> 3 Micro and macro readings   Envisioning Information ch. 2 sparklines(), facet_…
-#> 4 Show comparisons           Beautiful Evidence ch. 6      slopegraph(), facet_…
-#> 5 Show causality             Beautiful Evidence ch. 6      annotation, not code 
-#> 6 Show multivariate data     Beautiful Evidence ch. 6      facet_tufte(), spark…
-#> 7 Sparklines                 Beautiful Evidence ch. 2      sparkline(), sparkli…
-#> 8 Content counts most of all Beautiful Evidence ch. 6      you
+#> 3 Position beats length      VDQI ch. 5                    geom_cleveland_dot() 
+#> 4 Micro and macro readings   Envisioning Information ch. 2 sparklines(), facet_…
+#> 5 Show comparisons           Beautiful Evidence ch. 6      slopegraph(), facet_…
+#> 6 Show causality             Beautiful Evidence ch. 6      annotation, not code 
+#> 7 Show multivariate data     Beautiful Evidence ch. 6      facet_tufte(), spark…
+#> 8 Sparklines                 Beautiful Evidence ch. 2      sparkline(), sparkli…
+#> 9 Content counts most of all Beautiful Evidence ch. 6      you
 ```
 
 Showing comparisons, showing causality, showing multivariate data, and

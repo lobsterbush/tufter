@@ -104,3 +104,25 @@ test_that("direct labels reject a doubled position specification", {
     "not both"
   )
 })
+
+test_that("geom_cleveland_dot draws in both orientations and leader styles", {
+  d <- data.frame(g = letters[1:5], v = c(5, 2, 8, 3, 6))
+  for (lead in c("axis", "full", "none")) {
+    p <- ggplot(d, aes(v, g)) + geom_cleveland_dot(leader = lead)
+    expect_true(render(p), info = lead)
+  }
+  expect_true(render(
+    ggplot(d, aes(g, v)) + geom_cleveland_dot(orientation = "x")
+  ))
+})
+
+test_that("geom_cleveland_dot keeps one mark per observation", {
+  d <- data.frame(g = letters[1:5], v = c(5, 2, 8, 3, 6))
+  built <- ggplot_build(ggplot(d, aes(v, g)) + geom_cleveland_dot())
+  expect_equal(nrow(built$data[[1]]), 5L)
+})
+
+test_that("geom_cleveland_dot rejects unknown options", {
+  expect_error(geom_cleveland_dot(leader = "squiggle"))
+  expect_error(geom_cleveland_dot(orientation = "z"))
+})

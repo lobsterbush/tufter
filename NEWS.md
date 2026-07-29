@@ -1,3 +1,30 @@
+# tufter 0.2.0
+
+## Measuring
+
+* `bank_to_45()` computes the aspect ratio that brings a plot's slopes nearest
+  45 degrees, where slope is judged most accurately. Two methods: Cleveland's
+  median absolute slope, and mean absolute orientation, optionally weighted by
+  segment length.
+* `check_contrast()` and `contrast_ratio()` measure every colour a plot draws
+  with against its background, using the WCAG 2.1 minima. Transparency is
+  composited first, so a colour is judged as the reader sees it. Erasing ink is
+  only a virtue up to the point where what remains can still be seen.
+* `audit_figures()` runs the audit across every figure in a paper, given a list
+  of plots or a directory of saved ones, and returns them worst first with the
+  failing checks named.
+
+## Drawing
+
+* `geom_cleveland_dot()` draws a dot plot with leader lines. This is the second
+  answer to a bar chart whose baseline is not zero, and until now the audit
+  recommended it without the package providing it.
+
+## Auditing
+
+* `tufte_audit()` gains two checks: whether the given aspect ratio banks the
+  slopes near 45 degrees, and whether the ink is dark enough to see.
+
 # tufter 0.1.0
 
 First release.

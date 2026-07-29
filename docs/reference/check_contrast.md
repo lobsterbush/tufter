@@ -1,0 +1,75 @@
+# Check that a plot's ink is dark enough to see
+
+The strongest objection to maximising the data-ink ratio is that it is a
+licence to draw in hairlines and pale greys, and that the result is
+elegant and unreadable. This is the check that keeps the rest of the
+package honest: it takes every colour the plot actually draws with,
+along with the text colours the theme sets, and measures each against
+the background.
+
+## Usage
+
+``` r
+check_contrast(plot, background = NULL, text_min = 4.5, mark_min = 3)
+```
+
+## Arguments
+
+- plot:
+
+  A `ggplot` object.
+
+- background:
+
+  The colour to measure against. By default this is taken from the
+  plot's own panel or plot background, falling back to white.
+
+- text_min, mark_min:
+
+  Minimum acceptable ratios for text and for data marks. Default to 4.5
+  and 3.
+
+## Value
+
+A tibble with one row per distinct colour: what it is used for, the
+colour, its contrast ratio against the background, the threshold
+applied, and whether it passes.
+
+## Details
+
+The thresholds are the WCAG 2.1 ones: 4.5 to 1 for text, and 3 to 1 for
+graphical objects, which is what data marks and rules are. These are
+minima for people with moderately low vision, not targets, and a figure
+that clears them can still be hard work in a badly lit lecture theatre.
+
+Colours drawn with transparency are measured as if composited onto the
+background, since that is what the reader sees.
+
+## Examples
+
+``` r
+library(ggplot2)
+p <- ggplot(mtcars, aes(wt, mpg)) + geom_point() + theme_tufte()
+check_contrast(p)
+#> # A tibble: 5 × 5
+#>   role       colour    ratio threshold passes
+#>   <chr>      <chr>     <dbl>     <dbl> <lgl> 
+#> 1 caption    grey40     5.74       4.5 TRUE  
+#> 2 subtitle   grey30     8.45       4.5 TRUE  
+#> 3 axis text  grey20    12.6        4.5 TRUE  
+#> 4 strip text #1A1A1AFF 17.4        4.5 TRUE  
+#> 5 data mark  black     21          3   TRUE  
+
+# A figure drawn too faintly to read.
+check_contrast(
+  ggplot(mtcars, aes(wt, mpg)) + geom_point(colour = "grey85") + theme_tufte()
+)
+#> # A tibble: 5 × 5
+#>   role       colour    ratio threshold passes
+#>   <chr>      <chr>     <dbl>     <dbl> <lgl> 
+#> 1 data mark  grey85     1.41       3   FALSE 
+#> 2 caption    grey40     5.74       4.5 TRUE  
+#> 3 subtitle   grey30     8.45       4.5 TRUE  
+#> 4 axis text  grey20    12.6        4.5 TRUE  
+#> 5 strip text #1A1A1AFF 17.4        4.5 TRUE  
+```

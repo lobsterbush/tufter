@@ -31,7 +31,7 @@ A tibble with columns `principle`, `source`, `statement`,
 
 ``` r
 tufte_principles()
-#> # A tibble: 23 × 5
+#> # A tibble: 26 × 5
 #>    principle                    source     statement      implemented_by audited
 #>    <chr>                        <chr>      <chr>          <chr>          <lgl>  
 #>  1 Above all else show the data VDQI ch. 4 The graphic e… theme_tufte()  TRUE   
@@ -44,10 +44,11 @@ tufte_principles()
 #>  8 The lie factor               VDQI ch. 2 The effect sh… lie_factor()   TRUE   
 #>  9 Graphical integrity          VDQI ch. 2 Bars measure … tufte_audit()  TRUE   
 #> 10 Maximise data density        VDQI ch. 8 A graphic sho… data_density(… TRUE   
-#> # ℹ 13 more rows
+#> # ℹ 16 more rows
 subset(tufte_principles(), !audited)$principle
 #> [1] "The dot-dash plot"          "Shrink the graphic"        
-#> [3] "Micro and macro readings"   "Show comparisons"          
-#> [5] "Show causality"             "Show multivariate data"    
-#> [7] "Sparklines"                 "Content counts most of all"
+#> [3] "Position beats length"      "Micro and macro readings"  
+#> [5] "Show comparisons"           "Show causality"            
+#> [7] "Show multivariate data"     "Sparklines"                
+#> [9] "Content counts most of all"
 ```

@@ -34,6 +34,7 @@ remotes::install_github("lobsterbush/tufter")
 | `geom_dotdash()` | Marginal distributions on both axes, in place of a frame |
 | `geom_tufteboxplot()` | The box plot with the box erased; three variants |
 | `geom_col_tufte()` | Bars with the gridlines erased where they cross the bars |
+| `geom_cleveland_dot()` | Dot plot with leader lines: position instead of length, so no zero baseline is needed |
 | `slopegraph()` | Before-and-after for many units, with every number printed |
 | `sparkline()`, `sparklines()` | Word-sized graphics, with normal band and extremes |
 | `facet_tufte()` | Small multiples, scales fixed so panels stay comparable |
@@ -49,8 +50,11 @@ remotes::install_github("lobsterbush/tufter")
 | `data_ink_ratio()` | The share of ink that varies with the data, estimated by rendering the plot with and without its data layers |
 | `lie_factor()` | The size of the effect shown over the size of the effect in the data |
 | `data_density()` | Numbers per square inch of data graphic |
+| `bank_to_45()` | The aspect ratio that puts the slopes nearest 45 degrees, where they are judged best |
+| `check_contrast()`, `contrast_ratio()` | Whether the ink is dark enough to see, against the WCAG minima |
 | `check_labels_fit()` | Whether any text will be clipped at the printed size |
 | `tufte_audit()` | All of the above, plus the structural checks, scored |
+| `audit_figures()` | The same across every figure in a paper, worst first |
 
 ![Four graphical forms: the box plot with the box erased, a bar chart with gridlines erased through the bars, a slopegraph, and stacked sparklines](man/figures/README-gallery.png)
 
@@ -78,7 +82,7 @@ data_ink_ratio(lean)
 ```r
 tufte_audit(ggplot(mtcars, aes(wt, mpg)) + geom_point())
 #> ── Tufte audit ──
-#> 9/13 checks passed (69%), at 6.5in x 4in.
+#> 10/14 checks passed (71%), at 6.5in x 4in.
 #>
 #> ── Failing
 #> ✖ The panel is filled with #EBEBEBFF. A tinted panel is ink that never
@@ -90,7 +94,12 @@ tufte_audit(ggplot(mtcars, aes(wt, mpg)) + geom_point())
 #> ✖ No caption. A graphic should name its source on the graphic, so the claim
 #>   can be checked without hunting through the text. See label_source().
 #>   Documentation (Beautiful Evidence ch. 6)
+#> ✖ Data-ink ratio is 0.06: 6% of the ink in this figure varies with the data.
+#>   Maximise the data-ink ratio (VDQI ch. 4)
 ```
+
+For a whole paper at once, `audit_figures()` takes the list of plots you built
+and returns them worst first, with the failing checks named.
 
 It catches the failures that matter and that authors stop seeing after the
 fifth draft: a pie chart, a bar baseline that is not zero, a variable encoded
@@ -135,7 +144,11 @@ do something adjacent but different: `ggcheck` introspects built ggplot objects
 to autograde student code, `ggalttext` does so to write alt text, and
 [`GGenemy`](https://cran.r-project.org/package=GGenemy) audits plots for
 *accessibility* — WCAG contrast, colour-vision deficiency — rather than for
-Tufte's criteria. The only implementation of the data-ink ratio I could find in
+Tufte's criteria. `check_contrast()` here overlaps GGenemy on contrast
+deliberately: a package that tells you to erase ink has an obligation to check
+that what survives is still visible. GGenemy goes further on accessibility,
+including colour-vision simulation, and is the better tool if that is your
+question. The only implementation of the data-ink ratio I could find in
 any language is a Java repository, archived in 2025 and last worked on in 2010,
 which requires the user to segment the image by hand before it will count
 anything.

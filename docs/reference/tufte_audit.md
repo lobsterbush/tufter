@@ -54,7 +54,7 @@ tufte_audit(ggplot(mtcars, aes(wt, mpg)) + geom_point())
 #> 
 #> ── Tufte audit ──
 #> 
-#> 9/13 checks passed (69%), at 6.5in x 4in.
+#> 10/14 checks passed (71%), at 6.5in x 4in.
 #> 
 #> ── Failing 
 #> ✖ The panel is filled with #EBEBEBFF. A tinted panel is ink that never varies
@@ -81,6 +81,7 @@ tufte_audit(ggplot(mtcars, aes(wt, mpg)) + geom_point())
 #> • No variable encoded twice
 #> • Comparison by repetition
 #> • The figure tends toward the horizontal
+#> • Ink is dark enough to see
 #> • The figure earns its space
 #> • Nothing is clipped at the printed size
 ```

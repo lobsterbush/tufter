@@ -92,7 +92,7 @@ tufte_audit(lean, width = 6.5, height = 4)
 #> 
 #> ── Tufte audit ──
 #> 
-#> 13/14 checks passed (93%), at 6.5in x 4in.
+#> 14/15 checks passed (93%), at 6.5in x 4in.
 #> 
 #> ── Failing
 #> ✖ No caption. A graphic should name its source on the graphic, so the claim can
@@ -110,6 +110,7 @@ tufte_audit(lean, width = 6.5, height = 4)
 #> • No variable encoded twice
 #> • Comparison by repetition
 #> • The figure tends toward the horizontal
+#> • Ink is dark enough to see
 #> • Most ink varies with the data
 #> • The figure earns its space
 #> • Nothing is clipped at the printed size
@@ -125,7 +126,7 @@ tufte_audit(lean + label_source("Motor Trend, 1974"), width = 6.5, height = 4)
 #> 
 #> ── Tufte audit ──
 #> 
-#> 14/14 checks passed (100%), at 6.5in x 4in.
+#> 15/15 checks passed (100%), at 6.5in x 4in.
 #> 
 #> ── Passing
 #> • Panel background carries no data
@@ -139,6 +140,7 @@ tufte_audit(lean + label_source("Motor Trend, 1974"), width = 6.5, height = 4)
 #> • Comparison by repetition
 #> • The figure says where its numbers came from
 #> • The figure tends toward the horizontal
+#> • Ink is dark enough to see
 #> • Most ink varies with the data
 #> • The figure earns its space
 #> • Nothing is clipped at the printed size
@@ -352,17 +354,18 @@ principles a function can check and which it cannot.
 ``` r
 p <- tufte_principles()
 p[!p$audited, c("principle", "implemented_by")]
-#> # A tibble: 8 × 2
+#> # A tibble: 9 × 2
 #>   principle                  implemented_by                             
 #>   <chr>                      <chr>                                      
 #> 1 The dot-dash plot          geom_dotdash()                             
 #> 2 Shrink the graphic         sparkline(), sparklines()                  
-#> 3 Micro and macro readings   sparklines(), facet_tufte()                
-#> 4 Show comparisons           slopegraph(), facet_tufte()                
-#> 5 Show causality             annotation, not code                       
-#> 6 Show multivariate data     facet_tufte(), sparklines()                
-#> 7 Sparklines                 sparkline(), sparklines(), sparkline_grob()
-#> 8 Content counts most of all you
+#> 3 Position beats length      geom_cleveland_dot()                       
+#> 4 Micro and macro readings   sparklines(), facet_tufte()                
+#> 5 Show comparisons           slopegraph(), facet_tufte()                
+#> 6 Show causality             annotation, not code                       
+#> 7 Show multivariate data     facet_tufte(), sparklines()                
+#> 8 Sparklines                 sparkline(), sparklines(), sparkline_grob()
+#> 9 Content counts most of all you
 ```
 
 Showing causality, showing comparisons, and content counting most of all

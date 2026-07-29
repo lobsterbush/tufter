@@ -41,6 +41,7 @@ remotes::install_github("lobsterbush/tufter")
 | [`geom_dotdash()`](https://lobsterbush.github.io/tufter/reference/geom_dotdash.md) | Marginal distributions on both axes, in place of a frame |
 | [`geom_tufteboxplot()`](https://lobsterbush.github.io/tufter/reference/geom_tufteboxplot.md) | The box plot with the box erased; three variants |
 | [`geom_col_tufte()`](https://lobsterbush.github.io/tufter/reference/geom_col_tufte.md) | Bars with the gridlines erased where they cross the bars |
+| [`geom_cleveland_dot()`](https://lobsterbush.github.io/tufter/reference/geom_cleveland_dot.md) | Dot plot with leader lines: position instead of length, so no zero baseline is needed |
 | [`slopegraph()`](https://lobsterbush.github.io/tufter/reference/slopegraph.md) | Before-and-after for many units, with every number printed |
 | [`sparkline()`](https://lobsterbush.github.io/tufter/reference/sparkline.md), [`sparklines()`](https://lobsterbush.github.io/tufter/reference/sparklines.md) | Word-sized graphics, with normal band and extremes |
 | [`facet_tufte()`](https://lobsterbush.github.io/tufter/reference/facet_tufte.md) | Small multiples, scales fixed so panels stay comparable |
@@ -56,8 +57,11 @@ remotes::install_github("lobsterbush/tufter")
 | [`data_ink_ratio()`](https://lobsterbush.github.io/tufter/reference/data_ink_ratio.md) | The share of ink that varies with the data, estimated by rendering the plot with and without its data layers |
 | [`lie_factor()`](https://lobsterbush.github.io/tufter/reference/lie_factor.md) | The size of the effect shown over the size of the effect in the data |
 | [`data_density()`](https://lobsterbush.github.io/tufter/reference/data_density.md) | Numbers per square inch of data graphic |
+| [`bank_to_45()`](https://lobsterbush.github.io/tufter/reference/bank_to_45.md) | The aspect ratio that puts the slopes nearest 45 degrees, where they are judged best |
+| [`check_contrast()`](https://lobsterbush.github.io/tufter/reference/check_contrast.md), [`contrast_ratio()`](https://lobsterbush.github.io/tufter/reference/contrast_ratio.md) | Whether the ink is dark enough to see, against the WCAG minima |
 | [`check_labels_fit()`](https://lobsterbush.github.io/tufter/reference/check_labels_fit.md) | Whether any text will be clipped at the printed size |
 | [`tufte_audit()`](https://lobsterbush.github.io/tufter/reference/tufte_audit.md) | All of the above, plus the structural checks, scored |
+| [`audit_figures()`](https://lobsterbush.github.io/tufter/reference/audit_figures.md) | The same across every figure in a paper, worst first |
 
 ![Four graphical forms: the box plot with the box erased, a bar chart
 with gridlines erased through the bars, a slopegraph, and stacked
@@ -90,7 +94,7 @@ data_ink_ratio(lean)
 ``` r
 tufte_audit(ggplot(mtcars, aes(wt, mpg)) + geom_point())
 #> ── Tufte audit ──
-#> 9/13 checks passed (69%), at 6.5in x 4in.
+#> 10/14 checks passed (71%), at 6.5in x 4in.
 #>
 #> ── Failing
 #> ✖ The panel is filled with #EBEBEBFF. A tinted panel is ink that never
@@ -102,7 +106,14 @@ tufte_audit(ggplot(mtcars, aes(wt, mpg)) + geom_point())
 #> ✖ No caption. A graphic should name its source on the graphic, so the claim
 #>   can be checked without hunting through the text. See label_source().
 #>   Documentation (Beautiful Evidence ch. 6)
+#> ✖ Data-ink ratio is 0.06: 6% of the ink in this figure varies with the data.
+#>   Maximise the data-ink ratio (VDQI ch. 4)
 ```
+
+For a whole paper at once,
+[`audit_figures()`](https://lobsterbush.github.io/tufter/reference/audit_figures.md)
+takes the list of plots you built and returns them worst first, with the
+failing checks named.
 
 It catches the failures that matter and that authors stop seeing after
 the fifth draft: a pie chart, a bar baseline that is not zero, a
@@ -158,10 +169,16 @@ description turns up no hits for “data-ink”, “lie factor” or
 `ggalttext` does so to write alt text, and
 [`GGenemy`](https://cran.r-project.org/package=GGenemy) audits plots for
 *accessibility* — WCAG contrast, colour-vision deficiency — rather than
-for Tufte’s criteria. The only implementation of the data-ink ratio I
-could find in any language is a Java repository, archived in 2025 and
-last worked on in 2010, which requires the user to segment the image by
-hand before it will count anything.
+for Tufte’s criteria.
+[`check_contrast()`](https://lobsterbush.github.io/tufter/reference/check_contrast.md)
+here overlaps GGenemy on contrast deliberately: a package that tells you
+to erase ink has an obligation to check that what survives is still
+visible. GGenemy goes further on accessibility, including colour-vision
+simulation, and is the better tool if that is your question. The only
+implementation of the data-ink ratio I could find in any language is a
+Java repository, archived in 2025 and last worked on in 2010, which
+requires the user to segment the image by hand before it will count
+anything.
 
 A note on what the numbers are for. The empirical literature does not
 support maximising the data-ink ratio as an objective, and has not since
@@ -235,6 +252,8 @@ numbers are.
 - [`geom_col_tufte()`](https://lobsterbush.github.io/tufter/reference/geom_col_tufte.md)
   [`geom_bar_tufte()`](https://lobsterbush.github.io/tufter/reference/geom_col_tufte.md)
   : Bar charts with the gridlines erased through the bars
+- [`geom_cleveland_dot()`](https://lobsterbush.github.io/tufter/reference/geom_cleveland_dot.md)
+  : The Cleveland dot plot
 - [`slopegraph()`](https://lobsterbush.github.io/tufter/reference/slopegraph.md)
   : Slopegraphs
 - [`facet_tufte()`](https://lobsterbush.github.io/tufter/reference/facet_tufte.md)
@@ -281,10 +300,21 @@ rather than admired.
   : Lie factor
 - [`data_density()`](https://lobsterbush.github.io/tufter/reference/data_density.md)
   : Data density
+- [`bank_to_45()`](https://lobsterbush.github.io/tufter/reference/bank_to_45.md)
+  : Bank the aspect ratio to 45 degrees
+- [`check_contrast()`](https://lobsterbush.github.io/tufter/reference/check_contrast.md)
+  : Check that a plot's ink is dark enough to see
+- [`contrast_ratio()`](https://lobsterbush.github.io/tufter/reference/contrast_ratio.md)
+  : WCAG contrast ratio between two colours
 - [`check_labels_fit()`](https://lobsterbush.github.io/tufter/reference/check_labels_fit.md)
   : Check that every text element fits inside the canvas
+
+### Auditing
+
 - [`tufte_audit()`](https://lobsterbush.github.io/tufter/reference/tufte_audit.md)
   : Audit a plot against Tufte's principles
+- [`audit_figures()`](https://lobsterbush.github.io/tufter/reference/audit_figures.md)
+  : Audit every figure in a paper at once
 
 ## Reference and output
 

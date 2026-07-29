@@ -19,6 +19,8 @@ to score an existing plot against all of them at once.
 
 Useful links:
 
+- <https://lobsterbush.github.io/tufter/>
+
 - <https://github.com/lobsterbush/tufter>
 
 - Report bugs at <https://github.com/lobsterbush/tufter/issues>

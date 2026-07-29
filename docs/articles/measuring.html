@@ -91,7 +91,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -425,7 +425,7 @@ checks, and scores them.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Tufte audit</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">8/14</span> checks passed (57%), at 6.5in x 4in.</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">8/15</span> checks passed (53%), at 6.5in x 4in.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Failing</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> The panel is filled with #EBEBEBFF. A tinted panel is ink that never varies</span></span>
@@ -444,6 +444,10 @@ checks, and scores them.</p>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> No caption. A graphic should name its source on the graphic, so the claim can</span></span>
 <span><span class="co">#&gt;   be checked without hunting through the text. See label_source().</span></span>
 <span><span class="co">#&gt; <span style="font-style: italic;">Documentation (Beautiful Evidence ch. 6)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> data mark #00BFC4 at contrast 1.9 against the background, below the 3.0</span></span>
+<span><span class="co">#&gt;   minimum. Maximising data-ink is not a licence to draw in colours people</span></span>
+<span><span class="co">#&gt;   cannot see.</span></span>
+<span><span class="co">#&gt; <span style="font-style: italic;">Legibility (WCAG 2.1, against VDQI ch. 4)</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Data density is 0.2 numbers per square inch: 4 entries over 17.1 square</span></span>
 <span><span class="co">#&gt;   inches. A graphic this empty would be shorter as a sentence.</span></span>
 <span><span class="co">#&gt; <span style="font-style: italic;">Maximise data density (VDQI ch. 8)</span></span></span>
@@ -477,7 +481,7 @@ square inches. The same data, drawn properly:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Tufte audit</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">13/14</span> checks passed (93%), at 6.5in x 4in.</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">14/15</span> checks passed (93%), at 6.5in x 4in.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Failing</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Data-ink ratio is 0.29: 29% of the ink in this figure varies with the data.</span></span>
@@ -495,8 +499,43 @@ square inches. The same data, drawn properly:</p>
 <span><span class="co">#&gt; • Comparison by repetition</span></span>
 <span><span class="co">#&gt; • The figure says where its numbers came from</span></span>
 <span><span class="co">#&gt; • The figure tends toward the horizontal</span></span>
+<span><span class="co">#&gt; • Ink is dark enough to see</span></span>
 <span><span class="co">#&gt; • The figure earns its space</span></span>
 <span><span class="co">#&gt; • Nothing is clipped at the printed size</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="every-figure-in-the-paper-at-once">Every figure in the paper at once<a class="anchor" aria-label="anchor" href="#every-figure-in-the-paper-at-once"></a>
+</h2>
+<p>Auditing one plot is useful while you are drawing it. Auditing all of
+them, the evening before you submit, is when it earns its keep, because
+the figure with the truncated subtitle is never the one you were looking
+at.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">figures</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  scatter <span class="op">=</span> <span class="va">good</span>,</span>
+<span>  bars <span class="op">=</span> <span class="va">bad</span>,</span>
+<span>  faint <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"grey85"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="../reference/theme_tufte.html">theme_tufte</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="../reference/label_source.html">label_source</a></span><span class="op">(</span><span class="st">"Simulated"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu"><a href="../reference/audit_figures.html">audit_figures</a></span><span class="op">(</span><span class="va">figures</span>, measure <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Tufte audit: 3 figures</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Needing work, worst first</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">bars</span> (50%, 6 failing)</span></span>
+<span><span class="co">#&gt; <span style="font-style: italic;">Panel background carries no data, Grid is no heavier than the data, No legend</span></span></span>
+<span><span class="co">#&gt; <span style="font-style: italic;">to decode, No variable encoded twice, The figure says where its numbers came</span></span></span>
+<span><span class="co">#&gt; <span style="font-style: italic;">from, Ink is dark enough to see</span></span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">faint</span> (91%, 1 failing)</span></span>
+<span><span class="co">#&gt; <span style="font-style: italic;">Ink is dark enough to see</span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Passing every check</span></span>
+<span><span class="co">#&gt; • scatter</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Full detail for any one figure: `attr(x, "audits")[["&lt;name&gt;"]]`</span></span></code></pre></div>
+<p>It also takes a directory, so a replication package whose figures
+were saved with <code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS()</a></code> can be checked in one call.</p>
 </div>
 <div class="section level2">
 <h2 id="what-the-score-is-not">What the score is not<a class="anchor" aria-label="anchor" href="#what-the-score-is-not"></a>
@@ -508,20 +547,21 @@ of all, and no function evaluates that.</p>
 <p><code><a href="../reference/tufte_principles.html">tufte_principles()</a></code> is the honest inventory. Its
 <code>audited</code> column marks which principles a function can verify
 and which it cannot, and the ones it cannot are listed anyway.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tufte_principles.html">tufte_principles</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">p</span><span class="op">[</span><span class="op">!</span><span class="va">p</span><span class="op">$</span><span class="va">audited</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"principle"</span>, <span class="st">"source"</span>, <span class="st">"implemented_by"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 8 × 3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 9 × 3</span></span></span>
 <span><span class="co">#&gt;   principle                  source                        implemented_by       </span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> The dot-dash plot          VDQI ch. 6                    geom_dotdash()       </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Shrink the graphic         VDQI ch. 8                    sparkline(), sparkli…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Micro and macro readings   Envisioning Information ch. 2 sparklines(), facet_…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Show comparisons           Beautiful Evidence ch. 6      slopegraph(), facet_…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Show causality             Beautiful Evidence ch. 6      annotation, not code </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> Show multivariate data     Beautiful Evidence ch. 6      facet_tufte(), spark…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> Sparklines                 Beautiful Evidence ch. 2      sparkline(), sparkli…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">8</span> Content counts most of all Beautiful Evidence ch. 6      you</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Position beats length      VDQI ch. 5                    geom_cleveland_dot() </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Micro and macro readings   Envisioning Information ch. 2 sparklines(), facet_…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Show comparisons           Beautiful Evidence ch. 6      slopegraph(), facet_…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> Show causality             Beautiful Evidence ch. 6      annotation, not code </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> Show multivariate data     Beautiful Evidence ch. 6      facet_tufte(), spark…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">8</span> Sparklines                 Beautiful Evidence ch. 2      sparkline(), sparkli…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">9</span> Content counts most of all Beautiful Evidence ch. 6      you</span></span></code></pre></div>
 <p>Showing comparisons, showing causality, showing multivariate data,
 and content counting most of all are not things a package can check.
 They are what the figure is for. What the audit is good for is the

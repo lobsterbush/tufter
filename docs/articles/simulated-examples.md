@@ -163,6 +163,113 @@ will tell you if they do not, and
 [`lie_factor()`](https://lobsterbush.github.io/tufter/reference/lie_factor.md)
 will tell you by how much the figure exaggerates.
 
+## Dots, when a zero baseline is not wanted
+
+Sometimes zero is a long way from the data and starting there wastes
+most of the panel. That is the case for using dots rather than bars: a
+dot encodes its value by position, so it can be read against a scale
+that excludes zero without lying about proportions, and it costs a
+fraction of the ink. Cleveland’s leader lines let the eye run along a
+row without drifting into the next one.
+
+Sort before plotting. An alphabetical dot plot throws away the form’s
+main advantage, which is that rank is visible at a glance.
+
+``` r
+support <- aggregate(support ~ condition, experiment, mean)
+
+ggplot(support, aes(support, stats::reorder(condition, support))) +
+  geom_cleveland_dot() +
+  labs(x = "Mean support (1-7)", y = NULL) +
+  theme_tufte() +
+  label_source("Simulated data, n = 900")
+```
+
+![](simulated-examples_files/figure-html/cleveland-1.png)
+
+## Banking the aspect ratio
+
+The same series looks like a gentle drift or a cliff depending only on
+how tall the panel is, and neither reading is the data’s fault.
+Cleveland’s rule is that slope is judged most accurately near 45
+degrees, and the aspect ratio is what puts it there.
+[`bank_to_45()`](https://lobsterbush.github.io/tufter/reference/bank_to_45.md)
+computes the height that does it.
+
+``` r
+cycles <- data.frame(
+  month = 1:240,
+  value = sin(seq(0, 12 * pi, length.out = 240)) + seq(0, 2, length.out = 240)
+)
+
+series <- ggplot(cycles, aes(month, value)) +
+  geom_line(linewidth = 0.3) +
+  geom_rangeframe(sides = "l") +
+  labs(x = "Month", y = "Index") +
+  theme_tufte()
+
+banked <- bank_to_45(series, width = 6.5)
+banked
+#> 
+#> ── Banking to 45 degrees
+#> Aspect ratio 0.133 (height / width), from 239 segments by "median_slope".
+#> At 6.5in wide, draw it 0.86in tall.
+```
+
+Drawn at roughly that height, the panel is short and wide, the rising
+and falling flanks of each cycle sit near 45 degrees, and the slow
+upward drift underneath the oscillation is the first thing you see:
+
+``` r
+series
+```
+
+![](simulated-examples_files/figure-html/banked-figure-1.png)
+
+Here is the same data in a conventionally proportioned panel. Nothing is
+hidden, and for reading the individual cycles it is arguably the better
+picture. But the vertical stretch exaggerates every flank towards the
+vertical, the oscillation dominates, and the trend it is riding on takes
+noticeably longer to notice:
+
+``` r
+series
+```
+
+![](simulated-examples_files/figure-html/unbanked-figure-1.png)
+
+Which of those you want depends on the question. Banking is a rule for
+reading *slopes*, so it helps when the rate of change is the finding and
+hurts when the levels are. It is a defensible default and not an
+obligation.
+
+## Is it dark enough to read?
+
+Erasing ink is a virtue only up to the point where what survives can
+still be seen.
+[`check_contrast()`](https://lobsterbush.github.io/tufter/reference/check_contrast.md)
+measures every colour the plot draws with against the background, using
+the WCAG minima of 4.5 to 1 for text and 3 to 1 for marks.
+
+``` r
+check_contrast(
+  ggplot(experiment, aes(age, support)) +
+    geom_point(colour = "grey80", size = 0.8) +
+    theme_tufte()
+)
+#> # A tibble: 5 × 5
+#>   role       colour    ratio threshold passes
+#>   <chr>      <chr>     <dbl>     <dbl> <lgl> 
+#> 1 data mark  grey80     1.61       3   FALSE 
+#> 2 caption    grey40     5.74       4.5 TRUE  
+#> 3 subtitle   grey30     8.45       4.5 TRUE  
+#> 4 axis text  grey20    12.6        4.5 TRUE  
+#> 5 strip text #1A1A1AFF 17.4        4.5 TRUE
+```
+
+Grey 80 on white is elegant and, for a good number of readers,
+invisible.
+
 ## Small multiples
 
 The answer to multivariate data is repetition rather than complication:
@@ -372,7 +479,7 @@ tufte_audit(final, width = 6.5, height = 4)
 #> 
 #> ── Tufte audit ──
 #> 
-#> 13/14 checks passed (93%), at 6.5in x 4in.
+#> 14/15 checks passed (93%), at 6.5in x 4in.
 #> 
 #> ── Failing
 #> ✖ Data-ink ratio is 0.46: 46% of the ink in this figure varies with the data.
@@ -390,6 +497,7 @@ tufte_audit(final, width = 6.5, height = 4)
 #> • Comparison by repetition
 #> • The figure says where its numbers came from
 #> • The figure tends toward the horizontal
+#> • Ink is dark enough to see
 #> • The figure earns its space
 #> • Nothing is clipped at the printed size
 ```

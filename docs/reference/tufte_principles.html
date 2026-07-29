@@ -81,7 +81,7 @@ which ones a package cannot reach."><meta name="robots" content="noindex, nofoll
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -145,7 +145,7 @@ Defaults to <code>FALSE</code>.</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">tufte_principles</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 23 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 26 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    principle                    source     statement      implemented_by audited</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> Above all else show the data VDQI ch. 4 The graphic e… theme_tufte()  TRUE   </span>
@@ -158,12 +158,13 @@ Defaults to <code>FALSE</code>.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> The lie factor               VDQI ch. 2 The effect sh… lie_factor()   TRUE   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> Graphical integrity          VDQI ch. 2 Bars measure … tufte_audit()  TRUE   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Maximise data density        VDQI ch. 8 A graphic sho… data_density(… TRUE   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 13 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 16 more rows</span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="fu">tufte_principles</span><span class="op">(</span><span class="op">)</span>, <span class="op">!</span><span class="va">audited</span><span class="op">)</span><span class="op">$</span><span class="va">principle</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "The dot-dash plot"          "Shrink the graphic"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "Micro and macro readings"   "Show comparisons"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "Show causality"             "Show multivariate data"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [7] "Sparklines"                 "Content counts most of all"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "Position beats length"      "Micro and macro readings"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "Show comparisons"           "Show causality"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [7] "Show multivariate data"     "Sparklines"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [9] "Content counts most of all"</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

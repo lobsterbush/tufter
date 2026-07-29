@@ -71,7 +71,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -102,6 +102,28 @@
       <small>Source: <a href="https://github.com/lobsterbush/tufter/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.0" id="tufter-020">tufter 0.2.0<a class="anchor" aria-label="anchor" href="#tufter-020"></a></h2>
+<div class="section level3">
+<h3 id="measuring-0-2-0">Measuring<a class="anchor" aria-label="anchor" href="#measuring-0-2-0"></a></h3>
+<ul><li>
+<code><a href="../reference/bank_to_45.html">bank_to_45()</a></code> computes the aspect ratio that brings a plot’s slopes nearest 45 degrees, where slope is judged most accurately. Two methods: Cleveland’s median absolute slope, and mean absolute orientation, optionally weighted by segment length.</li>
+<li>
+<code><a href="../reference/check_contrast.html">check_contrast()</a></code> and <code><a href="../reference/contrast_ratio.html">contrast_ratio()</a></code> measure every colour a plot draws with against its background, using the WCAG 2.1 minima. Transparency is composited first, so a colour is judged as the reader sees it. Erasing ink is only a virtue up to the point where what remains can still be seen.</li>
+<li>
+<code><a href="../reference/audit_figures.html">audit_figures()</a></code> runs the audit across every figure in a paper, given a list of plots or a directory of saved ones, and returns them worst first with the failing checks named.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="drawing-0-2-0">Drawing<a class="anchor" aria-label="anchor" href="#drawing-0-2-0"></a></h3>
+<ul><li>
+<code><a href="../reference/geom_cleveland_dot.html">geom_cleveland_dot()</a></code> draws a dot plot with leader lines. This is the second answer to a bar chart whose baseline is not zero, and until now the audit recommended it without the package providing it.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="auditing-0-2-0">Auditing<a class="anchor" aria-label="anchor" href="#auditing-0-2-0"></a></h3>
+<ul><li>
+<code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> gains two checks: whether the given aspect ratio banks the slopes near 45 degrees, and whether the ink is dark enough to see.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="tufter-010">tufter 0.1.0<a class="anchor" aria-label="anchor" href="#tufter-010"></a></h2>
 <p>First release.</p>

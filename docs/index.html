@@ -93,7 +93,7 @@
 
     <a class="navbar-brand me-2" href="index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -180,6 +180,10 @@
 <td>Bars with the gridlines erased where they cross the bars</td>
 </tr>
 <tr>
+<td><code><a href="reference/geom_cleveland_dot.html">geom_cleveland_dot()</a></code></td>
+<td>Dot plot with leader lines: position instead of length, so no zero baseline is needed</td>
+</tr>
+<tr>
 <td><code><a href="reference/slopegraph.html">slopegraph()</a></code></td>
 <td>Before-and-after for many units, with every number printed</td>
 </tr>
@@ -238,12 +242,26 @@
 <td>Numbers per square inch of data graphic</td>
 </tr>
 <tr>
+<td><code><a href="reference/bank_to_45.html">bank_to_45()</a></code></td>
+<td>The aspect ratio that puts the slopes nearest 45 degrees, where they are judged best</td>
+</tr>
+<tr>
+<td>
+<code><a href="reference/check_contrast.html">check_contrast()</a></code>, <code><a href="reference/contrast_ratio.html">contrast_ratio()</a></code>
+</td>
+<td>Whether the ink is dark enough to see, against the WCAG minima</td>
+</tr>
+<tr>
 <td><code><a href="reference/check_labels_fit.html">check_labels_fit()</a></code></td>
 <td>Whether any text will be clipped at the printed size</td>
 </tr>
 <tr>
 <td><code><a href="reference/tufte_audit.html">tufte_audit()</a></code></td>
 <td>All of the above, plus the structural checks, scored</td>
+</tr>
+<tr>
+<td><code><a href="reference/audit_figures.html">audit_figures()</a></code></td>
+<td>The same across every figure in a paper, worst first</td>
 </tr>
 </tbody>
 </table>
@@ -276,7 +294,7 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/tufte_audit.html">tufte_audit</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">wt</span>, <span class="va">mpg</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ── Tufte audit ──</span></span>
-<span><span class="co">#&gt; 9/13 checks passed (69%), at 6.5in x 4in.</span></span>
+<span><span class="co">#&gt; 10/14 checks passed (71%), at 6.5in x 4in.</span></span>
 <span><span class="co">#&gt;</span></span>
 <span><span class="co">#&gt; ── Failing</span></span>
 <span><span class="co">#&gt; ✖ The panel is filled with #EBEBEBFF. A tinted panel is ink that never</span></span>
@@ -287,7 +305,10 @@
 <span><span class="co">#&gt;   Erase redundant data-ink (VDQI ch. 4)</span></span>
 <span><span class="co">#&gt; ✖ No caption. A graphic should name its source on the graphic, so the claim</span></span>
 <span><span class="co">#&gt;   can be checked without hunting through the text. See label_source().</span></span>
-<span><span class="co">#&gt;   Documentation (Beautiful Evidence ch. 6)</span></span></code></pre></div>
+<span><span class="co">#&gt;   Documentation (Beautiful Evidence ch. 6)</span></span>
+<span><span class="co">#&gt; ✖ Data-ink ratio is 0.06: 6% of the ink in this figure varies with the data.</span></span>
+<span><span class="co">#&gt;   Maximise the data-ink ratio (VDQI ch. 4)</span></span></code></pre></div>
+<p>For a whole paper at once, <code><a href="reference/audit_figures.html">audit_figures()</a></code> takes the list of plots you built and returns them worst first, with the failing checks named.</p>
 <p>It catches the failures that matter and that authors stop seeing after the fifth draft: a pie chart, a bar baseline that is not zero, a variable encoded twice, a legend with four entries that should have been direct labels, a subtitle that will be clipped at the size you are about to save.</p>
 </div>
 <div class="section level2">
@@ -308,7 +329,7 @@
 </h2>
 <p><strong>Where this duplicates existing work.</strong> <a href="https://github.com/jrnold/ggthemes" class="external-link"><code>ggthemes</code></a> has a <code><a href="reference/theme_tufte.html">theme_tufte()</a></code>, a <code><a href="reference/geom_rangeframe.html">geom_rangeframe()</a></code> and a <code><a href="reference/geom_tufteboxplot.html">geom_tufteboxplot()</a></code>. It is actively maintained and widely used. If the theme is all you want, it is the lighter dependency, and you should use it. Note that loading both packages masks <code><a href="reference/theme_tufte.html">theme_tufte()</a></code>.</p>
 <p>For labels that must not collide, <a href="https://cran.r-project.org/package=directlabels" class="external-link"><code>directlabels</code></a> and <a href="https://cran.r-project.org/package=ggrepel" class="external-link"><code>ggrepel</code></a> solve the general problem properly; <code><a href="reference/geom_text_last.html">geom_text_last()</a></code> here is the narrow case of labelling the end of a series.</p>
-<p><strong>Where it fills a gap.</strong> As far as I can find, no R package computes the data-ink ratio, the lie factor or data density, and none scores a plot against design principles. A search of every CRAN package title and description turns up no hits for “data-ink”, “lie factor” or “chartjunk”. The nearest neighbours do something adjacent but different: <code>ggcheck</code> introspects built ggplot objects to autograde student code, <code>ggalttext</code> does so to write alt text, and <a href="https://cran.r-project.org/package=GGenemy" class="external-link"><code>GGenemy</code></a> audits plots for <em>accessibility</em> — WCAG contrast, colour-vision deficiency — rather than for Tufte’s criteria. The only implementation of the data-ink ratio I could find in any language is a Java repository, archived in 2025 and last worked on in 2010, which requires the user to segment the image by hand before it will count anything.</p>
+<p><strong>Where it fills a gap.</strong> As far as I can find, no R package computes the data-ink ratio, the lie factor or data density, and none scores a plot against design principles. A search of every CRAN package title and description turns up no hits for “data-ink”, “lie factor” or “chartjunk”. The nearest neighbours do something adjacent but different: <code>ggcheck</code> introspects built ggplot objects to autograde student code, <code>ggalttext</code> does so to write alt text, and <a href="https://cran.r-project.org/package=GGenemy" class="external-link"><code>GGenemy</code></a> audits plots for <em>accessibility</em> — WCAG contrast, colour-vision deficiency — rather than for Tufte’s criteria. <code><a href="reference/check_contrast.html">check_contrast()</a></code> here overlaps GGenemy on contrast deliberately: a package that tells you to erase ink has an obligation to check that what survives is still visible. GGenemy goes further on accessibility, including colour-vision simulation, and is the better tool if that is your question. The only implementation of the data-ink ratio I could find in any language is a Java repository, archived in 2025 and last worked on in 2010, which requires the user to segment the image by hand before it will count anything.</p>
 <p>A note on what the numbers are for. The empirical literature does not support maximising the data-ink ratio as an objective, and has not since the mid nineties. The measurements here are descriptive diagnostics, meant to tell you where a figure spends its ink, not a score to push towards one. The <a href="https://lobsterbush.github.io/tufter/articles/measuring.html#and-a-larger-caveat-the-principle-itself-is-contested">measuring article</a> sets out that argument and the evidence against the principle.</p>
 <p>Several Tufte forms are also currently unmaintained or absent in R. <code>CGPfunctions</code>, which provided <code>newggslopegraph()</code>, was removed from CRAN in November 2025; <code>leeper/slopegraph</code> has not moved since 2018; and <code>ggtufte</code>, Jeff Arnold’s own attempt to spin the Tufte parts out of <code>ggthemes</code>, was abandoned in 2018. I could find no existing implementation of the bar chart with gridlines erased through the bars, no first-class dot-dash geom, and no Tufte colour palette (<code>ggthemes</code> ships Few, Cleveland, Tableau and Ptol palettes, but not one from Tufte).</p>
 <p>The measurement half is the reason this package exists. The drawing half is partly convenience and partly consolidation.</p>

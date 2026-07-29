@@ -67,6 +67,18 @@ tufte_principles <- function(audited_only = FALSE) {
     "Graphics tend toward the horizontal, a little wider than they are tall.",
     "save_tufte(), tufte_audit()", TRUE,
 
+    "Bank to 45 degrees", "Cleveland, after VDQI ch. 9",
+    "Slopes are judged best near 45 degrees; the aspect ratio is what puts them there.",
+    "bank_to_45()", TRUE,
+
+    "Position beats length", "VDQI ch. 5",
+    "A dot read against a scale needs no zero baseline and a fraction of the ink.",
+    "geom_cleveland_dot()", FALSE,
+
+    "Legibility", "WCAG 2.1, against VDQI ch. 4",
+    "Erasing ink stops when what is left can no longer be seen.",
+    "check_contrast(), contrast_ratio()", TRUE,
+
     "Small multiples", "Envisioning Information ch. 4",
     "Show the same graphic once per condition, at one scale, and let the reader compare.",
     "facet_tufte()", TRUE,

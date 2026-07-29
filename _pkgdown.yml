@@ -127,6 +127,7 @@ reference:
   contents:
   - geom_tufteboxplot
   - geom_col_tufte
+  - geom_cleveland_dot
   - slopegraph
   - facet_tufte
 - subtitle: Word-sized graphics
@@ -152,8 +153,14 @@ reference:
   - data_ink_ratio
   - lie_factor
   - data_density
+  - bank_to_45
+  - check_contrast
+  - contrast_ratio
   - check_labels_fit
+- subtitle: Auditing
+  contents:
   - tufte_audit
+  - audit_figures
 
 - title: Reference and output
   contents:
