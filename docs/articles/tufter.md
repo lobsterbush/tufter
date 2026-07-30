@@ -1,17 +1,17 @@
 # Designing and measuring a figure
 
 Tufte’s argument in *The Visual Display of Quantitative Information* is
-that statistical graphics can be evaluated, not merely preferred. He
-gives quantities: the data-ink ratio, the lie factor, data density. This
-package takes that seriously in both directions. It supplies the
-graphical forms he designed, and it supplies the measurements, so that a
-figure you have drawn can be examined rather than admired.
+that you can evaluate a statistical graphic. He hands you quantities to
+do it with: the data-ink ratio, the lie factor, data density. This
+package takes him at his word in both directions. It gives you the forms
+he designed, and it gives you the measurements, so a figure you’ve drawn
+can be examined as well as admired.
 
-It is careful about one distinction. Tufte states a criterion for some
-principles, a graphic either meeting it or not, and only a direction for
-others. The audit grades the first kind and measures the second, and
-there is no score, because collapsing the two would mean inventing
-thresholds and a weighting that are nowhere in his books.
+One distinction runs through all of it. Tufte states a criterion for
+some principles, which a graphic either meets or doesn’t, and for others
+he states only a direction. The audit grades the first kind and measures
+the second. There’s no score, because collapsing the two would mean
+making up thresholds and a weighting that aren’t anywhere in his books.
 
 ## Start with a default plot
 
@@ -39,17 +39,17 @@ data_ink_ratio(base)
 ```
 
 Almost none of that ink is doing any work. The grey panel, the white
-grid, the minor gridlines and the axis furniture account for nearly all
-of it, and none of them change when the data change.
+grid, the minor gridlines and the axis furniture take up nearly all of
+it, and none of them change when the data change.
 
 ## Erase, then replace the frame
 
 [`theme_tufte()`](https://lobsterbush.github.io/tufter/reference/theme_tufte.md)
-removes the background, the grid and the border.
+takes off the background, the grid and the border.
 [`geom_rangeframe()`](https://lobsterbush.github.io/tufter/reference/geom_rangeframe.md)
-puts something better in place of the border: an axis line drawn only
-across the range the data occupy, so the frame reports the minimum and
-maximum for free.
+gives you something better in place of the border. It draws the axis
+line only across the range the data occupy, so the frame reports the
+minimum and maximum for free.
 
 ``` r
 lean <- base +
@@ -72,10 +72,10 @@ data_ink_ratio(lean)
 ```
 
 [`geom_quartileframe()`](https://lobsterbush.github.io/tufter/reference/geom_rangeframe.md)
-goes further, breaking the axis at the quartiles so it carries the whole
-five-number summary. Pair it with
+goes further and breaks the axis at the quartiles, so it carries the
+whole five-number summary. Pair it with
 [`quartile_breaks()`](https://lobsterbush.github.io/tufter/reference/quartile_breaks.md)
-so the printed labels agree with the breaks.
+and the printed labels will agree with the breaks.
 
 ``` r
 base +
@@ -90,8 +90,8 @@ base +
 ## The audit
 
 [`tufte_audit()`](https://lobsterbush.github.io/tufter/reference/tufte_audit.md)
-reports the stated criteria a figure does not meet, each named with the
-principle and the chapter it comes from, and separately measures the
+reports the stated criteria a figure misses, each one named with the
+principle and the chapter it comes from. Separately, it measures the
 quantities Tufte gives a direction for.
 
 ``` r
@@ -103,13 +103,13 @@ tufte_audit(lean, width = 6.5, height = 4)
 #> 
 #> ── Not met
 #> ✖ No caption. Tufte asks that evidence be thoroughly described and its sources
-#>   indicated on the graphic itself, so the claim can be checked without hunting
+#>   named on the graphic itself, so a reader can check the claim without hunting
 #>   through the surrounding text. See label_source().
 #> Documentation - Beautiful Evidence ch. 6
 #> 
 #> ── Measured, not graded
-#> Tufte states a direction for these, not a threshold. Read them against another
-#> draft of the same figure.
+#> Tufte states a direction for these rather than a threshold. Read them against
+#> another draft of the same figure.
 #> • Data-ink ratio 0.74: 74% of the ink varies with the data. Tufte asks that
 #>   this be maximised within reason and names no threshold, so read it against
 #>   another draft of this figure rather than against a target.
@@ -118,7 +118,7 @@ tufte_audit(lean, width = 6.5, height = 4)
 #> • 1 distinct colour in use. Tufte's advice on colour is qualitative, so this is
 #>   a count and not a verdict.
 #> • 1 series overlaid in one panel. facet_tufte() would show the same data as
-#>   small multiples; Tufte gives no number at which to switch.
+#>   small multiples. Tufte gives no number at which to switch.
 #> 
 #> ── Met
 #> • Panel carries no background fill
@@ -133,8 +133,8 @@ tufte_audit(lean, width = 6.5, height = 4)
 #> • Nothing is clipped at the printed size
 ```
 
-The remaining failure is the one no theme can fix for you: the figure
-does not say where its numbers came from.
+The one that’s left is the one no theme can fix for you. The figure
+doesn’t say where its numbers came from.
 [`label_source()`](https://lobsterbush.github.io/tufter/reference/label_source.md)
 handles that.
 
@@ -146,8 +146,8 @@ tufte_audit(lean + label_source("Motor Trend, 1974"), width = 6.5, height = 4)
 #> At 6.5in x 4in: 0 stated criteria not met.
 #> 
 #> ── Measured, not graded
-#> Tufte states a direction for these, not a threshold. Read them against another
-#> draft of the same figure.
+#> Tufte states a direction for these rather than a threshold. Read them against
+#> another draft of the same figure.
 #> • Data-ink ratio 0.66: 66% of the ink varies with the data. Tufte asks that
 #>   this be maximised within reason and names no threshold, so read it against
 #>   another draft of this figure rather than against a target.
@@ -156,7 +156,7 @@ tufte_audit(lean + label_source("Motor Trend, 1974"), width = 6.5, height = 4)
 #> • 1 distinct colour in use. Tufte's advice on colour is qualitative, so this is
 #>   a count and not a verdict.
 #> • 1 series overlaid in one panel. facet_tufte() would show the same data as
-#>   small multiples; Tufte gives no number at which to switch.
+#>   small multiples. Tufte gives no number at which to switch.
 #> 
 #> ── Met
 #> • Panel carries no background fill
@@ -172,23 +172,23 @@ tufte_audit(lean + label_source("Motor Trend, 1974"), width = 6.5, height = 4)
 #> • Nothing is clipped at the printed size
 ```
 
-Notice what the audit does not do: it never grades the data-ink ratio or
-the data density. Tufte asks that both be pushed in a direction and
-names no threshold for either, so the audit reports them and leaves the
-judgement with you. Read them against another draft of the same figure.
+Notice what the audit won’t do. It never grades the data-ink ratio or
+the data density. Tufte asks that both go in a direction and never says
+how far, so the audit reports them and leaves the judgement with you.
+Read them against another draft of the same figure.
 
-Meeting every stated criterion does not make a figure good. Tufte’s
-first principle is that content counts most of all, and no function
-evaluates that. What the audit is good for is the mechanical failures
-that authors stop seeing after the fifth draft.
+Meeting every stated criterion doesn’t make a figure good. Tufte’s first
+principle is that content counts most of all, and no function evaluates
+that. What the audit is good at is the mechanical stuff you stop seeing
+after the fifth draft.
 
 ## Graphical integrity
 
-The most common way a real figure lies is a bar chart whose baseline is
-not zero: bar length stops being proportional to the quantity it stands
-for.
+The most common way a real figure lies is a bar chart whose baseline
+isn’t zero. Bar length stops being proportional to the quantity it
+stands for.
 [`lie_factor()`](https://lobsterbush.github.io/tufter/reference/lie_factor.md)
-measures the distortion.
+measures how far off it gets.
 
 ``` r
 d <- data.frame(president = c("Bush", "Obama"), growth = c(100, 110))
@@ -203,7 +203,8 @@ lie_factor(truncated)
 ```
 
 A ten percent difference drawn as a sixteen-fold one. Tufte treats
-anything outside roughly 0.95 to 1.05 as distortion.
+anything outside roughly 0.95 to 1.05 as distortion, and I think that’s
+about right.
 
 Given the numbers directly,
 [`lie_factor()`](https://lobsterbush.github.io/tufter/reference/lie_factor.md)
@@ -219,8 +220,8 @@ lie_factor(c(18.0, 27.5), c(0.6, 5.3))
 ## Bars with the gridlines erased
 
 Bar charts need gridlines, because readers have to recover values from
-bar heights. But a gridline crossing a bar is drawn on top of ink that
-already encodes the same value. Tufte’s redesign erases it there
+bar heights. A gridline crossing a bar, though, is drawn on top of ink
+that already carries that value. Tufte’s redesign erases it there
 instead.
 
 ``` r
@@ -239,8 +240,8 @@ ggplot(d, aes(crop, yield)) +
 
 ## Box plots without the box
 
-The box in a box plot is a container for four numbers that a line and a
-dot can hold on their own.
+The box in a box plot holds four numbers, and a line and a dot can hold
+them just as well.
 
 ``` r
 ggplot(mtcars, aes(factor(cyl), mpg)) +
@@ -257,8 +258,8 @@ the whiskers are short and the interquartile range needs its own mark.
 
 ## Labels on the data, not in a legend
 
-A legend makes the reader look away, hold a colour in memory, look back,
-and match.
+A legend makes the reader look away, hold a colour in memory, look back
+and match it up.
 [`geom_text_last()`](https://lobsterbush.github.io/tufter/reference/geom_text_last.md)
 puts the name where the eye already is.
 
@@ -283,8 +284,8 @@ ggplot(series, aes(year, value, colour = crop)) +
 ## Slopegraphs
 
 A slopegraph shows before-and-after for many units at once. Every number
-is printed on the graphic, which makes the y axis redundant, so it goes.
-The table and the figure become the same object.
+gets printed on the graphic, which makes the y axis redundant, so it
+goes. The table and the figure end up being the same object.
 
 ``` r
 d <- data.frame(
@@ -338,11 +339,10 @@ ggplot(mtcars, aes(wt, mpg)) +
 
 ## Before you save
 
-A figure designed carefully and then saved at the wrong size is a figure
-with a truncated subtitle. `ggplot2` does not wrap long text, it clips
-it.
+Design a figure carefully, save it at the wrong size, and you get a
+truncated subtitle. `ggplot2` clips long text rather than wrapping it.
 [`check_labels_fit()`](https://lobsterbush.github.io/tufter/reference/check_labels_fit.md)
-renders at the size you intend to print and measures.
+renders at the size you mean to print and measures what fits.
 
 ``` r
 wordy <- lean +
@@ -366,20 +366,20 @@ check_labels_fit(wordy, width = 6.5, height = 4)
 ```
 
 [`save_tufte()`](https://lobsterbush.github.io/tufter/reference/save_tufte.md)
-runs that check before writing, so the warning arrives while you can
-still act on it, and defaults to 6.5 inches wide with `cairo_pdf` for
-PDF output.
+runs that check before it writes, so the warning shows up while you can
+still do something about it. It defaults to 6.5 inches wide and uses
+`cairo_pdf` for PDF output.
 
 ``` r
 save_tufte("figure-1.pdf", lean, width = 6.5, height = 4)
 ```
 
-## What the package cannot do
+## What the package can’t do
 
 [`tufte_principles()`](https://lobsterbush.github.io/tufter/reference/tufte_principles.md)
 lists every principle, the book it comes from, and the function that
-implements it. The `audited` column is the honest part: it marks which
-principles a function can check and which it cannot.
+implements it. The `audited` column is the honest part. It marks which
+principles a function can check and which ones it can’t.
 
 ``` r
 p <- tufte_principles()
@@ -398,5 +398,5 @@ p[!p$audited, c("principle", "implemented_by")]
 #> 9 Content counts most of all you
 ```
 
-Showing causality, showing comparisons, and content counting most of all
-are not things a package can verify. They are what the figure is for.
+Showing causality, showing comparisons, content counting most of all: a
+package can’t verify any of that. I think it’s what the figure is for.

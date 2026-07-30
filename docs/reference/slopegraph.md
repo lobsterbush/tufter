@@ -4,7 +4,7 @@ A slopegraph shows a before-and-after comparison for many units at once.
 Each unit is one line; the slope of the line is the change, the vertical
 position is the level, and the crossings show which units changed rank.
 Tufte's version prints every number on the graphic, which makes the y
-axis redundant, so it is removed. The table and the graphic become the
+axis redundant, so it's removed. The table and the graphic become the
 same object.
 
 ## Usage
@@ -76,8 +76,8 @@ slopegraph(
 
   Minimum vertical separation between labels, as a fraction of the y
   range. Labels closer than this are nudged apart. Set to `0` to
-  disable. This is a typesetting allowance, not a quantity from Tufte:
-  it exists only so that two units with near-identical values do not
+  disable. This is a typesetting allowance rather than a quantity from
+  Tufte. It's here only so two units with near-identical values don't
   print on top of each other, and the right value depends on your font
   size.
 

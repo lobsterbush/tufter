@@ -1,6 +1,6 @@
 #' Data-ink ratio
 #'
-#' Tufte defines the data-ink ratio as the share of a graphic's ink that is
+#' Tufte defines the data-ink ratio as the share of a graphic's ink that's
 #' devoted to the non-redundant display of data, and asks that it be pushed
 #' towards one. \code{data_ink_ratio()} estimates it empirically: the plot is
 #' rendered twice, once whole and once with every data layer removed, and the
@@ -13,7 +13,7 @@
 #' understates its own data-ink. And redundant data-ink, which Tufte would
 #' subtract, still counts here as data-ink, because no measurement can tell
 #' whether a mark repeats information the reader already has. Treat the result
-#' as a comparative instrument: it is reliable for judging whether one version
+#' as a comparative instrument: it's reliable for judging whether one version
 #' of a figure is leaner than another, and unreliable as an absolute score.
 #'
 #' @param plot A \code{ggplot} object.
@@ -166,7 +166,7 @@ print.tufte_data_ink <- function(x, ...) {
 #' Two ways in. Given two numeric vectors, the first the underlying values and
 #' the second the sizes actually drawn, \code{lie_factor()} compares the
 #' proportional change in each. Given a \code{ggplot} containing bars or
-#' columns, it computes the distortion introduced by a baseline that does not
+#' columns, it computes the distortion introduced by a baseline that doesn't
 #' start at zero, which is by far the most common way a real figure lies: a bar
 #' whose length no longer is the quantity it stands for.
 #'
@@ -175,7 +175,7 @@ print.tufte_data_ink <- function(x, ...) {
 #' @param graphic For the numeric method, a numeric vector of the same length
 #'   giving the sizes drawn in the graphic.
 #' @param ... Unused.
-#' @return A numeric lie factor, or \code{NA} when there is nothing to compare.
+#' @return A numeric lie factor, or \code{NA} when there's nothing to compare.
 #'   The \code{ggplot} method returns \code{1} for a plot with no bars or with
 #'   a zero baseline.
 #' @export
@@ -282,13 +282,13 @@ lie_factor.default <- function(x, ...) {
 #'
 #' The number of entries in the data matrix divided by the area of the data
 #' graphic, in square inches. Tufte's complaint about most published statistical
-#' graphics is that they are enormous and say almost nothing: a chart carrying
+#' graphics is that they're enormous and say almost nothing: a chart carrying
 #' four numbers over half a page has a data density near zero, and the numbers
 #' would have been better set as a sentence.
 #'
 #' The data matrix here is counted as the number of rows drawn, times the number
 #' of distinct variables mapped to aesthetics. Positional aesthetics count;
-#' constants set outside \code{aes()} do not, because they carry no data.
+#' constants set outside \code{aes()} don't, because they carry no data.
 #'
 #' @param plot A \code{ggplot} object.
 #' @param width,height Intended printed size in inches. Defaults to 6.5 by 4.

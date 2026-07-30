@@ -2,7 +2,7 @@
 
 The number of entries in the data matrix divided by the area of the data
 graphic, in square inches. Tufte's complaint about most published
-statistical graphics is that they are enormous and say almost nothing: a
+statistical graphics is that they're enormous and say almost nothing: a
 chart carrying four numbers over half a page has a data density near
 zero, and the numbers would have been better set as a sentence.
 
@@ -38,7 +38,7 @@ square inch), `entries`, `rows`, `variables` and `area`.
 The data matrix here is counted as the number of rows drawn, times the
 number of distinct variables mapped to aesthetics. Positional aesthetics
 count; constants set outside
-[`aes()`](https://ggplot2.tidyverse.org/reference/aes.html) do not,
+[`aes()`](https://ggplot2.tidyverse.org/reference/aes.html) don't,
 because they carry no data.
 
 ## Examples

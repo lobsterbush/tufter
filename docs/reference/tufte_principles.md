@@ -4,7 +4,7 @@ Returns the table this package is built around: each principle, the book
 it comes from, the function that puts it into practice, whether
 [`tufte_audit()`](https://lobsterbush.github.io/tufter/reference/tufte_audit.md)
 can check it, and whether Tufte states a criterion a graphic either
-meets or does not.
+meets or doesn't.
 
 ## Usage
 
@@ -28,7 +28,7 @@ A tibble with columns `principle`, `source`, `statement`,
 
 The `criterion` column is the important one. Tufte gives a testable line
 for some principles: bars are measured from zero, the lie factor lies
-between 0.95 and 1.05, graphics are wider than they are tall. For others
+between 0.95 and 1.05, graphics are wider than they're tall. For others
 he gives only a direction, asking that the data-ink ratio be maximised
 "within reason" and that data density be increased, and names no
 threshold. The audit grades the first kind and merely measures the
@@ -37,7 +37,7 @@ package author's and not Tufte's.
 
 Principles no function can reach are listed too, with `audited` set to
 `FALSE`, because the honest version of "implements all of Tufte's
-principles" says which ones it cannot.
+principles" says which ones it can't.
 
 ## Examples
 

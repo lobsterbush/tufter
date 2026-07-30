@@ -4,8 +4,8 @@ Returns a breaks function that labels the minimum, the quartiles, the
 median and the maximum, so that the printed axis labels agree with what
 a
 [`geom_quartileframe()`](https://lobsterbush.github.io/tufter/reference/geom_rangeframe.md)
-shows. Tufte's point is that an axis should report the distribution, not
-a set of round numbers chosen by the plotting software.
+shows. Tufte's point is that an axis should report the distribution
+rather than a set of round numbers picked by the plotting software.
 
 ## Usage
 
@@ -42,7 +42,7 @@ A function suitable for the `breaks` argument of a continuous scale.
 All five values are returned by default, because the five-number summary
 is what a quartile frame reports. Where two of them fall close enough
 together that their labels overprint, `min_gap` will drop the crowded
-ones, but it is off unless you ask for it: the spacing at which labels
+ones, but it's off unless you ask for it: the spacing at which labels
 collide depends on the font, the figure size and the number of digits,
 none of which a breaks function can see.
 [`check_labels_fit()`](https://lobsterbush.github.io/tufter/reference/check_labels_fit.md)

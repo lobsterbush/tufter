@@ -36,7 +36,7 @@ contrast_ratio <- function(colour, background = "white") {
 
 #' Check that a plot's ink is dark enough to see
 #'
-#' The strongest objection to maximising the data-ink ratio is that it is a
+#' The strongest objection to maximising the data-ink ratio is that it's a
 #' licence to draw in hairlines and pale greys, and that the result is elegant
 #' and unreadable. This is the check that keeps the rest of the package honest:
 #' it takes every colour the plot actually draws with, along with the text
@@ -44,18 +44,18 @@ contrast_ratio <- function(colour, background = "white") {
 #'
 #' The thresholds are the WCAG 2.1 ones: 4.5 to 1 for text, and 3 to 1 for
 #' graphical objects, which is what data marks and rules are. These are minima
-#' for people with moderately low vision, not targets, and a figure that clears
-#' them can still be hard work in a badly lit lecture theatre.
+#' for people with moderately low vision rather than targets, and a figure
+#' that clears them can still be hard work in a badly lit lecture theatre.
 #'
 #' Colours drawn with transparency are measured as if composited onto the
-#' background, since that is what the reader sees.
+#' background, since that's what the reader sees.
 #'
 #' @param plot A \code{ggplot} object.
 #' @param background The colour to measure against. By default this is taken
 #'   from the plot's own panel or plot background, falling back to white.
 #' @param text_min,mark_min Minimum acceptable ratios for text and for data
 #'   marks. Default to 4.5 and 3.
-#' @return A tibble with one row per distinct colour: what it is used for, the
+#' @return A tibble with one row per distinct colour: what it's used for, the
 #'   colour, its contrast ratio against the background, the threshold applied,
 #'   and whether it passes.
 #' @export

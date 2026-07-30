@@ -24,7 +24,7 @@ An object of class \code{tufte_data_ink}: a list with the estimated
   \code{total_ink} it was computed from, in pixel-equivalents.
 }
 \description{
-Tufte defines the data-ink ratio as the share of a graphic's ink that is
+Tufte defines the data-ink ratio as the share of a graphic's ink that's
 devoted to the non-redundant display of data, and asks that it be pushed
 towards one. \code{data_ink_ratio()} estimates it empirically: the plot is
 rendered twice, once whole and once with every data layer removed, and the
@@ -38,7 +38,7 @@ exact one. Ink that overlaps is counted once, so a dense scatterplot
 understates its own data-ink. And redundant data-ink, which Tufte would
 subtract, still counts here as data-ink, because no measurement can tell
 whether a mark repeats information the reader already has. Treat the result
-as a comparative instrument: it is reliable for judging whether one version
+as a comparative instrument: it's reliable for judging whether one version
 of a figure is leaner than another, and unreliable as an absolute score.
 }
 \examples{

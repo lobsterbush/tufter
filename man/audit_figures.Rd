@@ -9,7 +9,7 @@ audit_figures(plots, width = 6.5, height = 4, measure = TRUE)
 \arguments{
 \item{plots}{One of: a named list of \code{ggplot} objects; a single
 \code{ggplot}; or a path to a directory, in which case every \code{.rds}
-file in it is read and any that contains a \code{ggplot} is audited.}
+file in it's read and any that contains a \code{ggplot} is audited.}
 
 \item{width, height}{Intended printed size in inches, applied to every figure.
 Pass a vector as long as \code{plots} to give each its own size.}
@@ -17,7 +17,7 @@ Pass a vector as long as \code{plots} to give each its own size.}
 \item{measure}{Logical. Run the rendering-based measurements? Defaults to
   \code{TRUE}. Set to \code{FALSE} for a fast structural pass.
 Figures are ordered by the number of stated criteria they fail, most first.
-That is a count and not a score: it is comparable across figures because
+That is a count and not a score: it's comparable across figures because
 every figure is being counted against the same criteria, whereas a
 proportion would divide by a denominator that changes with the plot type.}
 }
@@ -28,7 +28,7 @@ An object of class \code{tufte_audit_batch}: a tibble with one row
   audits are attached as the \code{"audits"} attribute, named by figure.
 }
 \description{
-Running \code{\link{tufte_audit}()} on one plot is useful while you are
+Running \code{\link{tufte_audit}()} on one plot is useful while you're
 drawing it. Running it on all of them, the evening before you submit, is when
 it earns its keep: the figure with the truncated subtitle is never the one
 you were looking at.

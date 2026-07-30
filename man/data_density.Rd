@@ -23,14 +23,14 @@ An object of class \code{tufte_density}: a list with
 \description{
 The number of entries in the data matrix divided by the area of the data
 graphic, in square inches. Tufte's complaint about most published statistical
-graphics is that they are enormous and say almost nothing: a chart carrying
+graphics is that they're enormous and say almost nothing: a chart carrying
 four numbers over half a page has a data density near zero, and the numbers
 would have been better set as a sentence.
 }
 \details{
 The data matrix here is counted as the number of rows drawn, times the number
 of distinct variables mapped to aesthetics. Positional aesthetics count;
-constants set outside \code{aes()} do not, because they carry no data.
+constants set outside \code{aes()} don't, because they carry no data.
 }
 \examples{
 library(ggplot2)

@@ -60,7 +60,7 @@ A \code{ggplot2} layer.
 Tufte's bar chart redesign is the clearest case of erasing redundant
 data-ink. The gridlines are needed, because readers have to recover values
 from bar heights. But a gridline crossing a bar is drawn on top of ink that
-already encodes the same information, so it is erased there instead of being
+already encodes the same information, so it's erased there instead of being
 drawn over the bar. The result is a bar with white rules through it, which
 reads as a ruler laid against the data.
 }

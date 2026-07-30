@@ -41,8 +41,8 @@ that choice with a rule.
 
 Two methods are offered. \code{"median_slope"} is Cleveland's original: pick
 the aspect ratio that makes the median absolute slope exactly 45 degrees. It
-is robust and is the default. \code{"average_orientation"} instead makes the
-mean absolute orientation 45 degrees, optionally weighting each segment by
+resists outliers and is the default. \code{"average_orientation"} instead
+makes the mean absolute orientation 45 degrees, optionally weighting by
 its length so that long segments count for more, which is closer to what the
 eye does with a line that varies in density.
 
@@ -64,7 +64,7 @@ save_tufte("figure.pdf", p, width = 6.5, height = b$height)
 }
 }
 \seealso{
-\code{\link{save_tufte}()}. Banking is not applied automatically:
+\code{\link{save_tufte}()}. Banking isn't applied automatically:
   pass the \code{height} it returns yourself, so that the choice stays
   visible in your code.
 }

@@ -38,7 +38,7 @@ lie_factor(x, ...)
 
 ## Value
 
-A numeric lie factor, or `NA` when there is nothing to compare. The
+A numeric lie factor, or `NA` when there's nothing to compare. The
 `ggplot` method returns `1` for a plot with no bars or with a zero
 baseline.
 
@@ -47,8 +47,8 @@ baseline.
 Two ways in. Given two numeric vectors, the first the underlying values
 and the second the sizes actually drawn, `lie_factor()` compares the
 proportional change in each. Given a `ggplot` containing bars or
-columns, it computes the distortion introduced by a baseline that does
-not start at zero, which is by far the most common way a real figure
+columns, it computes the distortion introduced by a baseline that
+doesn't start at zero, which is by far the most common way a real figure
 lies: a bar whose length no longer is the quantity it stands for.
 
 ## Examples

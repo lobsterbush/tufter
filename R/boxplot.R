@@ -27,7 +27,7 @@
 #' @param box_linewidth Line width of the interquartile segment for the
 #'   \code{"line"} and \code{"offset"} variants. Defaults to \code{1.6}.
 #' @param outliers Logical. Draw outlying points beyond the whiskers? Defaults
-#'   to \code{TRUE}. Tufte would keep them: they are data.
+#'   to \code{TRUE}. Tufte would keep them: they're data.
 #' @return A \code{ggplot2} layer.
 #' @export
 #' @examples

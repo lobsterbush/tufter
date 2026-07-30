@@ -28,9 +28,9 @@ tufte_audit(plot, width = 6.5, height = 4, measure = TRUE)
 ## Value
 
 An object of class `tufte_audit`: a tibble with one row per check, whose
-`status` is `"fail"` for a stated criterion that is not met, `"pass"`
-for one that is, `"report"` for a measurement Tufte gives no threshold
-for, and `"skip"` for a check that could not run. The number of unmet
+`status` is `"fail"` for a stated criterion that's not met, `"pass"` for
+one that's, `"report"` for a measurement Tufte gives no threshold for,
+and `"skip"` for a check that could not run. The number of unmet
 criteria is attached as the `"violations"` attribute.
 
 ## Details
@@ -48,16 +48,16 @@ versions of this package invented thresholds for them, which put a
 number of mine in the same voice as a principle of his; the numbers were
 never his and are now gone.
 
-The consequence is that there is no score. Counting satisfied principles
+The consequence is that there's no score. Counting satisfied principles
 would mean weighting them against each other, and Tufte offers no
 exchange rate between a pie chart and a missing source note. What the
-audit gives you is a list of stated criteria that are not met, and a set
+audit gives you is a list of stated criteria that aren't met, and a set
 of measurements to compare against another draft of the same figure.
 
 ## See also
 
 [`tufte_principles()`](https://lobsterbush.github.io/tufter/reference/tufte_principles.md),
-which marks which principles carry a stated criterion and which do not.
+which marks which principles carry a stated criterion and which don't.
 
 ## Examples
 
@@ -71,19 +71,19 @@ tufte_audit(ggplot(mtcars, aes(wt, mpg)) + geom_point())
 #> 
 #> ── Not met 
 #> ✖ The panel is filled with #EBEBEBFF. The fill is identical whatever the
-#>   numbers are, so it is non-data ink and Tufte's instruction is to erase it.
+#>   numbers are, so it's non-data ink and Tufte's instruction is to erase it.
 #> Erase non-data ink - VDQI ch. 4
 #> ✖ Minor gridlines are drawn. They subdivide the scale past the precision anyone
-#>   reads from a graphic, and are non-data ink.
+#>   reads off a graphic, so they're non-data ink.
 #> Erase non-data ink - VDQI ch. 4
 #> ✖ No caption. Tufte asks that evidence be thoroughly described and its sources
-#>   indicated on the graphic itself, so the claim can be checked without hunting
+#>   named on the graphic itself, so a reader can check the claim without hunting
 #>   through the surrounding text. See label_source().
 #> Documentation - Beautiful Evidence ch. 6
 #> 
 #> ── Measured, not graded 
-#> Tufte states a direction for these, not a threshold. Read them against another
-#> draft of the same figure.
+#> Tufte states a direction for these rather than a threshold. Read them against
+#> another draft of the same figure.
 #> • Data-ink ratio 0.06: 6% of the ink varies with the data. Tufte asks that this
 #>   be maximised within reason and names no threshold, so read it against another
 #>   draft of this figure rather than against a target.
@@ -92,7 +92,7 @@ tufte_audit(ggplot(mtcars, aes(wt, mpg)) + geom_point())
 #> • 1 distinct colour in use. Tufte's advice on colour is qualitative, so this is
 #>   a count and not a verdict.
 #> • 1 series overlaid in one panel. facet_tufte() would show the same data as
-#>   small multiples; Tufte gives no number at which to switch.
+#>   small multiples. Tufte gives no number at which to switch.
 #> 
 #> ── Met 
 #> • No full panel border

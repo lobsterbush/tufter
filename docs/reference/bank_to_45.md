@@ -52,11 +52,10 @@ Banking replaces that choice with a rule.
 
 Two methods are offered. `"median_slope"` is Cleveland's original: pick
 the aspect ratio that makes the median absolute slope exactly 45
-degrees. It is robust and is the default. `"average_orientation"`
+degrees. It resists outliers and is the default. `"average_orientation"`
 instead makes the mean absolute orientation 45 degrees, optionally
-weighting each segment by its length so that long segments count for
-more, which is closer to what the eye does with a line that varies in
-density.
+weighting by its length so that long segments count for more, which is
+closer to what the eye does with a line that varies in density.
 
 Only line-like layers are read: lines, paths, steps and smooths. A plot
 with no such layer has no slopes to bank, and the function says so
@@ -65,7 +64,7 @@ rather than guessing.
 ## See also
 
 [`save_tufte()`](https://lobsterbush.github.io/tufter/reference/save_tufte.md).
-Banking is not applied automatically: pass the `height` it returns
+Banking isn't applied automatically: pass the `height` it returns
 yourself, so that the choice stays visible in your code.
 
 ## Examples

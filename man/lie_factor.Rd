@@ -25,7 +25,7 @@ lie_factor(x, ...)
 giving the sizes drawn in the graphic.}
 }
 \value{
-A numeric lie factor, or \code{NA} when there is nothing to compare.
+A numeric lie factor, or \code{NA} when there's nothing to compare.
   The \code{ggplot} method returns \code{1} for a plot with no bars or with
   a zero baseline.
 }
@@ -39,7 +39,7 @@ as distortion.
 Two ways in. Given two numeric vectors, the first the underlying values and
 the second the sizes actually drawn, \code{lie_factor()} compares the
 proportional change in each. Given a \code{ggplot} containing bars or
-columns, it computes the distortion introduced by a baseline that does not
+columns, it computes the distortion introduced by a baseline that doesn't
 start at zero, which is by far the most common way a real figure lies: a bar
 whose length no longer is the quantity it stands for.
 }

@@ -2,7 +2,7 @@
 
 Running
 [`tufte_audit()`](https://lobsterbush.github.io/tufter/reference/tufte_audit.md)
-on one plot is useful while you are drawing it. Running it on all of
+on one plot is useful while you're drawing it. Running it on all of
 them, the evening before you submit, is when it earns its keep: the
 figure with the truncated subtitle is never the one you were looking at.
 
@@ -17,7 +17,7 @@ audit_figures(plots, width = 6.5, height = 4, measure = TRUE)
 - plots:
 
   One of: a named list of `ggplot` objects; a single `ggplot`; or a path
-  to a directory, in which case every `.rds` file in it is read and any
+  to a directory, in which case every `.rds` file in it's read and any
   that contains a `ggplot` is audited.
 
 - width, height:
@@ -30,7 +30,7 @@ audit_figures(plots, width = 6.5, height = 4, measure = TRUE)
   Logical. Run the rendering-based measurements? Defaults to `TRUE`. Set
   to `FALSE` for a fast structural pass. Figures are ordered by the
   number of stated criteria they fail, most first. That is a count and
-  not a score: it is comparable across figures because every figure is
+  not a score: it's comparable across figures because every figure is
   being counted against the same criteria, whereas a proportion would
   divide by a denominator that changes with the plot type.
 

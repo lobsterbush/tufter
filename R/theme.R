@@ -1,13 +1,13 @@
 #' A maximum data-ink theme
 #'
-#' Strips every element of the plot that does not itself carry data: the panel
+#' Strips every element of the plot that doesn't itself carry data: the panel
 #' background, the grid, the panel border, and the legend frame. This is the
 #' theme half of Tufte's instruction to maximise the share of ink that varies
 #' with the data, and to erase the rest.
 #'
-#' The default has no axis lines at all, on the assumption that you will add a
+#' The default has no axis lines at all, on the assumption that you'll add a
 #' \code{\link{geom_rangeframe}()} or \code{\link{geom_quartileframe}()}, which
-#' carries information the panel border does not. Set \code{axis_lines = TRUE}
+#' carries information the panel border doesn't. Set \code{axis_lines = TRUE}
 #' if you want conventional full-length axes instead.
 #'
 #' A faint grid is sometimes the honest choice: when readers must recover

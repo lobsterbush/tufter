@@ -53,7 +53,7 @@ geom_tufteboxplot(
 - outliers:
 
   Logical. Draw outlying points beyond the whiskers? Defaults to `TRUE`.
-  Tufte would keep them: they are data.
+  Tufte would keep them: they're data.
 
 ## Value
 

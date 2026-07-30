@@ -128,9 +128,9 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="tufter">tufter<a class="anchor" aria-label="anchor" href="#tufter"></a>
 </h1></div>
-<p><strong>Documentation: <a href="https://lobsterbush.github.io/tufter/" class="uri">https://lobsterbush.github.io/tufter/</a></strong> — including a <a href="https://lobsterbush.github.io/tufter/articles/simulated-examples.html">gallery built entirely on simulated data</a> and a walk through <a href="https://lobsterbush.github.io/tufter/articles/measuring.html">what each measurement actually computes</a>.</p>
-<p>Edward Tufte’s principles of graphical design, as working <code>ggplot2</code> code and as measurements you can apply to a figure you have already drawn.</p>
-<p>Most Tufte packages give you a theme. A theme is one principle out of about twenty, and it is the easiest one. Tufte’s actual argument is that statistical graphics can be <em>evaluated</em> rather than merely preferred, and he gives the quantities to do it with: the data-ink ratio, the lie factor, data density. <code>tufter</code> implements both halves.</p>
+<p>Documentation lives at <a href="https://lobsterbush.github.io/tufter/" class="uri">https://lobsterbush.github.io/tufter/</a>. There’s a <a href="https://lobsterbush.github.io/tufter/articles/simulated-examples.html">gallery built entirely on simulated data</a> and a walk through <a href="https://lobsterbush.github.io/tufter/articles/measuring.html">what each measurement actually computes</a>.</p>
+<p>Edward Tufte’s principles of graphical design, as working <code>ggplot2</code> code and as measurements you can apply to a figure you’ve already drawn.</p>
+<p>Most Tufte packages give you a theme. That’s one principle out of about twenty, and I think it’s the easiest one. His real argument is that statistical graphics can be <em>evaluated</em>, and he hands you the quantities to do it with: the data-ink ratio, the lie factor, data density. This package does both halves.</p>
 <div class="float">
 <img src="reference/figures/README-before-after.png" alt="Default ggplot2 next to the same plot with a quartile frame and theme_tufte, with measured data-ink ratios of 0.05 and 0.48"><div class="figcaption">Default ggplot2 next to the same plot with a quartile frame and theme_tufte, with measured data-ink ratios of 0.05 and 0.48</div>
 </div>
@@ -144,7 +144,7 @@
 <div class="section level2">
 <h2 id="the-two-halves">The two halves<a class="anchor" aria-label="anchor" href="#the-two-halves"></a>
 </h2>
-<p><strong>Generative.</strong> The graphical forms Tufte designed or advocated:</p>
+<p>The forms Tufte designed or argued for:</p>
 <table class="table">
 <colgroup>
 <col width="50%">
@@ -181,7 +181,7 @@
 </tr>
 <tr>
 <td><code><a href="reference/geom_cleveland_dot.html">geom_cleveland_dot()</a></code></td>
-<td>Dot plot with leader lines: position instead of length, so no zero baseline is needed</td>
+<td>Dot plot with leader lines, so a zero baseline isn’t needed</td>
 </tr>
 <tr>
 <td><code><a href="reference/slopegraph.html">slopegraph()</a></code></td>
@@ -209,7 +209,7 @@
 </tr>
 <tr>
 <td><code><a href="reference/label_source.html">label_source()</a></code></td>
-<td>The documentation principle: say where the numbers came from</td>
+<td>Say where the numbers came from, on the graphic</td>
 </tr>
 <tr>
 <td><code><a href="reference/save_tufte.html">save_tufte()</a></code></td>
@@ -218,7 +218,7 @@
 </tr>
 </tbody>
 </table>
-<p><strong>Evaluative.</strong> The quantities Tufte defined:</p>
+<p>The quantities he defined:</p>
 <table class="table">
 <colgroup>
 <col width="50%">
@@ -243,7 +243,7 @@
 </tr>
 <tr>
 <td><code><a href="reference/bank_to_45.html">bank_to_45()</a></code></td>
-<td>The aspect ratio that puts the slopes nearest 45 degrees, where they are judged best</td>
+<td>The aspect ratio that puts the slopes nearest 45 degrees, where they’re judged best</td>
 </tr>
 <tr>
 <td>
@@ -257,7 +257,7 @@
 </tr>
 <tr>
 <td><code><a href="reference/tufte_audit.html">tufte_audit()</a></code></td>
-<td>All of the above, plus the criteria Tufte states, graded or measured as he states them</td>
+<td>All of the above, graded or measured as Tufte states them</td>
 </tr>
 <tr>
 <td><code><a href="reference/audit_figures.html">audit_figures()</a></code></td>
@@ -299,30 +299,28 @@
 <span><span class="co">#&gt; ── Not met</span></span>
 <span><span class="co">#&gt; ✖ The panel is filled with #EBEBEBFF. The fill is identical whatever the</span></span>
 <span><span class="co">#&gt;   numbers are, so it is non-data ink and Tufte's instruction is to erase it.</span></span>
-<span><span class="co">#&gt;   Erase non-data ink - VDQI ch. 4</span></span>
+<span><span class="co">#&gt;   Erase non-data ink, VDQI ch. 4</span></span>
 <span><span class="co">#&gt; ✖ Minor gridlines are drawn. They subdivide the scale past the precision</span></span>
 <span><span class="co">#&gt;   anyone reads from a graphic, and are non-data ink.</span></span>
-<span><span class="co">#&gt;   Erase non-data ink - VDQI ch. 4</span></span>
+<span><span class="co">#&gt;   Erase non-data ink, VDQI ch. 4</span></span>
 <span><span class="co">#&gt; ✖ No caption. Tufte asks that evidence be thoroughly described and its</span></span>
 <span><span class="co">#&gt;   sources indicated on the graphic itself. See label_source().</span></span>
-<span><span class="co">#&gt;   Documentation - Beautiful Evidence ch. 6</span></span>
+<span><span class="co">#&gt;   Documentation, Beautiful Evidence ch. 6</span></span>
 <span><span class="co">#&gt;</span></span>
 <span><span class="co">#&gt; ── Measured, not graded</span></span>
-<span><span class="co">#&gt; Tufte states a direction for these, not a threshold.</span></span>
 <span><span class="co">#&gt; • Data-ink ratio 0.06: 6% of the ink varies with the data.</span></span>
 <span><span class="co">#&gt; • Data density 3.1 numbers per square inch.</span></span>
 <span><span class="co">#&gt; • 1 distinct colour in use.</span></span>
 <span><span class="co">#&gt; • 1 series overlaid in one panel.</span></span></code></pre></div>
-<p>There is no score, and that is deliberate. Tufte states two different kinds of thing. For some principles he gives a criterion a graphic either meets or does not: bars are measured from zero, the lie factor lies between 0.95 and 1.05, graphics are wider than they are tall, non-data ink comes off the page. Those are graded. For others he gives only a direction, asking that the data-ink ratio be maximised “within reason” and that data density be increased, and names no threshold anywhere. Those are measured and reported without a verdict.</p>
-<p>Earlier versions of this package invented cutoffs for the second kind, which put a number of mine in the same voice as a principle of his. They are gone. Collapsing the two kinds into one number would need a weighting between a pie chart and a missing source note, and Tufte offers no exchange rate.</p>
-<p><code><a href="reference/tufte_principles.html">tufte_principles()</a></code> marks which is which in its <code>criterion</code> column.</p>
-<p>For a whole paper at once, <code><a href="reference/audit_figures.html">audit_figures()</a></code> orders figures by how many stated criteria each one fails. That is a count rather than a proportion, so it is comparable across figures; a percentage would divide by a denominator that changes with the plot type.</p>
-<p>It catches the failures that matter and that authors stop seeing after the fifth draft: a pie chart, a bar baseline that is not zero, a bar chart on a log scale, a variable encoded twice, a legend where direct labels belong, a subtitle that will be clipped at the size you are about to save.</p>
+<p>There’s no score, and I did that on purpose. Tufte says two different kinds of thing. Sometimes he gives a criterion a graphic either meets or doesn’t: bars measured from zero, a lie factor between 0.95 and 1.05, graphics wider than they’re tall, non-data ink off the page. Those get graded. Other times he gives only a direction. He asks that the data-ink ratio be maximised “within reason” and that data density go up, and he never says how much is enough. Those get measured, and the judgement stays with you.</p>
+<p>Earlier versions of this package made up cutoffs for the second kind. That put my numbers in his voice, so they’re gone. I also think a single score would need a weighting between a pie chart and a missing source note, and Tufte doesn’t offer an exchange rate. <code><a href="reference/tufte_principles.html">tufte_principles()</a></code> marks which is which in its <code>criterion</code> column.</p>
+<p>For a whole paper at once, <code><a href="reference/audit_figures.html">audit_figures()</a></code> orders figures by how many stated criteria each one fails. That’s a count rather than a proportion, so it’s comparable across figures. A percentage would divide by a denominator that shifts with the plot type.</p>
+<p>What it’s good at is the mechanical stuff you stop seeing after the fifth draft. A pie chart. A bar baseline that isn’t zero. A bar chart on a log scale. A variable encoded twice. A legend where direct labels belong. A subtitle that gets clipped at the size you’re about to save.</p>
 </div>
 <div class="section level2">
-<h2 id="what-it-will-not-tell-you">What it will not tell you<a class="anchor" aria-label="anchor" href="#what-it-will-not-tell-you"></a>
+<h2 id="what-it-wont-tell-you">What it won’t tell you<a class="anchor" aria-label="anchor" href="#what-it-wont-tell-you"></a>
 </h2>
-<p><code><a href="reference/tufte_principles.html">tufte_principles()</a></code> lists every principle, its source, the function that implements it, and whether the audit can check it.</p>
+<p><code><a href="reference/tufte_principles.html">tufte_principles()</a></code> lists every principle, its source, the function that implements it, and whether the audit can check it at all.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tufte_principles.html">tufte_principles</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">p</span><span class="op">[</span><span class="op">!</span><span class="va">p</span><span class="op">$</span><span class="va">audited</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"principle"</span>, <span class="st">"implemented_by"</span><span class="op">)</span><span class="op">]</span></span>
@@ -330,17 +328,18 @@
 <span><span class="co">#&gt; Show causality            annotation, not code</span></span>
 <span><span class="co">#&gt; Show multivariate data    facet_tufte(), sparklines()</span></span>
 <span><span class="co">#&gt; Content counts most of all  you</span></span></code></pre></div>
-<p>A figure can meet every stated criterion and still be pointless, because Tufte’s first principle is that content counts most of all and no function evaluates that.</p>
+<p>A figure can meet every stated criterion and still be pointless. Tufte’s first principle is that content counts most of all, and no function evaluates that.</p>
 </div>
 <div class="section level2">
-<h2 id="relationship-to-other-packages">Relationship to other packages<a class="anchor" aria-label="anchor" href="#relationship-to-other-packages"></a>
+<h2 id="how-this-sits-alongside-other-packages">How this sits alongside other packages<a class="anchor" aria-label="anchor" href="#how-this-sits-alongside-other-packages"></a>
 </h2>
-<p><strong>Where this duplicates existing work.</strong> <a href="https://github.com/jrnold/ggthemes" class="external-link"><code>ggthemes</code></a> has a <code><a href="reference/theme_tufte.html">theme_tufte()</a></code>, a <code><a href="reference/geom_rangeframe.html">geom_rangeframe()</a></code> and a <code><a href="reference/geom_tufteboxplot.html">geom_tufteboxplot()</a></code>. It is actively maintained and widely used. If the theme is all you want, it is the lighter dependency, and you should use it. Note that loading both packages masks <code><a href="reference/theme_tufte.html">theme_tufte()</a></code>.</p>
-<p>For labels that must not collide, <a href="https://cran.r-project.org/package=directlabels" class="external-link"><code>directlabels</code></a> and <a href="https://cran.r-project.org/package=ggrepel" class="external-link"><code>ggrepel</code></a> solve the general problem properly; <code><a href="reference/geom_text_last.html">geom_text_last()</a></code> here is the narrow case of labelling the end of a series.</p>
-<p><strong>Where it fills a gap.</strong> As far as I can find, no R package computes the data-ink ratio, the lie factor or data density, and none scores a plot against design principles. A search of every CRAN package title and description turns up no hits for “data-ink”, “lie factor” or “chartjunk”. The nearest neighbours do something adjacent but different: <code>ggcheck</code> introspects built ggplot objects to autograde student code, <code>ggalttext</code> does so to write alt text, and <a href="https://cran.r-project.org/package=GGenemy" class="external-link"><code>GGenemy</code></a> audits plots for <em>accessibility</em> — WCAG contrast, colour-vision deficiency — rather than for Tufte’s criteria. <code><a href="reference/check_contrast.html">check_contrast()</a></code> here overlaps GGenemy on contrast deliberately: a package that tells you to erase ink has an obligation to check that what survives is still visible. GGenemy goes further on accessibility, including colour-vision simulation, and is the better tool if that is your question. The only implementation of the data-ink ratio I could find in any language is a Java repository, archived in 2025 and last worked on in 2010, which requires the user to segment the image by hand before it will count anything.</p>
-<p>A note on what the numbers are for. The empirical literature does not support maximising the data-ink ratio as an objective, and has not since the mid nineties. The measurements here are descriptive diagnostics, meant to tell you where a figure spends its ink, not a score to push towards one. The <a href="https://lobsterbush.github.io/tufter/articles/measuring.html#and-a-larger-caveat-the-principle-itself-is-contested">measuring article</a> sets out that argument and the evidence against the principle.</p>
-<p>Several Tufte forms are also currently unmaintained or absent in R. <code>CGPfunctions</code>, which provided <code>newggslopegraph()</code>, was removed from CRAN in November 2025; <code>leeper/slopegraph</code> has not moved since 2018; and <code>ggtufte</code>, Jeff Arnold’s own attempt to spin the Tufte parts out of <code>ggthemes</code>, was abandoned in 2018. I could find no existing implementation of the bar chart with gridlines erased through the bars, no first-class dot-dash geom, and no Tufte colour palette (<code>ggthemes</code> ships Few, Cleveland, Tableau and Ptol palettes, but not one from Tufte).</p>
-<p>The measurement half is the reason this package exists. The drawing half is partly convenience and partly consolidation.</p>
+<p>Some of this duplicates work that already exists. <a href="https://github.com/jrnold/ggthemes" class="external-link"><code>ggthemes</code></a> has a <code><a href="reference/theme_tufte.html">theme_tufte()</a></code>, a <code><a href="reference/geom_rangeframe.html">geom_rangeframe()</a></code> and a <code><a href="reference/geom_tufteboxplot.html">geom_tufteboxplot()</a></code>. It’s actively maintained and widely used. If the theme is all you want, it’s the lighter dependency and you should use it. Loading both packages masks <code><a href="reference/theme_tufte.html">theme_tufte()</a></code>, so watch for that.</p>
+<p>If you need labels that can’t collide, <a href="https://cran.r-project.org/package=directlabels" class="external-link"><code>directlabels</code></a> and <a href="https://cran.r-project.org/package=ggrepel" class="external-link"><code>ggrepel</code></a> solve the general problem properly. <code><a href="reference/geom_text_last.html">geom_text_last()</a></code> here only handles the narrow case of labelling the end of a series.</p>
+<p>The gap I think this fills is measurement. As far as I can tell, no R package computes the data-ink ratio, the lie factor or data density. A search of every CRAN title and description turns up nothing for “data-ink”, “lie factor” or “chartjunk”. The near neighbours do adjacent work: <code>ggcheck</code> reads built ggplot objects to autograde student code, <code>ggalttext</code> reads them to write alt text, and <a href="https://cran.r-project.org/package=GGenemy" class="external-link"><code>GGenemy</code></a> audits plots for accessibility, meaning WCAG contrast and colour-vision deficiency. The only data-ink implementation I could find in any language is a Java repository, archived in 2025 and last worked on in 2010, and it makes you segment the image by hand before it counts anything.</p>
+<p><code><a href="reference/check_contrast.html">check_contrast()</a></code> overlaps GGenemy deliberately. A package that tells you to erase ink owes you a check that what’s left is still visible. GGenemy goes further on accessibility, including colour-vision simulation, and it’s the better tool if that’s your question.</p>
+<p>One caution about what the numbers are for. The empirical literature doesn’t support maximising the data-ink ratio as an objective, and hasn’t since the mid nineties. I treat these measurements as diagnostics. They tell you where a figure spends its ink, and I’d rather you argue with them than optimise against them. The <a href="https://lobsterbush.github.io/tufter/articles/measuring.html#and-a-larger-caveat-the-principle-itself-is-contested">measuring article</a> lays out the evidence against the principle.</p>
+<p>Several Tufte forms are unmaintained or missing in R. <code>CGPfunctions</code>, which provided <code>newggslopegraph()</code>, was removed from CRAN in November 2025. <code>leeper/slopegraph</code> hasn’t moved since 2018. <code>ggtufte</code>, Jeff Arnold’s own attempt to spin the Tufte parts out of <code>ggthemes</code>, was abandoned in 2018. I couldn’t find any implementation of the bar chart with gridlines erased through the bars, no first-class dot-dash geom, and no Tufte colour palette. <code>ggthemes</code> ships Few, Cleveland, Tableau and Ptol palettes, but nothing from Tufte.</p>
+<p>The measurement half is why this package exists. The drawing half is partly convenience and partly consolidation.</p>
 
 </div>
 <div class="section level2">

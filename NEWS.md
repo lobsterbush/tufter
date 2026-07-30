@@ -48,6 +48,10 @@ that were not on the same scale.
 
 ## Elsewhere
 
+* All the prose is rewritten: README, the vignette, both articles, the roxygen
+  documentation and the audit's own messages. Contractions throughout, no dashes
+  used as connectors, and none of the antithesis constructions ("not X, it's Y")
+  that had crept in.
 * `tufte_principles()` gains a `criterion` column marking which principles
   Tufte states a testable line for. Ten of twenty-six do.
 * The audit cites WCAG rather than Tufte for the contrast minimum, and

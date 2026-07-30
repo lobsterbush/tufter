@@ -1,9 +1,9 @@
 # The Cleveland dot plot
 
-When the audit tells you that a bar chart's baseline is not zero, it is
+When the audit tells you that a bar chart's baseline isn't zero, it's
 offering you two ways out: start at zero, or stop using bars. This is
 the second. A dot encodes its value by position rather than by length,
-so it can be read on a scale that does not include zero without lying
+so it can be read on a scale that doesn't include zero without lying
 about proportions, and it uses a fraction of the ink a bar does.
 
 ## Usage
@@ -57,7 +57,7 @@ A `ggplot2` layer.
 
 Cleveland's version adds a light leader line running from the axis to
 the dot, which lets the eye track a long way along a row without
-drifting into the neighbouring one. That line is not data-ink, and it
+drifting into the neighbouring one. That line isn't data-ink, and it
 earns its place only because the alternative is a misread row.
 
 Sort the categories before plotting. An alphabetical dot plot wastes the

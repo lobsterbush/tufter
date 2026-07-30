@@ -61,7 +61,7 @@ The filename, invisibly.
 Before writing the file it runs
 [`check_labels_fit()`](https://lobsterbush.github.io/tufter/reference/check_labels_fit.md)
 at the size you asked for, because a subtitle that fits on screen at the
-default device size is not a subtitle that fits in the saved file.
+default device size isn't a subtitle that fits in the saved file.
 Clipping is reported as a warning; set `strict = TRUE` to make it an
 error instead.
 

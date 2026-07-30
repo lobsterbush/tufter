@@ -164,8 +164,8 @@ tall the panel is, and neither reading is the data's fault. Banking replaces
 that choice with a rule.</p>
 <p>Two methods are offered. <code>"median_slope"</code> is Cleveland's original: pick
 the aspect ratio that makes the median absolute slope exactly 45 degrees. It
-is robust and is the default. <code>"average_orientation"</code> instead makes the
-mean absolute orientation 45 degrees, optionally weighting each segment by
+resists outliers and is the default. <code>"average_orientation"</code> instead
+makes the mean absolute orientation 45 degrees, optionally weighting by
 its length so that long segments count for more, which is closer to what the
 eye does with a line that varies in density.</p>
 <p>Only line-like layers are read: lines, paths, steps and smooths. A plot with
@@ -174,7 +174,7 @@ guessing.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="save_tufte.html">save_tufte()</a></code>. Banking is not applied automatically:
+    <div class="dont-index"><p><code><a href="save_tufte.html">save_tufte()</a></code>. Banking isn't applied automatically:
   pass the <code>height</code> it returns yourself, so that the choice stays
   visible in your code.</p></div>
     </div>

@@ -17,8 +17,8 @@ slow part? Defaults to \code{TRUE}.}
 }
 \value{
 An object of class \code{tufte_audit}: a tibble with one row per
-  check, whose \code{status} is \code{"fail"} for a stated criterion that is
-  not met, \code{"pass"} for one that is, \code{"report"} for a measurement
+  check, whose \code{status} is \code{"fail"} for a stated criterion that's
+  not met, \code{"pass"} for one that's, \code{"report"} for a measurement
   Tufte gives no threshold for, and \code{"skip"} for a check that could not
   run. The number of unmet criteria is attached as the \code{"violations"}
   attribute.
@@ -40,10 +40,10 @@ measured and reported without a verdict. Earlier versions of this package
 invented thresholds for them, which put a number of mine in the same voice as
 a principle of his; the numbers were never his and are now gone.
 
-The consequence is that there is no score. Counting satisfied principles
+The consequence is that there's no score. Counting satisfied principles
 would mean weighting them against each other, and Tufte offers no exchange
 rate between a pie chart and a missing source note. What the audit gives you
-is a list of stated criteria that are not met, and a set of measurements to
+is a list of stated criteria that aren't met, and a set of measurements to
 compare against another draft of the same figure.
 }
 \examples{
@@ -52,5 +52,5 @@ tufte_audit(ggplot(mtcars, aes(wt, mpg)) + geom_point())
 }
 \seealso{
 \code{\link{tufte_principles}()}, which marks which principles carry
-  a stated criterion and which do not.
+  a stated criterion and which don't.
 }

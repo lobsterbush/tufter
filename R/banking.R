@@ -12,8 +12,8 @@
 #'
 #' Two methods are offered. \code{"median_slope"} is Cleveland's original: pick
 #' the aspect ratio that makes the median absolute slope exactly 45 degrees. It
-#' is robust and is the default. \code{"average_orientation"} instead makes the
-#' mean absolute orientation 45 degrees, optionally weighting each segment by
+#' resists outliers and is the default. \code{"average_orientation"} instead
+#' makes the mean absolute orientation 45 degrees, optionally weighting by
 #' its length so that long segments count for more, which is closer to what the
 #' eye does with a line that varies in density.
 #'
@@ -30,7 +30,7 @@
 #'   \code{aspect} (height divided by width), the \code{height} that implies at
 #'   the given \code{width}, the \code{method} used, and \code{n_segments}, the
 #'   number of line segments the answer was computed from.
-#' @seealso \code{\link{save_tufte}()}. Banking is not applied automatically:
+#' @seealso \code{\link{save_tufte}()}. Banking isn't applied automatically:
 #'   pass the \code{height} it returns yourself, so that the choice stays
 #'   visible in your code.
 #' @export

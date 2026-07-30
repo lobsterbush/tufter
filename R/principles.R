@@ -3,11 +3,11 @@
 #' Returns the table this package is built around: each principle, the book it
 #' comes from, the function that puts it into practice, whether
 #' \code{\link{tufte_audit}()} can check it, and whether Tufte states a
-#' criterion a graphic either meets or does not.
+#' criterion a graphic either meets or doesn't.
 #'
 #' The \code{criterion} column is the important one. Tufte gives a testable
 #' line for some principles: bars are measured from zero, the lie factor lies
-#' between 0.95 and 1.05, graphics are wider than they are tall. For others he
+#' between 0.95 and 1.05, graphics are wider than they're tall. For others he
 #' gives only a direction, asking that the data-ink ratio be maximised "within
 #' reason" and that data density be increased, and names no threshold. The audit
 #' grades the first kind and merely measures the second, because any line drawn
@@ -15,7 +15,7 @@
 #'
 #' Principles no function can reach are listed too, with \code{audited} set to
 #' \code{FALSE}, because the honest version of "implements all of Tufte's
-#' principles" says which ones it cannot.
+#' principles" says which ones it can't.
 #'
 #' @param audited_only Logical. Return only the principles the audit can check?
 #'   Defaults to \code{FALSE}.
@@ -112,7 +112,7 @@ tufte_principles <- function(audited_only = FALSE) {
     "slopegraph(), facet_tufte()", FALSE, FALSE,
 
     "Show causality", "Beautiful Evidence ch. 6",
-    "The graphic should carry the mechanism, not just the correlation.",
+    "The graphic should carry the mechanism as well as the correlation.",
     "annotation, not code", FALSE, FALSE,
 
     "Show multivariate data", "Beautiful Evidence ch. 6",

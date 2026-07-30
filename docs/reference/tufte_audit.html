@@ -136,8 +136,8 @@ slow part? Defaults to <code>TRUE</code>.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An object of class <code>tufte_audit</code>: a tibble with one row per
-  check, whose <code>status</code> is <code>"fail"</code> for a stated criterion that is
-  not met, <code>"pass"</code> for one that is, <code>"report"</code> for a measurement
+  check, whose <code>status</code> is <code>"fail"</code> for a stated criterion that's
+  not met, <code>"pass"</code> for one that's, <code>"report"</code> for a measurement
   Tufte gives no threshold for, and <code>"skip"</code> for a check that could not
   run. The number of unmet criteria is attached as the <code>"violations"</code>
   attribute.</p>
@@ -154,16 +154,16 @@ says how much is enough, because the answer depends on the content. Those are
 measured and reported without a verdict. Earlier versions of this package
 invented thresholds for them, which put a number of mine in the same voice as
 a principle of his; the numbers were never his and are now gone.</p>
-<p>The consequence is that there is no score. Counting satisfied principles
+<p>The consequence is that there's no score. Counting satisfied principles
 would mean weighting them against each other, and Tufte offers no exchange
 rate between a pie chart and a missing source note. What the audit gives you
-is a list of stated criteria that are not met, and a set of measurements to
+is a list of stated criteria that aren't met, and a set of measurements to
 compare against another draft of the same figure.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="tufte_principles.html">tufte_principles()</a></code>, which marks which principles carry
-  a stated criterion and which do not.</p></div>
+  a stated criterion and which don't.</p></div>
     </div>
 
     <div class="section level2">
@@ -177,19 +177,19 @@ compare against another draft of the same figure.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── Not met </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> The panel is filled with #EBEBEBFF. The fill is identical whatever the</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   numbers are, so it is non-data ink and Tufte's instruction is to erase it.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   numbers are, so it's non-data ink and Tufte's instruction is to erase it.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Erase non-data ink - VDQI ch. 4</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> Minor gridlines are drawn. They subdivide the scale past the precision anyone</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   reads from a graphic, and are non-data ink.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   reads off a graphic, so they're non-data ink.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Erase non-data ink - VDQI ch. 4</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> No caption. Tufte asks that evidence be thoroughly described and its sources</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   indicated on the graphic itself, so the claim can be checked without hunting</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   named on the graphic itself, so a reader can check the claim without hunting</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   through the surrounding text. See label_source().</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Documentation - Beautiful Evidence ch. 6</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── Measured, not graded </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Tufte states a direction for these, not a threshold. Read them against another</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">draft of the same figure.</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Tufte states a direction for these rather than a threshold. Read them against</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">another draft of the same figure.</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Data-ink ratio 0.06: 6% of the ink varies with the data. Tufte asks that this</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   be maximised within reason and names no threshold, so read it against another</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   draft of this figure rather than against a target.</span>
@@ -198,7 +198,7 @@ compare against another draft of the same figure.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> 1 distinct colour in use. Tufte's advice on colour is qualitative, so this is</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   a count and not a verdict.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> 1 series overlaid in one panel. facet_tufte() would show the same data as</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   small multiples; Tufte gives no number at which to switch.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   small multiples. Tufte gives no number at which to switch.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── Met </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • No full panel border</span>

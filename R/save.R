@@ -6,7 +6,7 @@
 #'
 #' Before writing the file it runs \code{\link{check_labels_fit}()} at the size
 #' you asked for, because a subtitle that fits on screen at the default device
-#' size is not a subtitle that fits in the saved file. Clipping is reported as a
+#' size isn't a subtitle that fits in the saved file. Clipping is reported as a
 #' warning; set \code{strict = TRUE} to make it an error instead.
 #'
 #' @param filename Path to write to. The extension sets the device.

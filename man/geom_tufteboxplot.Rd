@@ -39,7 +39,7 @@ Defaults to \code{1.6}.}
 \code{"line"} and \code{"offset"} variants. Defaults to \code{1.6}.}
 
 \item{outliers}{Logical. Draw outlying points beyond the whiskers? Defaults
-to \code{TRUE}. Tufte would keep them: they are data.}
+to \code{TRUE}. Tufte would keep them: they're data.}
 }
 \value{
 A \code{ggplot2} layer.
