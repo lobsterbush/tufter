@@ -22,7 +22,9 @@ tufte_principles(audited_only = FALSE)
 ## Value
 
 A tibble with columns `principle`, `source`, `statement`,
-`implemented_by`, `audited` and `criterion`.
+`implemented_by`, `audited` and `criterion`. `implemented_by` is a
+comma-separated list of functions in this package, or `NA` for the
+principles no function reaches.
 
 ## Details
 

@@ -13,7 +13,9 @@ Defaults to \code{FALSE}.}
 \value{
 A tibble with columns \code{principle}, \code{source},
   \code{statement}, \code{implemented_by}, \code{audited} and
-  \code{criterion}.
+  \code{criterion}. \code{implemented_by} is a comma-separated list of
+  functions in this package, or \code{NA} for the principles no function
+  reaches.
 }
 \description{
 Returns the table this package is built around: each principle, the book it

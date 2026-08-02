@@ -210,3 +210,125 @@ test_that("sparkline value labels use a readable thousands separator", {
   expect_true(any(grepl("66,638", labels, fixed = TRUE)))
   expect_false(any(grepl("66 638", labels, fixed = TRUE)))
 })
+
+test_that("fixed colours set outside aes are not reported as a legend", {
+  # Red points under a blue fit line draw no key at all. Counting distinct
+  # rendered colours accused this very ordinary plot of carrying a legend.
+  fixed <- ggplot(mtcars, aes(wt, mpg)) +
+    geom_point(colour = "red") +
+    geom_smooth(colour = "blue", se = FALSE, method = "lm", formula = y ~ x) +
+    theme_tufte()
+  expect_false(tufter:::.has_legend(fixed))
+  a <- tufte_audit(fixed, measure = FALSE)
+  expect_equal(a$status[a$check == "No legend to decode"], "pass")
+
+  # A mapped discrete aesthetic still fails, and suppressing the key passes.
+  mapped <- ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
+    geom_point() + theme_tufte()
+  expect_true(tufter:::.has_legend(mapped))
+  expect_equal(
+    tufte_audit(mapped, measure = FALSE)$status[
+      tufte_audit(mapped, measure = FALSE)$check == "No legend to decode"],
+    "fail"
+  )
+  off <- mapped + theme(legend.position = "none")
+  expect_false(tufter:::.has_legend(off))
+})
+
+test_that("lie_factor reads horizontal bars along their own length", {
+  # A horizontal bar carries its length on x. Reading ymax measured the
+  # category position instead, and returned a plausible 1.4 where the true
+  # distortion was sixteenfold.
+  d <- data.frame(g = c("a", "b"), v = c(100, 110))
+  vertical <- ggplot(d, aes(g, v)) + geom_col() +
+    coord_cartesian(ylim = c(95, 115))
+  horizontal <- ggplot(d, aes(v, g)) + geom_col() +
+    coord_cartesian(xlim = c(95, 115))
+
+  expect_equal(lie_factor(horizontal), lie_factor(vertical), tolerance = 1e-6)
+  expect_gt(lie_factor(horizontal), 5)
+
+  # Honest and transformed horizontal bars behave like their vertical twins.
+  expect_equal(lie_factor(ggplot(d, aes(v, g)) + geom_col()), 1)
+  expect_true(is.na(lie_factor(ggplot(d, aes(v, g)) + geom_col() +
+                                 scale_x_log10())))
+})
+
+test_that("banking normalises each panel by its own ranges", {
+  # Two straight lines, each running corner to corner of its own panel, are
+  # both at 45 degrees when the panel is square. Under free scales the answer
+  # is 1; using the first panel's ranges for both gave 2.
+  d <- rbind(
+    data.frame(t = 1:50, v = seq(0, 1, length.out = 50), g = "tiny"),
+    data.frame(t = 1:50, v = seq(0, 1000, length.out = 50), g = "huge")
+  )
+  free <- ggplot(d, aes(t, v)) + geom_line() +
+    facet_wrap(~ g, scales = "free_y")
+  expect_equal(bank_to_45(free)$aspect, 1, tolerance = 1e-6)
+
+  # On a shared scale the small series really is nearly flat, so the answer
+  # must differ. This is the check that the panel loop has not flattened the
+  # distinction between fixed and free scales.
+  fixed <- ggplot(d, aes(t, v)) + geom_line() + facet_wrap(~ g)
+  expect_gt(bank_to_45(fixed)$aspect, 1.5)
+})
+
+test_that("slopegraph warns rather than silently overprinting duplicates", {
+  d <- data.frame(
+    g = c("a", "a", "b", "b", "a"),
+    x = c("1", "2", "1", "2", "1"),
+    v = c(1, 2, 3, 4, 9)
+  )
+  expect_warning(p <- slopegraph(d, x, v, g), "more than one value")
+  # One label per unit per end, not two.
+  built <- suppressWarnings(ggplot_build(slopegraph(d, x, v, g)))
+  expect_equal(nrow(built$data[[2]]), 2L)
+  expect_equal(nrow(built$data[[3]]), 2L)
+})
+
+test_that("bar orientation is read correctly however it was written", {
+  # Three ways to draw the same truncated bar chart. All three distort by the
+  # same amount, so all three must report the same lie factor, and the audit
+  # must name the axis the reader can actually see.
+  d <- data.frame(g = c("a", "b"), v = c(100, 110))
+  cases <- list(
+    vertical = ggplot(d, aes(g, v)) + geom_col() +
+      coord_cartesian(ylim = c(95, 115)),
+    horizontal = ggplot(d, aes(v, g)) + geom_col() +
+      coord_cartesian(xlim = c(95, 115)),
+    flipped = ggplot(d, aes(g, v)) + geom_col() + coord_flip(ylim = c(95, 115))
+  )
+  factors <- vapply(cases, lie_factor, numeric(1))
+  expect_equal(unname(factors[2]), unname(factors[1]), tolerance = 1e-6)
+  expect_equal(unname(factors[3]), unname(factors[1]), tolerance = 1e-6)
+  expect_gt(factors[[1]], 5)
+
+  axis_named <- function(p) {
+    a <- tufte_audit(p, measure = FALSE)
+    a$message[a$check == "Bars measured from zero"]
+  }
+  expect_match(axis_named(cases$vertical), "^The Y axis")
+  expect_match(axis_named(cases$horizontal), "^The X axis")
+  # coord_flip() moves the value axis to the bottom, so the message must too.
+  expect_match(axis_named(cases$flipped), "^The X axis")
+})
+
+test_that("coord_flip on an honest bar chart is exactly honest", {
+  # Reading the category range as the baseline gave 1.004, which is inside
+  # Tufte's band by luck rather than by being right.
+  d <- data.frame(g = c("a", "b"), v = c(100, 110))
+  expect_equal(lie_factor(ggplot(d, aes(g, v)) + geom_col() + coord_flip()), 1)
+})
+
+test_that("a transformed scale is found through coord_flip", {
+  # The scale stays attached to the variable even when the coord swaps sides,
+  # so the transformation has to be looked up on the data axis and reported on
+  # the panel axis.
+  d <- data.frame(g = c("a", "b"), v = c(100, 110))
+  flipped_log <- ggplot(d, aes(g, v)) + geom_col() + coord_flip() +
+    scale_y_log10()
+  expect_true(is.na(lie_factor(flipped_log)))
+  a <- tufte_audit(flipped_log, measure = FALSE)
+  msg <- a$message[a$check == "Bars measured from zero"]
+  expect_match(msg, "^The X axis uses a log-10 transformation")
+})

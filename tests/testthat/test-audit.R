@@ -176,3 +176,27 @@ test_that("tufte_principles is complete and honest about what it cannot check", 
   expect_equal(nrow(tufte_principles(audited_only = TRUE)), sum(p$audited))
   expect_false(any(duplicated(p$principle)))
 })
+
+test_that("every function named in tufte_principles actually exists", {
+  # A renamed or removed function would otherwise leave the table pointing at
+  # nothing, and the table is the package's own account of what it does.
+  p <- tufte_principles()
+  named <- p$implemented_by[!is.na(p$implemented_by)]
+  fns <- trimws(unlist(strsplit(named, ",")))
+  fns <- sub("\\(.*$", "", fns)
+  fns <- unique(fns[nzchar(fns)])
+
+  exported <- getNamespaceExports("tufter")
+  expect_true(length(fns) > 10)
+  expect_setequal(setdiff(fns, exported), character(0))
+})
+
+test_that("principles with no implementation say so with NA", {
+  p <- tufte_principles()
+  # Prose in a column of function names makes it unparseable, so the ones no
+  # function reaches carry NA and explain themselves in `statement`.
+  unreachable <- p[is.na(p$implemented_by), ]
+  expect_gt(nrow(unreachable), 0)
+  expect_true(all(!unreachable$audited))
+  expect_true(all(nzchar(unreachable$statement)))
+})

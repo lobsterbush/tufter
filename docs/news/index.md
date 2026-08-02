@@ -1,5 +1,56 @@
 # Changelog
 
+## tufter 0.4.1
+
+More defects found by pointing the package at awkward plots. Two of
+these changed reported numbers.
+
+### Orientation
+
+- [`lie_factor()`](https://lobsterbush.github.io/tufter/reference/lie_factor.md)
+  read a horizontal bar chart along the wrong axis, measuring the
+  category position instead of the bar’s length. A sixteenfold
+  distortion came back as 1.4, which sits close enough to honest to be
+  believed. Horizontal bars, bars written with
+  [`coord_flip()`](https://ggplot2.tidyverse.org/reference/coord_flip.html)
+  and ordinary vertical bars now all report the same lie factor for the
+  same distortion.
+- [`tufte_audit()`](https://lobsterbush.github.io/tufter/reference/tufte_audit.md)
+  had the same fault in its baseline check. It reached the right verdict
+  by accident and then named the wrong axis, so the explanation pointed
+  a reader at an axis that was fine. It now names the axis they can see.
+- [`coord_flip()`](https://ggplot2.tidyverse.org/reference/coord_flip.html)
+  on an honest bar chart returned 1.004 rather than 1, because the
+  baseline came from the category range.
+
+### Banking
+
+- [`bank_to_45()`](https://lobsterbush.github.io/tufter/reference/bank_to_45.md)
+  normalised every panel by the first panel’s ranges. Under free scales
+  that rescales every other panel’s slopes by the wrong factor: two
+  lines each running corner to corner of their own panel came back at 2
+  instead of 1. Each panel is now normalised by its own ranges, and the
+  answer still differs between fixed and free scales, as it should.
+
+### Fewer false alarms
+
+- The audit accused any plot that sets two fixed colours outside
+  [`aes()`](https://ggplot2.tidyverse.org/reference/aes.html) of
+  carrying a legend. Red points under a blue fit line draw no key at
+  all. It now asks the assembled figure whether a guide box is really
+  there.
+
+### Elsewhere
+
+- [`slopegraph()`](https://lobsterbush.github.io/tufter/reference/slopegraph.md)
+  warns when a unit has more than one value in a period instead of
+  printing two labels on top of each other, and draws the first.
+- [`tufte_principles()`](https://lobsterbush.github.io/tufter/reference/tufte_principles.md)
+  puts `NA` in `implemented_by` for the principles no function reaches,
+  rather than prose in a column of function names. A test now asserts
+  that every function it does name is exported by the package, so a
+  rename can’t leave the table pointing at nothing.
+
 ## tufter 0.4.0
 
 ### A second gallery, on real data

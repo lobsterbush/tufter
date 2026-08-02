@@ -52,18 +52,26 @@ base <- ggplot(d, aes(x, y)) +
   geom_point(size = 1, alpha = 0.5) +
   labs(x = "Pre-treatment score", y = "Outcome")
 
-data_ink_ratio(base)
+r_base <- data_ink_ratio(base)
+r_base
 ```
 
-Almost nothing. The grey panel alone is most of that ink, and it doesn't change
-when the data change.
+Four fifths of that ink is furniture. The grey panel alone is most of it, and
+it doesn't change when the data change. Four hundred semi-transparent points
+still put a fair amount of ink on the page, which is why the figure isn't as
+lopsided as the forty-point scatterplot in the
+[getting started vignette](tufter.html).
 
 ```{r ratio-lean}
 lean <- base + geom_rangeframe() + theme_tufte()
-data_ink_ratio(lean)
+r_lean <- data_ink_ratio(lean)
+r_lean
 ```
 
-The same numbers, with about seven times the share of the ink doing work.
+The same numbers, with `r sprintf("%.1f", r_lean$ratio / r_base$ratio)` times
+the share of the ink doing work. That multiple is written in by inline code
+rather than typed, because it moves whenever the measurement does, and it has
+already moved once while I was writing this page.
 
 ### Where it misleads
 

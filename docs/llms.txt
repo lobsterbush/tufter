@@ -153,11 +153,13 @@ whether the audit can check it at all.
 ``` r
 p <- tufte_principles()
 p[!p$audited, c("principle", "implemented_by")]
-#> Show comparisons          slopegraph(), facet_tufte()
-#> Show causality            annotation, not code
-#> Show multivariate data    facet_tufte(), sparklines()
-#> Content counts most of all  you
+#> Show comparisons            slopegraph(), facet_tufte()
+#> Show causality              NA
+#> Show multivariate data      facet_tufte(), sparklines()
+#> Content counts most of all  NA
 ```
+
+The two `NA`s are the honest part. Nothing in the package reaches them.
 
 A figure can meet every stated criterion and still be pointless. Tufte’s
 first principle is that content counts most of all, and no function

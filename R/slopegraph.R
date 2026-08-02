@@ -65,6 +65,19 @@ slopegraph <- function(data, x, y, group, label_size = 2.8,
   d$x <- droplevels(d$x)
   d$xn <- as.integer(d$x)
 
+  # One unit can only have one value per period. More than one is ambiguous
+  # data, and quietly drawing both would print two labels on top of each other.
+  dupes <- duplicated(d[c("g", "x")])
+  if (any(dupes)) {
+    offenders <- unique(d$g[dupes])
+    .warn(c(
+      "{length(offenders)} unit{?s} {?has/have} more than one value in a period, so only the first is drawn.",
+      x = "Affected: {paste(utils::head(offenders, 5), collapse = ', ')}{if (length(offenders) > 5) ', ...' else ''}",
+      i = "Aggregate to one value per unit per period before plotting."
+    ))
+    d <- d[!dupes, , drop = FALSE]
+  }
+
   fmt <- scales::label_number(accuracy = accuracy)
   levs <- levels(d$x)
   first <- d[d$xn == 1, , drop = FALSE]

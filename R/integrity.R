@@ -224,21 +224,23 @@ lie_factor.ggplot <- function(x, ...) {
   bar_layers <- which(geoms %in% c("Bar", "Col", "ColTufte", "Rect"))
   if (length(bar_layers) == 0) return(1)
 
-  # On a transformed scale a bar's length is no longer proportional to anything
-  # the reader can recover, and there is no single number that describes the
-  # distortion. Returning 1 here would read as a clean bill of health for one
-  # of the more misleading things you can do to a bar chart.
-  if (.nonlinear_position_scale(built)) return(NA_real_)
-
   ranges <- built$layout$panel_params
   out <- vapply(bar_layers, function(i) {
     d <- built$data[[i]]
-    if (!all(c("ymin", "ymax") %in% names(d))) return(NA_real_)
-    values <- d$ymax
+    ax <- .bar_axes(d, built$plot$coordinates)
+    if (!all(c(ax$lo, ax$hi) %in% names(d))) return(NA_real_)
+
+    # On a transformed scale a bar's length is no longer proportional to
+    # anything the reader can recover, and there is no single number that
+    # describes the distortion. Returning 1 would read as a clean bill of
+    # health for one of the more misleading things you can do to a bar chart.
+    if (.nonlinear_position_scale(built, ax$data)) return(NA_real_)
+
+    values <- d[[ax$hi]]
     if (length(values) < 2 || !is.finite(diff(range(values)))) return(NA_real_)
 
     baseline <- suppressWarnings(min(unlist(lapply(ranges, function(pp) {
-      r <- pp$y.range %||% pp$y$continuous_range
+      r <- .panel_range_of(pp)[[ax$panel]]
       if (is.null(r)) NA_real_ else r[1]
     })), na.rm = TRUE))
     if (!is.finite(baseline) || baseline <= 0) return(1)
@@ -256,19 +258,40 @@ lie_factor.ggplot <- function(x, ...) {
   out[which.max(abs(log(out)))]
 }
 
-# Name of the y scale's transformation, or NA if it cannot be determined.
+# Which axis carries a bar's length, in three different senses.
+#
+# The built data follows the layer's own orientation: a horizontal bar keeps
+# its length in xmin/xmax. So does the scale, since a scale is attached to a
+# variable rather than to a side of the panel. The drawn panel follows both the
+# layer orientation and coord_flip(), which swaps the sides at render time
+# without touching either of the other two.
 #' @noRd
-.y_transform_name <- function(built) {
-  ys <- tryCatch(built$layout$panel_scales_y[[1]], error = function(e) NULL)
-  if (is.null(ys)) return(NA_character_)
-  nm <- tryCatch(ys$get_transformation()$name, error = function(e) NULL)
-  if (is.null(nm)) nm <- tryCatch(ys$trans$name, error = function(e) NULL)
+.bar_axes <- function(d, coordinates = NULL) {
+  flipped <- isTRUE(d$flipped_aes[1])
+  coord_flipped <- inherits(coordinates, "CoordFlip")
+  data_axis <- if (flipped) "x" else "y"
+  list(
+    data = data_axis,
+    panel = if (xor(flipped, coord_flipped)) "x" else "y",
+    hi = paste0(data_axis, "max"),
+    lo = paste0(data_axis, "min")
+  )
+}
+
+# Name of a position scale's transformation, or NA if it cannot be determined.
+#' @noRd
+.y_transform_name <- function(built, axis = "y") {
+  slot <- if (identical(axis, "x")) "panel_scales_x" else "panel_scales_y"
+  s <- tryCatch(built$layout[[slot]][[1]], error = function(e) NULL)
+  if (is.null(s)) return(NA_character_)
+  nm <- tryCatch(s$get_transformation()$name, error = function(e) NULL)
+  if (is.null(nm)) nm <- tryCatch(s$trans$name, error = function(e) NULL)
   if (is.null(nm)) NA_character_ else as.character(nm)
 }
 
 #' @noRd
-.nonlinear_position_scale <- function(built) {
-  nm <- .y_transform_name(built)
+.nonlinear_position_scale <- function(built, axis = "y") {
+  nm <- .y_transform_name(built, axis)
   !is.na(nm) && !nm %in% c("identity", "reverse")
 }
 

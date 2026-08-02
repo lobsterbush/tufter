@@ -21,7 +21,9 @@
 #'   Defaults to \code{FALSE}.
 #' @return A tibble with columns \code{principle}, \code{source},
 #'   \code{statement}, \code{implemented_by}, \code{audited} and
-#'   \code{criterion}.
+#'   \code{criterion}. \code{implemented_by} is a comma-separated list of
+#'   functions in this package, or \code{NA} for the principles no function
+#'   reaches.
 #' @export
 #' @examples
 #' tufte_principles()
@@ -112,8 +114,8 @@ tufte_principles <- function(audited_only = FALSE) {
     "slopegraph(), facet_tufte()", FALSE, FALSE,
 
     "Show causality", "Beautiful Evidence ch. 6",
-    "The graphic should carry the mechanism as well as the correlation.",
-    "annotation, not code", FALSE, FALSE,
+    "The graphic should carry the mechanism as well as the correlation. No function does this; annotation does.",
+    NA_character_, FALSE, FALSE,
 
     "Show multivariate data", "Beautiful Evidence ch. 6",
     "The world has more than two variables; the page can hold more than two.",
@@ -132,8 +134,8 @@ tufte_principles <- function(audited_only = FALSE) {
     "sparkline(), sparklines(), sparkline_grob()", FALSE, FALSE,
 
     "Content counts most of all", "Beautiful Evidence ch. 6",
-    "No amount of design rescues a graphic with nothing to say.",
-    "you", FALSE, FALSE
+    "No amount of design rescues a graphic with nothing to say. This one is yours.",
+    NA_character_, FALSE, FALSE
   )
 
   if (audited_only) out <- out[out$audited, , drop = FALSE]

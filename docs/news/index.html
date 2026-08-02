@@ -71,7 +71,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,6 +103,35 @@
       <small>Source: <a href="https://github.com/lobsterbush/tufter/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.4.1" id="tufter-041">tufter 0.4.1<a class="anchor" aria-label="anchor" href="#tufter-041"></a></h2>
+<p>More defects found by pointing the package at awkward plots. Two of these changed reported numbers.</p>
+<div class="section level3">
+<h3 id="orientation-0-4-1">Orientation<a class="anchor" aria-label="anchor" href="#orientation-0-4-1"></a></h3>
+<ul><li>
+<code><a href="../reference/lie_factor.html">lie_factor()</a></code> read a horizontal bar chart along the wrong axis, measuring the category position instead of the bar’s length. A sixteenfold distortion came back as 1.4, which sits close enough to honest to be believed. Horizontal bars, bars written with <code><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip()</a></code> and ordinary vertical bars now all report the same lie factor for the same distortion.</li>
+<li>
+<code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> had the same fault in its baseline check. It reached the right verdict by accident and then named the wrong axis, so the explanation pointed a reader at an axis that was fine. It now names the axis they can see.</li>
+<li>
+<code><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip()</a></code> on an honest bar chart returned 1.004 rather than 1, because the baseline came from the category range.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="banking-0-4-1">Banking<a class="anchor" aria-label="anchor" href="#banking-0-4-1"></a></h3>
+<ul><li>
+<code><a href="../reference/bank_to_45.html">bank_to_45()</a></code> normalised every panel by the first panel’s ranges. Under free scales that rescales every other panel’s slopes by the wrong factor: two lines each running corner to corner of their own panel came back at 2 instead of 1. Each panel is now normalised by its own ranges, and the answer still differs between fixed and free scales, as it should.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="fewer-false-alarms-0-4-1">Fewer false alarms<a class="anchor" aria-label="anchor" href="#fewer-false-alarms-0-4-1"></a></h3>
+<ul><li>The audit accused any plot that sets two fixed colours outside <code><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes()</a></code> of carrying a legend. Red points under a blue fit line draw no key at all. It now asks the assembled figure whether a guide box is really there.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="elsewhere-0-4-1">Elsewhere<a class="anchor" aria-label="anchor" href="#elsewhere-0-4-1"></a></h3>
+<ul><li>
+<code><a href="../reference/slopegraph.html">slopegraph()</a></code> warns when a unit has more than one value in a period instead of printing two labels on top of each other, and draws the first.</li>
+<li>
+<code><a href="../reference/tufte_principles.html">tufte_principles()</a></code> puts <code>NA</code> in <code>implemented_by</code> for the principles no function reaches, rather than prose in a column of function names. A test now asserts that every function it does name is exported by the package, so a rename can’t leave the table pointing at nothing.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.0" id="tufter-040">tufter 0.4.0<a class="anchor" aria-label="anchor" href="#tufter-040"></a></h2>
 <div class="section level3">

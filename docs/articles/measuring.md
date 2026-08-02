@@ -38,7 +38,8 @@ base <- ggplot(d, aes(x, y)) +
   geom_point(size = 1, alpha = 0.5) +
   labs(x = "Pre-treatment score", y = "Outcome")
 
-data_ink_ratio(base)
+r_base <- data_ink_ratio(base)
+r_base
 #> 
 #> ── Data-ink ratio
 #> 19% of the ink in this figure varies with the data.
@@ -47,12 +48,17 @@ data_ink_ratio(base)
 #> • measured at 6.5in x 4in, 150 dpi
 ```
 
-Almost nothing. The grey panel alone is most of that ink, and it doesn’t
-change when the data change.
+Four fifths of that ink is furniture. The grey panel alone is most of
+it, and it doesn’t change when the data change. Four hundred
+semi-transparent points still put a fair amount of ink on the page,
+which is why the figure isn’t as lopsided as the forty-point scatterplot
+in the [getting started
+vignette](https://lobsterbush.github.io/tufter/articles/tufter.md).
 
 ``` r
 lean <- base + geom_rangeframe() + theme_tufte()
-data_ink_ratio(lean)
+r_lean <- data_ink_ratio(lean)
+r_lean
 #> 
 #> ── Data-ink ratio
 #> 81% of the ink in this figure varies with the data.
@@ -61,8 +67,10 @@ data_ink_ratio(lean)
 #> • measured at 6.5in x 4in, 150 dpi
 ```
 
-The same numbers, with about seven times the share of the ink doing
-work.
+The same numbers, with 4.3 times the share of the ink doing work. That
+multiple is written in by inline code rather than typed, because it
+moves whenever the measurement does, and it has already moved once while
+I was writing this page.
 
 ### Where it misleads
 
@@ -518,10 +526,10 @@ p[!p$audited, c("principle", "source", "implemented_by")]
 #> 3 Position beats length      VDQI ch. 5                    geom_cleveland_dot() 
 #> 4 Micro and macro readings   Envisioning Information ch. 2 sparklines(), facet_…
 #> 5 Show comparisons           Beautiful Evidence ch. 6      slopegraph(), facet_…
-#> 6 Show causality             Beautiful Evidence ch. 6      annotation, not code 
+#> 6 Show causality             Beautiful Evidence ch. 6      NA                   
 #> 7 Show multivariate data     Beautiful Evidence ch. 6      facet_tufte(), spark…
 #> 8 Sparklines                 Beautiful Evidence ch. 2      sparkline(), sparkli…
-#> 9 Content counts most of all Beautiful Evidence ch. 6      you
+#> 9 Content counts most of all Beautiful Evidence ch. 6      NA
 ```
 
 Showing comparisons, showing causality, showing multivariate data,

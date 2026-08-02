@@ -247,17 +247,23 @@ print.tufte_audit <- function(x, ...) {
   bars <- which(ctx$geoms %in% c("Bar", "Col", "ColTufte"))
   if (length(bars) == 0) return(NULL)
 
-  trans <- .y_transform_name(ctx$built)
+  # A horizontal bar chart, whether written that way or flipped by the coord,
+  # carries its length on the other axis. Naming the wrong one would give the
+  # right verdict with an explanation the reader cannot act on.
+  ax <- .bar_axes(ctx$built$data[[bars[1]]], ctx$plot$coordinates)
+  seen <- toupper(ax$panel)
+
+  trans <- .y_transform_name(ctx$built, ax$data)
   if (!is.na(trans) && !trans %in% c("identity", "reverse")) {
     return(.row(
       "Graphical integrity", "VDQI ch. 2",
       "Bars measured from zero", "fail",
-      sprintf("The y axis uses a %s transformation, so a bar's length is no longer proportional to the quantity it represents. Use points on a transformed scale instead of bars.", trans)
+      sprintf("The %s axis uses a %s transformation, so a bar's length is no longer proportional to the quantity it represents. Use points on a transformed scale instead of bars.", seen, trans)
     ))
   }
 
   lo <- suppressWarnings(min(vapply(ctx$built$layout$panel_params, function(pp) {
-    r <- pp$y.range %||% (if (!is.null(pp$y)) pp$y$continuous_range else NULL)
+    r <- .panel_range_of(pp)[[ax$panel]]
     if (is.null(r)) NA_real_ else r[1]
   }, numeric(1)), na.rm = TRUE))
 
@@ -265,7 +271,7 @@ print.tufte_audit <- function(x, ...) {
     return(.row(
       "Graphical integrity", "VDQI ch. 2",
       "Bars measured from zero", "fail",
-      sprintf("The y axis starts at %.3g, so bar length isn't proportional to the quantity. Tufte's rule is that the representation of numbers, as physically measured on the graphic, should be directly proportional to the quantities represented.", lo)
+      sprintf("The %s axis starts at %.3g, so bar length isn't proportional to the quantity. Tufte's rule is that the representation of numbers, as physically measured on the graphic, should be directly proportional to the quantities represented.", seen, lo)
     ))
   }
   .row("Graphical integrity", "VDQI ch. 2", "Bars measured from zero", "pass",
@@ -291,8 +297,11 @@ print.tufte_audit <- function(x, ...) {
 
 #' @noRd
 .check_legend <- function(ctx) {
-  pos <- ctx$theme$legend.position %||% "right"
-  if (identical(pos, "none") || .legend_hues(ctx$built) == 0) {
+  # Ask the built figure whether a key is actually drawn. Counting distinct
+  # rendered colours would accuse any plot that sets two fixed colours outside
+  # aes(), such as red points under a blue fit line, of carrying a legend it
+  # never had.
+  if (!.has_legend(ctx$plot)) {
     return(.row(
       "Integrate word and image", "Beautiful Evidence ch. 5",
       "No legend to decode", "pass",
@@ -314,6 +323,25 @@ print.tufte_audit <- function(x, ...) {
     "No legend to decode", "fail",
     "A legend is drawn for named series. Tufte's instruction is that words belong on the data rather than in a key the reader has to hold in memory and look back to. geom_text_last() labels each series in place, and where there are too many to label, facet_tufte() shows them as small multiples instead."
   )
+}
+
+# Does the assembled figure carry a guide box with anything in it?
+#' @noRd
+.has_legend <- function(plot) {
+  tryCatch({
+    gt <- ggplot2::ggplotGrob(plot)
+    i <- which(grepl("^guide-box", gt$layout$name))
+    if (length(i) == 0) return(FALSE)
+    any(vapply(i, function(k) {
+      g <- gt$grobs[[k]]
+      if (inherits(g, "zeroGrob")) return(FALSE)
+      w <- tryCatch(
+        sum(grid::convertWidth(grid::grobWidth(g), "in", valueOnly = TRUE)),
+        error = function(e) 0
+      )
+      is.finite(w) && w > 0
+    }, logical(1)))
+  }, error = function(e) FALSE)
 }
 
 #' @noRd

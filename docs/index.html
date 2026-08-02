@@ -93,7 +93,7 @@
 
     <a class="navbar-brand me-2" href="index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -325,10 +325,11 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tufte_principles.html">tufte_principles</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">p</span><span class="op">[</span><span class="op">!</span><span class="va">p</span><span class="op">$</span><span class="va">audited</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"principle"</span>, <span class="st">"implemented_by"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt; Show comparisons          slopegraph(), facet_tufte()</span></span>
-<span><span class="co">#&gt; Show causality            annotation, not code</span></span>
-<span><span class="co">#&gt; Show multivariate data    facet_tufte(), sparklines()</span></span>
-<span><span class="co">#&gt; Content counts most of all  you</span></span></code></pre></div>
+<span><span class="co">#&gt; Show comparisons            slopegraph(), facet_tufte()</span></span>
+<span><span class="co">#&gt; Show causality              NA</span></span>
+<span><span class="co">#&gt; Show multivariate data      facet_tufte(), sparklines()</span></span>
+<span><span class="co">#&gt; Content counts most of all  NA</span></span></code></pre></div>
+<p>The two <code>NA</code>s are the honest part. Nothing in the package reaches them.</p>
 <p>A figure can meet every stated criterion and still be pointless. Tufte’s first principle is that content counts most of all, and no function evaluates that.</p>
 </div>
 <div class="section level2">

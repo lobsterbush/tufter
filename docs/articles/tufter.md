@@ -392,10 +392,10 @@ p[!p$audited, c("principle", "implemented_by")]
 #> 3 Position beats length      geom_cleveland_dot()                       
 #> 4 Micro and macro readings   sparklines(), facet_tufte()                
 #> 5 Show comparisons           slopegraph(), facet_tufte()                
-#> 6 Show causality             annotation, not code                       
+#> 6 Show causality             NA                                         
 #> 7 Show multivariate data     facet_tufte(), sparklines()                
 #> 8 Sparklines                 sparkline(), sparklines(), sparkline_grob()
-#> 9 Content counts most of all you
+#> 9 Content counts most of all NA
 ```
 
 Showing causality, showing comparisons, content counting most of all: a

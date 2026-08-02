@@ -121,51 +121,64 @@ print.tufte_banking <- function(x, ...) {
   idx <- which(geoms %in% c("Line", "Path", "Step", "Smooth"))
   if (length(idx) == 0) return(list(m = numeric(0), len = numeric(0)))
 
-  rng <- .panel_ranges(built)
-  rx <- diff(rng$x)
-  ry <- diff(rng$y)
-  if (!is.finite(rx) || !is.finite(ry) || rx <= 0 || ry <= 0) {
-    return(list(m = numeric(0), len = numeric(0)))
-  }
-
+  pps <- built$layout$panel_params
   m <- numeric(0)
   len <- numeric(0)
+
   for (i in idx) {
     d <- built$data[[i]]
     if (is.null(d$x) || is.null(d$y)) next
-    key <- interaction(
-      d$group %||% 1L, d$PANEL %||% 1L, drop = TRUE
-    )
-    for (part in split(d, key)) {
-      # Take the rows in the order they are drawn. Sorting by x would be
-      # harmless for a time series and destructive for any path that doubles
-      # back, such as a closed loop, where consecutive points are neighbours
-      # along the path rather than along the axis.
-      dx <- diff(part$x)
-      dy <- diff(part$y)
-      ok <- is.finite(dx) & is.finite(dy) & !(dx == 0 & dy == 0)
-      if (!any(ok)) next
-      # Normalise both deltas by the panel range, so the ratio is the slope of
-      # a unit square panel and the aspect ratio scales it directly.
-      ndx <- dx[ok] / rx
-      ndy <- dy[ok] / ry
-      # A vertical segment has infinite slope, which is a real value here and
-      # must not be dropped: discarding verticals would bias the median of any
-      # shape that has them.
-      m <- c(m, abs(ndy) / abs(ndx))
-      len <- c(len, sqrt(ndx^2 + ndy^2))
+    panels <- d$PANEL %||% factor(rep(1L, nrow(d)))
+
+    # Each panel gets normalised by its own ranges. Under free scales the
+    # panels have different ranges, and using the first panel's for all of
+    # them would rescale every other panel's slopes by the wrong factor.
+    for (pn in unique(panels)) {
+      pp <- pps[[as.integer(pn)]]
+      if (is.null(pp)) next
+      rng <- .panel_range_of(pp)
+      rx <- diff(rng$x)
+      ry <- diff(rng$y)
+      if (!is.finite(rx) || !is.finite(ry) || rx <= 0 || ry <= 0) next
+
+      dp <- d[panels == pn, , drop = FALSE]
+      key <- dp$group %||% rep(1L, nrow(dp))
+      for (part in split(dp, key, drop = TRUE)) {
+        # Take the rows in the order they are drawn. Sorting by x would be
+        # harmless for a time series and destructive for any path that doubles
+        # back, such as a closed loop, where consecutive points are neighbours
+        # along the path rather than along the axis.
+        dx <- diff(part$x)
+        dy <- diff(part$y)
+        ok <- is.finite(dx) & is.finite(dy) & !(dx == 0 & dy == 0)
+        if (!any(ok)) next
+        # Normalise both deltas by the panel range, so the ratio is the slope
+        # of a unit square panel and the aspect ratio scales it directly.
+        ndx <- dx[ok] / rx
+        ndy <- dy[ok] / ry
+        # A vertical segment has infinite slope, which is a real value here
+        # and must not be dropped: discarding verticals would bias the median
+        # of any shape that has them.
+        m <- c(m, abs(ndy) / abs(ndx))
+        len <- c(len, sqrt(ndx^2 + ndy^2))
+      }
     }
   }
   keep <- !is.na(m) & is.finite(len)
   list(m = m[keep], len = len[keep])
 }
 
+# Ranges from a single panel's parameters.
 #' @noRd
-.panel_ranges <- function(built) {
-  pp <- built$layout$panel_params[[1]]
+.panel_range_of <- function(pp) {
   x <- pp$x.range %||% (if (!is.null(pp$x)) pp$x$continuous_range else NULL)
   y <- pp$y.range %||% (if (!is.null(pp$y)) pp$y$continuous_range else NULL)
   list(x = x %||% c(NA_real_, NA_real_), y = y %||% c(NA_real_, NA_real_))
+}
+
+#' @noRd
+.panel_ranges <- function(built) {
+  .panel_range_of(built$layout$panel_params[[1]])
 }
 
 # Find the aspect ratio whose mean absolute orientation is 45 degrees. The mean
