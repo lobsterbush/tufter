@@ -48,7 +48,7 @@ tufte_principles()
 #> # A tibble: 26 × 6
 #>    principle                   source statement implemented_by audited criterion
 #>    <chr>                       <chr>  <chr>     <chr>          <lgl>   <lgl>    
-#>  1 Above all else show the da… VDQI … The grap… theme_tufte()  TRUE    FALSE    
+#>  1 Above all else show the da… VDQI … The grap… theme_tufte()  FALSE   FALSE    
 #>  2 Maximise the data-ink ratio VDQI … A large … data_ink_rati… TRUE    FALSE    
 #>  3 Erase non-data ink          VDQI … Ink that… theme_tufte()  TRUE    TRUE     
 #>  4 Erase redundant data-ink    VDQI … Ink that… geom_col_tuft… TRUE    TRUE     

@@ -35,7 +35,7 @@ tufte_principles <- function(audited_only = FALSE) {
 
     "Above all else show the data", "VDQI ch. 4",
     "The graphic exists to show numbers; everything else is subordinate to that.",
-    "theme_tufte()", TRUE, FALSE,
+    "theme_tufte()", FALSE, FALSE,
 
     "Maximise the data-ink ratio", "VDQI ch. 4",
     "A large share of the ink should be devoted to the non-redundant display of data.",
@@ -81,7 +81,7 @@ tufte_principles <- function(audited_only = FALSE) {
     "Graphics tend toward the horizontal, a little wider than they are tall.",
     "save_tufte(), tufte_audit()", TRUE, TRUE,
 
-    "Bank to 45 degrees", "Cleveland, after VDQI ch. 9",
+    "Bank to 45 degrees", "Cleveland, not Tufte",
     "Slopes are judged best near 45 degrees; the aspect ratio is what puts them there.",
     "bank_to_45()", TRUE, FALSE,
 
@@ -89,7 +89,7 @@ tufte_principles <- function(audited_only = FALSE) {
     "A dot read against a scale needs no zero baseline and a fraction of the ink.",
     "geom_cleveland_dot()", FALSE, FALSE,
 
-    "Legibility", "WCAG 2.1, against VDQI ch. 4",
+    "Legibility", "WCAG 2.1, not Tufte",
     "Erasing ink stops when what is left can no longer be seen.",
     "check_contrast(), contrast_ratio()", TRUE, TRUE,
 
@@ -99,7 +99,7 @@ tufte_principles <- function(audited_only = FALSE) {
 
     "Layering and separation", "Envisioning Information ch. 3",
     "Distinguish elements by weight and value before reaching for hue.",
-    "tufte_pal(), scale_colour_tufte()", TRUE, FALSE,
+    "tufte_pal(), scale_colour_tufte()", FALSE, FALSE,
 
     "Micro and macro readings", "Envisioning Information ch. 2",
     "Detail should reward close reading without disturbing the overall shape.",

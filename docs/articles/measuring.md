@@ -347,7 +347,7 @@ suppressWarnings(tufte_audit(bad, width = 6.5, height = 4))
 #>   on the data rather than in a key the reader has to hold in memory and look
 #>   back to. geom_text_last() labels each series in place, and where there are
 #>   too many to label, facet_tufte() shows them as small multiples instead.
-#> Integrate word and image - Beautiful Evidence ch. 5
+#> Integrate word, number and image - Beautiful Evidence ch. 5
 #> ✖ 'g' is mapped to both position and colour. The second encoding is redundant
 #>   data-ink, adding ink and a legend without adding information.
 #> Erase redundant data-ink - VDQI ch. 4
@@ -483,17 +483,17 @@ only the principles that carry one.
 p <- tufte_principles()
 p[p$criterion, c("principle", "source")]
 #> # A tibble: 10 × 2
-#>    principle                        source                      
-#>    <chr>                            <chr>                       
-#>  1 Erase non-data ink               VDQI ch. 4                  
-#>  2 Erase redundant data-ink         VDQI ch. 4                  
-#>  3 Revise and edit                  VDQI ch. 4                  
-#>  4 The range-frame                  VDQI ch. 6                  
-#>  5 The lie factor                   VDQI ch. 2                  
-#>  6 Graphical integrity              VDQI ch. 2                  
-#>  7 Proportion and scale             VDQI ch. 9                  
-#>  8 Legibility                       WCAG 2.1, against VDQI ch. 4
-#>  9 Integrate word, number and image Beautiful Evidence ch. 5    
+#>    principle                        source                  
+#>    <chr>                            <chr>                   
+#>  1 Erase non-data ink               VDQI ch. 4              
+#>  2 Erase redundant data-ink         VDQI ch. 4              
+#>  3 Revise and edit                  VDQI ch. 4              
+#>  4 The range-frame                  VDQI ch. 6              
+#>  5 The lie factor                   VDQI ch. 2              
+#>  6 Graphical integrity              VDQI ch. 2              
+#>  7 Proportion and scale             VDQI ch. 9              
+#>  8 Legibility                       WCAG 2.1, not Tufte     
+#>  9 Integrate word, number and image Beautiful Evidence ch. 5
 #> 10 Documentation                    Beautiful Evidence ch. 6
 ```
 
@@ -518,18 +518,20 @@ anyway.
 ``` r
 p <- tufte_principles()
 p[!p$audited, c("principle", "source", "implemented_by")]
-#> # A tibble: 9 × 3
-#>   principle                  source                        implemented_by       
-#>   <chr>                      <chr>                         <chr>                
-#> 1 The dot-dash plot          VDQI ch. 6                    geom_dotdash()       
-#> 2 Shrink the graphic         VDQI ch. 8                    sparkline(), sparkli…
-#> 3 Position beats length      VDQI ch. 5                    geom_cleveland_dot() 
-#> 4 Micro and macro readings   Envisioning Information ch. 2 sparklines(), facet_…
-#> 5 Show comparisons           Beautiful Evidence ch. 6      slopegraph(), facet_…
-#> 6 Show causality             Beautiful Evidence ch. 6      NA                   
-#> 7 Show multivariate data     Beautiful Evidence ch. 6      facet_tufte(), spark…
-#> 8 Sparklines                 Beautiful Evidence ch. 2      sparkline(), sparkli…
-#> 9 Content counts most of all Beautiful Evidence ch. 6      NA
+#> # A tibble: 11 × 3
+#>    principle                    source                        implemented_by    
+#>    <chr>                        <chr>                         <chr>             
+#>  1 Above all else show the data VDQI ch. 4                    theme_tufte()     
+#>  2 The dot-dash plot            VDQI ch. 6                    geom_dotdash()    
+#>  3 Shrink the graphic           VDQI ch. 8                    sparkline(), spar…
+#>  4 Position beats length        VDQI ch. 5                    geom_cleveland_do…
+#>  5 Layering and separation      Envisioning Information ch. 3 tufte_pal(), scal…
+#>  6 Micro and macro readings     Envisioning Information ch. 2 sparklines(), fac…
+#>  7 Show comparisons             Beautiful Evidence ch. 6      slopegraph(), fac…
+#>  8 Show causality               Beautiful Evidence ch. 6      NA                
+#>  9 Show multivariate data       Beautiful Evidence ch. 6      facet_tufte(), sp…
+#> 10 Sparklines                   Beautiful Evidence ch. 2      sparkline(), spar…
+#> 11 Content counts most of all   Beautiful Evidence ch. 6      NA
 ```
 
 Showing comparisons, showing causality, showing multivariate data,

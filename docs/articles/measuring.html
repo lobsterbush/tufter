@@ -91,7 +91,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -441,7 +441,7 @@ criteria Tufte states outright, and is careful about which is which.</p>
 <span><span class="co">#&gt;   on the data rather than in a key the reader has to hold in memory and look</span></span>
 <span><span class="co">#&gt;   back to. geom_text_last() labels each series in place, and where there are</span></span>
 <span><span class="co">#&gt;   too many to label, facet_tufte() shows them as small multiples instead.</span></span>
-<span><span class="co">#&gt; <span style="font-style: italic;">Integrate word and image - Beautiful Evidence ch. 5</span></span></span>
+<span><span class="co">#&gt; <span style="font-style: italic;">Integrate word, number and image - Beautiful Evidence ch. 5</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> 'g' is mapped to both position and colour. The second encoding is redundant</span></span>
 <span><span class="co">#&gt;   data-ink, adding ink and a legend without adding information.</span></span>
 <span><span class="co">#&gt; <span style="font-style: italic;">Erase redundant data-ink - VDQI ch. 4</span></span></span>
@@ -570,17 +570,17 @@ that carry one.</p>
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tufte_principles.html">tufte_principles</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">p</span><span class="op">[</span><span class="va">p</span><span class="op">$</span><span class="va">criterion</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"principle"</span>, <span class="st">"source"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 × 2</span></span></span>
-<span><span class="co">#&gt;    principle                        source                      </span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Erase non-data ink               VDQI ch. 4                  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Erase redundant data-ink         VDQI ch. 4                  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Revise and edit                  VDQI ch. 4                  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> The range-frame                  VDQI ch. 6                  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> The lie factor                   VDQI ch. 2                  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Graphical integrity              VDQI ch. 2                  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Proportion and scale             VDQI ch. 9                  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Legibility                       WCAG 2.1, against VDQI ch. 4</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Integrate word, number and image Beautiful Evidence ch. 5    </span></span>
+<span><span class="co">#&gt;    principle                        source                  </span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Erase non-data ink               VDQI ch. 4              </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Erase redundant data-ink         VDQI ch. 4              </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Revise and edit                  VDQI ch. 4              </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> The range-frame                  VDQI ch. 6              </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> The lie factor                   VDQI ch. 2              </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Graphical integrity              VDQI ch. 2              </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Proportion and scale             VDQI ch. 9              </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Legibility                       WCAG 2.1, not Tufte     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Integrate word, number and image Beautiful Evidence ch. 5</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Documentation                    Beautiful Evidence ch. 6</span></span></code></pre></div>
 <p>The second is that a score needs a weighting. Saying a figure is at
 seventy percent means you’ve decided how many missing source notes equal
@@ -599,18 +599,20 @@ testable line for. The ones no function can reach are listed anyway.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tufte_principles.html">tufte_principles</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">p</span><span class="op">[</span><span class="op">!</span><span class="va">p</span><span class="op">$</span><span class="va">audited</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"principle"</span>, <span class="st">"source"</span>, <span class="st">"implemented_by"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 9 × 3</span></span></span>
-<span><span class="co">#&gt;   principle                  source                        implemented_by       </span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> The dot-dash plot          VDQI ch. 6                    geom_dotdash()       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Shrink the graphic         VDQI ch. 8                    sparkline(), sparkli…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Position beats length      VDQI ch. 5                    geom_cleveland_dot() </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Micro and macro readings   Envisioning Information ch. 2 sparklines(), facet_…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Show comparisons           Beautiful Evidence ch. 6      slopegraph(), facet_…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> Show causality             Beautiful Evidence ch. 6      <span style="color: #BB0000;">NA</span>                   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> Show multivariate data     Beautiful Evidence ch. 6      facet_tufte(), spark…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">8</span> Sparklines                 Beautiful Evidence ch. 2      sparkline(), sparkli…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">9</span> Content counts most of all Beautiful Evidence ch. 6      <span style="color: #BB0000;">NA</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 11 × 3</span></span></span>
+<span><span class="co">#&gt;    principle                    source                        implemented_by    </span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Above all else show the data VDQI ch. 4                    theme_tufte()     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> The dot-dash plot            VDQI ch. 6                    geom_dotdash()    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Shrink the graphic           VDQI ch. 8                    sparkline(), spar…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Position beats length        VDQI ch. 5                    geom_cleveland_do…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Layering and separation      Envisioning Information ch. 3 tufte_pal(), scal…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Micro and macro readings     Envisioning Information ch. 2 sparklines(), fac…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Show comparisons             Beautiful Evidence ch. 6      slopegraph(), fac…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Show causality               Beautiful Evidence ch. 6      <span style="color: #BB0000;">NA</span>                </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Show multivariate data       Beautiful Evidence ch. 6      facet_tufte(), sp…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Sparklines                   Beautiful Evidence ch. 2      sparkline(), spar…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> Content counts most of all   Beautiful Evidence ch. 6      <span style="color: #BB0000;">NA</span></span></span></code></pre></div>
 <p>Showing comparisons, showing causality, showing multivariate data,
 content counting most of all: a package can’t check any of it. That’s
 what the figure is for. What the audit is good at is the mechanical

@@ -35,18 +35,12 @@ test_that("the graded checks are exactly those with a stated criterion", {
     ggplot(data.frame(g = c("a", "b"), v = c(1, 2)), aes(g, v)) + geom_col(),
     width = 5, height = 3
   )
-  graded <- a$principle[a$status %in% c("pass", "fail")]
+  graded <- unique(a$principle[a$status %in% c("pass", "fail")])
   stated <- tufte_principles()
   stated <- stated$principle[stated$criterion]
-  # Every graded principle must appear in the table as carrying a criterion.
-  # Names are matched loosely because the audit abbreviates a few of them.
-  for (p in unique(graded)) {
-    hit <- any(vapply(stated, function(s) {
-      grepl(substr(s, 1, 12), p, fixed = TRUE) ||
-        grepl(substr(p, 1, 12), s, fixed = TRUE)
-    }, logical(1)))
-    expect_true(hit, info = p)
-  }
+  # Exact names, not a substring match. The audit and the table used to use
+  # different wording for two principles, which a loose match had been hiding.
+  expect_setequal(setdiff(graded, stated), character(0))
 })
 
 test_that("the audit returns one row per check with a usable status", {
@@ -199,4 +193,52 @@ test_that("principles with no implementation say so with NA", {
   expect_gt(nrow(unreachable), 0)
   expect_true(all(!unreachable$audited))
   expect_true(all(nzchar(unreachable$statement)))
+})
+
+
+# A representative set that between them trigger every check the audit has.
+.audit_corpus <- function() {
+  set.seed(9)
+  list(
+    plain = ggplot(mtcars, aes(wt, mpg)) + geom_point(),
+    lean = ggplot(mtcars, aes(wt, mpg)) + geom_point() + geom_rangeframe() +
+      theme_tufte() + label_source("x"),
+    bars = ggplot(data.frame(g = c("a", "b"), v = c(1, 2)), aes(g, v)) +
+      geom_col(),
+    pie = ggplot(data.frame(g = letters[1:4], v = 1:4), aes("", v, fill = g)) +
+      geom_col() + coord_polar("y"),
+    line = ggplot(data.frame(t = 1:50, v = cumsum(rnorm(50))), aes(t, v)) +
+      geom_line() + theme_tufte(),
+    facets = ggplot(mtcars, aes(wt, mpg)) + geom_point() + facet_wrap(~ cyl) +
+      theme_tufte()
+  )
+}
+
+test_that("the principles table and the audit name the same principles", {
+  # The table is the package's own account of what it does. If it claims a
+  # principle is audited, some plot must produce a row for it, and every row
+  # the audit produces must appear in the table. Both directions used to fail:
+  # two principles were named differently in each place, and two more were
+  # marked audited when nothing checked them.
+  seen <- unique(unlist(lapply(
+    .audit_corpus(),
+    function(p) suppressWarnings(tufte_audit(p, width = 5, height = 3))$principle
+  )))
+  p <- tufte_principles()
+
+  expect_setequal(setdiff(p$principle[p$audited], seen), character(0))
+  expect_setequal(setdiff(seen, p$principle), character(0))
+})
+
+test_that("every audit row cites the same source as the table", {
+  rows <- do.call(rbind, lapply(
+    .audit_corpus(),
+    function(p) suppressWarnings(tufte_audit(p, width = 5, height = 3))
+  ))
+  p <- tufte_principles()
+  lookup <- stats::setNames(p$source, p$principle)
+  for (i in seq_len(nrow(rows))) {
+    expect_equal(rows$source[i], unname(lookup[[rows$principle[i]]]),
+                 info = rows$principle[i])
+  }
 })

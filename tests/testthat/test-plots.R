@@ -52,6 +52,10 @@ test_that("tufte scales attach to a plot", {
     ggplot(mtcars, aes(wt, mpg, colour = hp)) + geom_point() +
       scale_colour_tufte_c()
   ))
+  expect_true(render(
+    ggplot(mtcars, aes(wt, mpg, fill = hp)) +
+      geom_point(shape = 21) + scale_fill_tufte_c(reverse = TRUE)
+  ))
 })
 
 test_that("quartile_breaks returns the five-number summary", {

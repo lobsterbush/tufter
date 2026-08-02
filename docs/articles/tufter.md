@@ -384,18 +384,20 @@ principles a function can check and which ones it can’t.
 ``` r
 p <- tufte_principles()
 p[!p$audited, c("principle", "implemented_by")]
-#> # A tibble: 9 × 2
-#>   principle                  implemented_by                             
-#>   <chr>                      <chr>                                      
-#> 1 The dot-dash plot          geom_dotdash()                             
-#> 2 Shrink the graphic         sparkline(), sparklines()                  
-#> 3 Position beats length      geom_cleveland_dot()                       
-#> 4 Micro and macro readings   sparklines(), facet_tufte()                
-#> 5 Show comparisons           slopegraph(), facet_tufte()                
-#> 6 Show causality             NA                                         
-#> 7 Show multivariate data     facet_tufte(), sparklines()                
-#> 8 Sparklines                 sparkline(), sparklines(), sparkline_grob()
-#> 9 Content counts most of all NA
+#> # A tibble: 11 × 2
+#>    principle                    implemented_by                             
+#>    <chr>                        <chr>                                      
+#>  1 Above all else show the data theme_tufte()                              
+#>  2 The dot-dash plot            geom_dotdash()                             
+#>  3 Shrink the graphic           sparkline(), sparklines()                  
+#>  4 Position beats length        geom_cleveland_dot()                       
+#>  5 Layering and separation      tufte_pal(), scale_colour_tufte()          
+#>  6 Micro and macro readings     sparklines(), facet_tufte()                
+#>  7 Show comparisons             slopegraph(), facet_tufte()                
+#>  8 Show causality               NA                                         
+#>  9 Show multivariate data       facet_tufte(), sparklines()                
+#> 10 Sparklines                   sparkline(), sparklines(), sparkline_grob()
+#> 11 Content counts most of all   NA
 ```
 
 Showing causality, showing comparisons, content counting most of all: a

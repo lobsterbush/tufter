@@ -61,6 +61,7 @@ The quantities he defined:
 
 ## The short version
 
+<!-- readme-short:start -->
 ```r
 library(ggplot2)
 library(tufter)
@@ -77,31 +78,44 @@ data_ink_ratio(lean)
 #> ── Data-ink ratio
 #> 74% of the ink in this figure varies with the data.
 ```
+<!-- readme-short:end -->
 
 ## The audit
 
+<!-- readme-audit:start -->
 ```r
 tufte_audit(ggplot(mtcars, aes(wt, mpg)) + geom_point())
 #> ── Tufte audit ──
 #> At 6.5in x 4in: 3 stated criteria not met.
-#>
 #> ── Not met
 #> ✖ The panel is filled with #EBEBEBFF. The fill is identical whatever the
-#>   numbers are, so it is non-data ink and Tufte's instruction is to erase it.
-#>   Erase non-data ink, VDQI ch. 4
-#> ✖ Minor gridlines are drawn. They subdivide the scale past the precision
-#>   anyone reads from a graphic, and are non-data ink.
-#>   Erase non-data ink, VDQI ch. 4
-#> ✖ No caption. Tufte asks that evidence be thoroughly described and its
-#>   sources indicated on the graphic itself. See label_source().
-#>   Documentation, Beautiful Evidence ch. 6
-#>
+#>   numbers are, so it's non-data ink and Tufte's instruction is to erase it.
+#> Erase non-data ink - VDQI ch. 4
+#> ✖ Minor gridlines are drawn. They subdivide the scale past the precision anyone
+#>   reads off a graphic, so they're non-data ink.
+#> Erase non-data ink - VDQI ch. 4
+#> ✖ No caption. Tufte asks that evidence be thoroughly described and its sources
+#>   named on the graphic itself, so a reader can check the claim without hunting
+#>   through the surrounding text. See label_source().
+#> Documentation - Beautiful Evidence ch. 6
 #> ── Measured, not graded
+#> Tufte states a direction for these rather than a threshold. Read them against
+#> another draft of the same figure.
 #> • Data-ink ratio 0.06: 6% of the ink varies with the data.
 #> • Data density 3.1 numbers per square inch.
 #> • 1 distinct colour in use.
 #> • 1 series overlaid in one panel.
+#> ── Met
+#> • No full panel border
+#> • No pie chart
+#> • Lie factor within Tufte's band
+#> • No legend to decode
+#> • No variable encoded twice
+#> • Wider than it is tall
+#> • Ink clears the WCAG contrast minimum
+#> • Nothing is clipped at the printed size
 ```
+<!-- readme-audit:end -->
 
 There's no score, and I did that on purpose. Tufte says two different kinds of
 thing. Sometimes he gives a criterion a graphic either meets or doesn't: bars
@@ -206,7 +220,7 @@ I wrote this package with substantial help from a large language model
 (Anthropic's Claude, via Claude Code). I think anyone reading the code deserves
 to know which parts that covers and what a person actually checked.
 
-What the model did. It produced essentially all of the R source in  53 , the
+What the model did. It produced essentially all of the R source in 
 test suite, the roxygen documentation, the vignette and the two articles, and
 the first draft of this README. It also ran the survey of existing packages I
 summarise above.
@@ -216,12 +230,12 @@ measurements and not only his aesthetics, which principles to cover, and where
 the honest limits of the exercise sit. I reviewed the code and the prose, and I
 ran the checks below.
 
-What got verified, and how. All 289 tests pass and  54  returns no
+What got verified, and how. All 289 tests pass and 
 errors, warnings or notes. Every figure in the README, the vignette and the
 articles was rendered and looked at, which is how three real bugs turned up: a
 median dot drawn off the whisker in the offset box plot, colliding axis labels
-from  55 , and sparkline panels ordered alphabetically instead of
-as supplied. I sanity-checked  56  against plots whose answer is
+from 
+as supplied. I sanity-checked 
 known ahead of time, like a plot with no data layers, which has to come back at
 roughly zero.
 
