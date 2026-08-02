@@ -1,5 +1,40 @@
 # Changelog
 
+## tufter 0.4.0
+
+### A second gallery, on real data
+
+- New article, [Examples with live API
+  data](https://lobsterbush.github.io/tufter/articles/live-data.html),
+  drawing every form in the package from four public APIs that need no
+  key: CRAN download logs, the USGS earthquake catalogue, the Open-Meteo
+  ERA5 archive and Wikipedia pageviews.
+- `data-raw/fetch_live_examples.R` does the fetching and caches the
+  result to `inst/extdata/live-examples.rds`, so the article builds
+  offline and the page stays reproducible. Run the script to refresh it.
+
+### Two bugs the real data found
+
+- [`check_labels_fit()`](https://lobsterbush.github.io/tufter/reference/check_labels_fit.md)
+  measured a rotated y axis title along the wrong axis. The width of a
+  rotated text grob is the height of the lettering, which always fits,
+  so a y title running off a short panel was reported as fine. It now
+  measures the length of the string against the height of the panel
+  area.
+- [`sparkline()`](https://lobsterbush.github.io/tufter/reference/sparkline.md)
+  and
+  [`sparklines()`](https://lobsterbush.github.io/tufter/reference/sparklines.md)
+  printed their end labels with the default separator, a space, so 66638
+  came out as “66 638” and read as two numbers at sparkline size. Both
+  gain a `big.mark` argument, defaulting to a comma.
+
+### Elsewhere
+
+- [`bank_to_45()`](https://lobsterbush.github.io/tufter/reference/bank_to_45.md)
+  says plainly that the height it returns is for the panel. A saved
+  figure needs more, for the axis labels and titles, which is how the
+  first of those two bugs turned up.
+
 ## tufter 0.3.0
 
 The audit no longer invents thresholds, and no longer reports a score.
@@ -57,6 +92,10 @@ were not on the same scale.
 
 ### Elsewhere
 
+- All the prose is rewritten: README, the vignette, both articles, the
+  roxygen documentation and the audit’s own messages. Contractions
+  throughout, no dashes used as connectors, and none of the antithesis
+  constructions (“not X, it’s Y”) that had crept in.
 - [`tufte_principles()`](https://lobsterbush.github.io/tufter/reference/tufte_principles.md)
   gains a `criterion` column marking which principles Tufte states a
   testable line for. Ten of twenty-six do.

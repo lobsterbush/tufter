@@ -60,6 +60,11 @@ check_labels_fit <- function(plot, width = 6.5, height = 4) {
   panel_w <- width - fixed_w
   panel_h <- height - fixed_h
 
+  # Axis titles are centred on the whole panel area rather than on the figure,
+  # so that is the space they have to fit inside, however many panels there are.
+  panel_w_all <- panel_w
+  panel_h_all <- panel_h
+
   # Faceting splits the panel area into a grid, so each panel gets a share.
   n_cols <- length(unique(gt$layout$l[grepl("^panel", gt$layout$name)]))
   n_rows <- length(unique(gt$layout$t[grepl("^panel", gt$layout$name)]))
@@ -69,14 +74,22 @@ check_labels_fit <- function(plot, width = 6.5, height = 4) {
   titles <- list(
     c("title", "^title$", "max"),
     c("subtitle", "^subtitle$", "max"),
-    c("caption", "^caption$", "max"),
-    c("x axis title", "^xlab-", "max"),
-    c("y axis title", "^ylab-", "max")
+    c("caption", "^caption$", "max")
   )
   for (spec in titles) {
     req <- .max_extent(gt, spec[2], spec[3], "width")
     add(spec[1], req, width)
   }
+
+  add("x axis title", .max_extent(gt, "^xlab-", "max", "width"), panel_w_all)
+
+  # The y axis title is rotated, so the length of the string runs down the
+  # figure and has to be measured against the height of the panel area. Asking
+  # grid for the width of a rotated text grob returns the height of the
+  # lettering, which always fits, and that is how a clipped y title used to
+  # pass this check.
+  add("y axis title",
+      .max_extent(gt, "^ylab-", "max", "width", unrotate = TRUE), panel_h_all)
 
   add("x axis labels (side by side)",
       .max_extent(gt, "^axis-b", "sum", "width"), panel_w)
@@ -119,13 +132,13 @@ check_labels_fit <- function(plot, width = 6.5, height = 4) {
 
 # Worst requirement across every grob in the gtable whose name matches.
 #' @noRd
-.max_extent <- function(gt, pattern, how, what) {
+.max_extent <- function(gt, pattern, how, what, unrotate = FALSE) {
   i <- which(grepl(pattern, gt$layout$name))
   if (length(i) == 0) return(NA_real_)
   vals <- vapply(i, function(k) {
     g <- gt$grobs[[k]]
     if (inherits(g, "zeroGrob")) return(NA_real_)
-    .text_extent(g, how, what)
+    .text_extent(g, how, what, unrotate = unrotate)
   }, numeric(1))
   vals <- vals[is.finite(vals)]
   if (length(vals) == 0) return(NA_real_)
@@ -154,13 +167,14 @@ check_labels_fit <- function(plot, width = 6.5, height = 4) {
 # because the space is allocated by the enclosing gtable. So the measurement
 # has to reach the text grobs themselves.
 #' @noRd
-.text_extent <- function(g, how = c("max", "sum"), what = c("width", "height")) {
+.text_extent <- function(g, how = c("max", "sum"), what = c("width", "height"),
+                         unrotate = FALSE) {
   how <- match.arg(how)
   what <- match.arg(what)
   tryCatch({
     texts <- .collect_text_grobs(g)
     if (length(texts) == 0) return(NA_real_)
-    w <- unlist(lapply(texts, .label_extents, what = what))
+    w <- unlist(lapply(texts, .label_extents, what = what, unrotate = unrotate))
     w <- w[is.finite(w)]
     if (length(w) == 0) return(NA_real_)
     if (how == "max") max(w) else sum(w)
@@ -171,11 +185,13 @@ check_labels_fit <- function(plot, width = 6.5, height = 4) {
 # the widest. Measure each label separately so that a row of axis labels can be
 # summed.
 #' @noRd
-.label_extents <- function(t, what = "width") {
+.label_extents <- function(t, what = "width", unrotate = FALSE) {
   labs <- t$label
   if (is.null(labs) || length(labs) == 0) return(numeric(0))
   labs <- as.character(labs)
-  rot <- t$rot %||% 0
+  # Measuring unrotated gives the length of the string itself, which is what
+  # the caller needs when the text is turned on its side.
+  rot <- if (unrotate) 0 else (t$rot %||% 0)
   conv <- if (what == "width") grid::convertWidth else grid::convertHeight
   vapply(labs, function(s) {
     tryCatch({

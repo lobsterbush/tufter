@@ -79,7 +79,7 @@ resolution traded for context."><meta name="robots" content="noindex, nofollow, 
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,6 +91,7 @@ resolution traded for context."><meta name="robots" content="noindex, nofollow, 
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/simulated-examples.html">Examples with simulated data</a></li>
+    <li><a class="dropdown-item" href="../articles/live-data.html">Examples with live API data</a></li>
     <li><a class="dropdown-item" href="../articles/measuring.html">Measuring a figure</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -130,6 +131,7 @@ resolution traded for context.</p>
 <span>  last_point <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  label <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  accuracy <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>  big.mark <span class="op">=</span> <span class="st">","</span>,</span>
 <span>  colour <span class="op">=</span> <span class="st">"grey15"</span>,</span>
 <span>  linewidth <span class="op">=</span> <span class="fl">0.3</span>,</span>
 <span>  extreme_colours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#4a6b82"</span>, <span class="st">"#a1483c"</span><span class="op">)</span></span>
@@ -172,7 +174,14 @@ quantiles defining the normal range. Defaults to <code>c(0.25, 0.75)</code>.</p>
 
 <dt id="arg-accuracy">accuracy<a class="anchor" aria-label="anchor" href="#arg-accuracy"></a></dt>
 <dd><p>Rounding for the printed value, passed to
-<code><a href="https://scales.r-lib.org/reference/label_number.html" class="external-link">label_number()</a></code>. Defaults to <code>0.1</code>.</p></dd>
+<code><a href="https://scales.r-lib.org/reference/label_number.html" class="external-link">label_number()</a></code>. Defaults to <code>0.1</code>; use
+<code>1</code> for counts.</p></dd>
+
+
+<dt id="arg-big-mark">big.mark<a class="anchor" aria-label="anchor" href="#arg-big-mark"></a></dt>
+<dd><p>Thousands separator for the printed value. Defaults to a
+comma, since the <span class="pkg">scales</span> default is a space and reads oddly at
+sparkline size.</p></dd>
 
 
 <dt id="arg-colour">colour<a class="anchor" aria-label="anchor" href="#arg-colour"></a></dt>

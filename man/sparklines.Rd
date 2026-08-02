@@ -14,6 +14,7 @@ sparklines(
   extremes = TRUE,
   label = TRUE,
   accuracy = 0.1,
+  big.mark = ",",
   colour = "grey15",
   linewidth = 0.3
 )
@@ -23,7 +24,7 @@ sparklines(
 
 \item{x, y, group}{Bare column names for position, value and series.}
 
-\item{band, band_fill, colour, linewidth, accuracy}{As in
+\item{band, band_fill, colour, linewidth, accuracy, big.mark}{As in
 \code{\link{sparkline}()}.}
 
 \item{extremes}{Logical. Mark each series' minimum and maximum?}

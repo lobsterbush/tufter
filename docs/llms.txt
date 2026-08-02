@@ -1,9 +1,12 @@
 # tufter
 
 Documentation lives at <https://lobsterbush.github.io/tufter/>. There’s
-a [gallery built entirely on simulated
-data](https://lobsterbush.github.io/tufter/articles/simulated-examples.html)
-and a walk through [what each measurement actually
+a [gallery built on simulated
+data](https://lobsterbush.github.io/tufter/articles/simulated-examples.html),
+a second one [built on live API
+data](https://lobsterbush.github.io/tufter/articles/live-data.html) from
+CRAN logs, USGS earthquakes, Open-Meteo and Wikipedia, and a walk
+through [what each measurement actually
 computes](https://lobsterbush.github.io/tufter/articles/measuring.html).
 
 Edward Tufte’s principles of graphical design, as working `ggplot2` code
@@ -310,8 +313,8 @@ than in a legend.
 
 ## Measuring
 
-The quantities Tufte defined, so that a finished figure can be scored
-rather than admired.
+The quantities Tufte defined, so a finished figure can be examined as
+well as admired.
 
 - [`data_ink_ratio()`](https://lobsterbush.github.io/tufter/reference/data_ink_ratio.md)
   : Data-ink ratio
@@ -348,6 +351,13 @@ rather than admired.
 # Articles
 
 ### All vignettes
+
+- [Examples with live API
+  data](https://lobsterbush.github.io/tufter/articles/live-data.md):
+
+  Every graphical form in the package, drawn from four public APIs that
+  need no key: CRAN download logs, USGS earthquakes, Open-Meteo
+  temperatures and Wikipedia pageviews.
 
 - [Measuring a
   figure](https://lobsterbush.github.io/tufter/articles/measuring.md):

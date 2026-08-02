@@ -71,7 +71,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,6 +83,7 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/simulated-examples.html">Examples with simulated data</a></li>
+    <li><a class="dropdown-item" href="../articles/live-data.html">Examples with live API data</a></li>
     <li><a class="dropdown-item" href="../articles/measuring.html">Measuring a figure</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -102,6 +103,27 @@
       <small>Source: <a href="https://github.com/lobsterbush/tufter/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.4.0" id="tufter-040">tufter 0.4.0<a class="anchor" aria-label="anchor" href="#tufter-040"></a></h2>
+<div class="section level3">
+<h3 id="a-second-gallery-on-real-data-0-4-0">A second gallery, on real data<a class="anchor" aria-label="anchor" href="#a-second-gallery-on-real-data-0-4-0"></a></h3>
+<ul><li>New article, <a href="https://lobsterbush.github.io/tufter/articles/live-data.html">Examples with live API data</a>, drawing every form in the package from four public APIs that need no key: CRAN download logs, the USGS earthquake catalogue, the Open-Meteo ERA5 archive and Wikipedia pageviews.</li>
+<li>
+<code>data-raw/fetch_live_examples.R</code> does the fetching and caches the result to <code>inst/extdata/live-examples.rds</code>, so the article builds offline and the page stays reproducible. Run the script to refresh it.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="two-bugs-the-real-data-found-0-4-0">Two bugs the real data found<a class="anchor" aria-label="anchor" href="#two-bugs-the-real-data-found-0-4-0"></a></h3>
+<ul><li>
+<code><a href="../reference/check_labels_fit.html">check_labels_fit()</a></code> measured a rotated y axis title along the wrong axis. The width of a rotated text grob is the height of the lettering, which always fits, so a y title running off a short panel was reported as fine. It now measures the length of the string against the height of the panel area.</li>
+<li>
+<code><a href="../reference/sparkline.html">sparkline()</a></code> and <code><a href="../reference/sparklines.html">sparklines()</a></code> printed their end labels with the  default separator, a space, so 66638 came out as “66 638” and read as two numbers at sparkline size. Both gain a <code>big.mark</code> argument, defaulting to a comma.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="elsewhere-0-4-0">Elsewhere<a class="anchor" aria-label="anchor" href="#elsewhere-0-4-0"></a></h3>
+<ul><li>
+<code><a href="../reference/bank_to_45.html">bank_to_45()</a></code> says plainly that the height it returns is for the panel. A saved figure needs more, for the axis labels and titles, which is how the first of those two bugs turned up.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="tufter-030">tufter 0.3.0<a class="anchor" aria-label="anchor" href="#tufter-030"></a></h2>
 <p>The audit no longer invents thresholds, and no longer reports a score. This changes its output, so anything that read <code>attr(a, "score")</code> needs updating to <code>attr(a, "violations")</code>.</p>
@@ -127,7 +149,8 @@
 </div>
 <div class="section level3">
 <h3 id="elsewhere-0-3-0">Elsewhere<a class="anchor" aria-label="anchor" href="#elsewhere-0-3-0"></a></h3>
-<ul><li>
+<ul><li>All the prose is rewritten: README, the vignette, both articles, the roxygen documentation and the audit’s own messages. Contractions throughout, no dashes used as connectors, and none of the antithesis constructions (“not X, it’s Y”) that had crept in.</li>
+<li>
 <code><a href="../reference/tufte_principles.html">tufte_principles()</a></code> gains a <code>criterion</code> column marking which principles Tufte states a testable line for. Ten of twenty-six do.</li>
 <li>The audit cites WCAG rather than Tufte for the contrast minimum, and Cleveland rather than Tufte for banking, in the output itself.</li>
 <li>

@@ -219,7 +219,8 @@ banked
 #> 
 #> ── Banking to 45 degrees
 #> Aspect ratio 0.133 (height / width), from 239 segments by "median_slope".
-#> At 6.5in wide, draw it 0.86in tall.
+#> At 6.5in wide, that is a panel 0.86in tall. Allow more for axis labels and
+#> titles.
 ```
 
 Drawn at roughly that height the panel is short and wide, the rising and

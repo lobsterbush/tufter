@@ -52,8 +52,8 @@ check_labels_fit(p, width = 6.5, height = 4)
 #> 1 layout (non-panel width)           0.533         6.5  TRUE 
 #> 2 layout (non-panel height)          0.724         4    TRUE 
 #> 3 subtitle                          10.8           6.5  FALSE
-#> 4 x axis title                       0.153         6.5  TRUE 
-#> 5 y axis title                       0.111         6.5  TRUE 
+#> 4 x axis title                       0.153         5.97 TRUE 
+#> 5 y axis title                       0.292         3.28 TRUE 
 #> 6 x axis labels (side by side)       0.278         5.97 TRUE 
 #> 7 y axis labels (stacked)            0.583         3.28 TRUE 
 ```

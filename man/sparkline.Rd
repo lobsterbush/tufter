@@ -13,6 +13,7 @@ sparkline(
   last_point = TRUE,
   label = TRUE,
   accuracy = 0.1,
+  big.mark = ",",
   colour = "grey15",
   linewidth = 0.3,
   extreme_colours = c("#4a6b82", "#a1483c")
@@ -36,7 +37,12 @@ quantiles defining the normal range. Defaults to \code{c(0.25, 0.75)}.}
 \item{label}{Logical. Print the final value at the right-hand end?}
 
 \item{accuracy}{Rounding for the printed value, passed to
-\code{\link[scales]{label_number}()}. Defaults to \code{0.1}.}
+\code{\link[scales]{label_number}()}. Defaults to \code{0.1}; use
+\code{1} for counts.}
+
+\item{big.mark}{Thousands separator for the printed value. Defaults to a
+comma, since the \pkg{scales} default is a space and reads oddly at
+sparkline size.}
 
 \item{colour}{Line colour. Defaults to a near-black grey.}
 

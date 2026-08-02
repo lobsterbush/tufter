@@ -73,8 +73,8 @@ than in a legend.
 
 ## Measuring
 
-The quantities Tufte defined, so that a finished figure can be scored
-rather than admired.
+The quantities Tufte defined, so a finished figure can be examined as
+well as admired.
 
 - [`data_ink_ratio()`](https://lobsterbush.github.io/tufter/reference/data_ink_ratio.md)
   : Data-ink ratio

@@ -1,8 +1,10 @@
 # tufter
 
 Documentation lives at <https://lobsterbush.github.io/tufter/>. There's a
-[gallery built entirely on simulated data](https://lobsterbush.github.io/tufter/articles/simulated-examples.html)
-and a walk through [what each measurement actually computes](https://lobsterbush.github.io/tufter/articles/measuring.html).
+[gallery built on simulated data](https://lobsterbush.github.io/tufter/articles/simulated-examples.html),
+a second one [built on live API data](https://lobsterbush.github.io/tufter/articles/live-data.html)
+from CRAN logs, USGS earthquakes, Open-Meteo and Wikipedia, and a walk through
+[what each measurement actually computes](https://lobsterbush.github.io/tufter/articles/measuring.html).
 
 Edward Tufte's principles of graphical design, as working `ggplot2` code and as
 measurements you can apply to a figure you've already drawn.

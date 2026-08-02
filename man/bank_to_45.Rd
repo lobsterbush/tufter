@@ -26,6 +26,12 @@ An object of class \code{tufte_banking}: a list with the recommended
   \code{aspect} (height divided by width), the \code{height} that implies at
   the given \code{width}, the \code{method} used, and \code{n_segments}, the
   number of line segments the answer was computed from.
+
+  The aspect ratio describes the \emph{panel}, since that is where the slopes
+  are drawn. A saved figure needs room for axis labels and titles on top of
+  it, so pass something larger than \code{height} to
+  \code{\link{save_tufte}()} and check the result with
+  \code{\link{check_labels_fit}()}.
 }
 \description{
 Tufte's advice on shape, that graphics should tend toward the horizontal, is

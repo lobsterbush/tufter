@@ -17,6 +17,7 @@ sparklines(
   extremes = TRUE,
   label = TRUE,
   accuracy = 0.1,
+  big.mark = ",",
   colour = "grey15",
   linewidth = 0.3
 )
@@ -32,7 +33,7 @@ sparklines(
 
   Bare column names for position, value and series.
 
-- band, band_fill, colour, linewidth, accuracy:
+- band, band_fill, colour, linewidth, accuracy, big.mark:
 
   As in
   [`sparkline()`](https://lobsterbush.github.io/tufter/reference/sparkline.md).

@@ -18,6 +18,7 @@ sparkline(
   last_point = TRUE,
   label = TRUE,
   accuracy = 0.1,
+  big.mark = ",",
   colour = "grey15",
   linewidth = 0.3,
   extreme_colours = c("#4a6b82", "#a1483c")
@@ -59,7 +60,12 @@ sparkline(
 
   Rounding for the printed value, passed to
   [`label_number()`](https://scales.r-lib.org/reference/label_number.html).
-  Defaults to `0.1`.
+  Defaults to `0.1`; use `1` for counts.
+
+- big.mark:
+
+  Thousands separator for the printed value. Defaults to a comma, since
+  the scales default is a space and reads oddly at sparkline size.
 
 - colour:
 

@@ -44,6 +44,13 @@ An object of class `tufte_banking`: a list with the recommended `aspect`
 `width`, the `method` used, and `n_segments`, the number of line
 segments the answer was computed from.
 
+The aspect ratio describes the *panel*, since that is where the slopes
+are drawn. A saved figure needs room for axis labels and titles on top
+of it, so pass something larger than `height` to
+[`save_tufte()`](https://lobsterbush.github.io/tufter/reference/save_tufte.md)
+and check the result with
+[`check_labels_fit()`](https://lobsterbush.github.io/tufter/reference/check_labels_fit.md).
+
 ## Details
 
 The same series can look like a gentle drift or a cliff depending only
@@ -79,7 +86,8 @@ b
 #> 
 #> ── Banking to 45 degrees 
 #> Aspect ratio 0.147 (height / width), from 99 segments by "median_slope".
-#> At 6.5in wide, draw it 0.95in tall.
+#> At 6.5in wide, that is a panel 0.95in tall. Allow more for axis labels and
+#> titles.
 
 # Save at the banked height rather than a height chosen by habit.
 if (FALSE) { # \dontrun{

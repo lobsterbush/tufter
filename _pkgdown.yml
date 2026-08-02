@@ -98,6 +98,8 @@ navbar:
       menu:
       - text: Examples with simulated data
         href: articles/simulated-examples.html
+      - text: Examples with live API data
+        href: articles/live-data.html
       - text: Measuring a figure
         href: articles/measuring.html
 
@@ -147,8 +149,8 @@ reference:
 
 - title: Measuring
   desc: >
-    The quantities Tufte defined, so that a finished figure can be scored
-    rather than admired.
+    The quantities Tufte defined, so a finished figure can be examined as well
+    as admired.
   contents:
   - data_ink_ratio
   - lie_factor

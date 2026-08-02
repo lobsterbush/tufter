@@ -177,3 +177,36 @@ test_that("points on a transformed scale are left alone", {
   a <- tufte_audit(p, measure = FALSE)
   expect_false("Bars measured from zero" %in% a$check)
 })
+
+test_that("a rotated y axis title is measured along its own length", {
+  # Found by the live-data article: a short, wide banked panel clipped
+  # "Daily downloads" while check_labels_fit() reported that it fitted. The
+  # width of a rotated text grob is the height of the lettering, which always
+  # fits; what matters is the length of the string against the panel height.
+  p <- ggplot(data.frame(x = 1:50, y = cumsum(rnorm(50))), aes(x, y)) +
+    geom_line() +
+    labs(x = NULL, y = "Daily downloads") +
+    theme_tufte()
+
+  short <- suppressWarnings(check_labels_fit(p, width = 6.5, height = 1.3))
+  ytitle <- short[short$element == "y axis title", ]
+  expect_equal(nrow(ytitle), 1L)
+  # The string is over an inch long, not the tenth of an inch a rotated
+  # grobWidth reports.
+  expect_gt(ytitle$required_in, 1)
+  expect_false(ytitle$fits)
+
+  # Given room, the same title passes.
+  tall <- check_labels_fit(p, width = 6.5, height = 4)
+  expect_true(all(tall$fits))
+})
+
+test_that("sparkline value labels use a readable thousands separator", {
+  # The scales default is a space, which reads as two numbers at sparkline size.
+  d <- data.frame(t = 1:20, v = seq(10000, 66638, length.out = 20),
+                  g = "series")
+  built <- ggplot_build(sparklines(d, t, v, g, accuracy = 1))
+  labels <- unlist(lapply(built$data, function(x) x$label))
+  expect_true(any(grepl("66,638", labels, fixed = TRUE)))
+  expect_false(any(grepl("66 638", labels, fixed = TRUE)))
+})

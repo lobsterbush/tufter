@@ -79,7 +79,7 @@ width, that brings the slopes in the data closest to 45 degrees."><meta name="ro
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,6 +91,7 @@ width, that brings the slopes in the data closest to 45 degrees."><meta name="ro
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/simulated-examples.html">Examples with simulated data</a></li>
+    <li><a class="dropdown-item" href="../articles/live-data.html">Examples with live API data</a></li>
     <li><a class="dropdown-item" href="../articles/measuring.html">Measuring a figure</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -156,6 +157,11 @@ length? Defaults to <code>TRUE</code>. Ignored by the other method.</p></dd>
   <code>aspect</code> (height divided by width), the <code>height</code> that implies at
   the given <code>width</code>, the <code>method</code> used, and <code>n_segments</code>, the
   number of line segments the answer was computed from.</p>
+<p>The aspect ratio describes the <em>panel</em>, since that is where the slopes
+  are drawn. A saved figure needs room for axis labels and titles on top of
+  it, so pass something larger than <code>height</code> to
+  <code><a href="save_tufte.html">save_tufte()</a></code> and check the result with
+  <code><a href="check_labels_fit.html">check_labels_fit()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -190,7 +196,8 @@ guessing.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── Banking to 45 degrees </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Aspect ratio <span style="font-weight: bold;">0.147</span> (height / width), from 99 segments by <span style="color: #0000BB;">"median_slope"</span>.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> At 6.5in wide, draw it <span style="font-weight: bold;">0.95in</span> tall.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> At 6.5in wide, that is a panel <span style="font-weight: bold;">0.95in</span> tall. Allow more for axis labels and</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> titles.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Save at the banked height rather than a height chosen by habit.</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>

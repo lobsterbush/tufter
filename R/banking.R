@@ -30,6 +30,12 @@
 #'   \code{aspect} (height divided by width), the \code{height} that implies at
 #'   the given \code{width}, the \code{method} used, and \code{n_segments}, the
 #'   number of line segments the answer was computed from.
+#'
+#'   The aspect ratio describes the \emph{panel}, since that is where the slopes
+#'   are drawn. A saved figure needs room for axis labels and titles on top of
+#'   it, so pass something larger than \code{height} to
+#'   \code{\link{save_tufte}()} and check the result with
+#'   \code{\link{check_labels_fit}()}.
 #' @seealso \code{\link{save_tufte}()}. Banking isn't applied automatically:
 #'   pass the \code{height} it returns yourself, so that the choice stays
 #'   visible in your code.
@@ -99,7 +105,8 @@ print.tufte_banking <- function(x, ...) {
     "from {x$n_segments} segment{?s} by {.val {x$method}}."
   )
   cli::cli_text(
-    "At {x$width}in wide, draw it {.strong {round(x$height, 2)}in} tall."
+    "At {x$width}in wide, that is a panel {.strong {round(x$height, 2)}in} tall. ",
+    "Allow more for axis labels and titles."
   )
   invisible(x)
 }

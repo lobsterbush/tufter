@@ -20,7 +20,11 @@
 #' @param last_point Logical. Mark the final value with a dot?
 #' @param label Logical. Print the final value at the right-hand end?
 #' @param accuracy Rounding for the printed value, passed to
-#'   \code{\link[scales]{label_number}()}. Defaults to \code{0.1}.
+#'   \code{\link[scales]{label_number}()}. Defaults to \code{0.1}; use
+#'   \code{1} for counts.
+#' @param big.mark Thousands separator for the printed value. Defaults to a
+#'   comma, since the \pkg{scales} default is a space and reads oddly at
+#'   sparkline size.
 #' @param colour Line colour. Defaults to a near-black grey.
 #' @param linewidth Line width. Defaults to \code{0.3}, a hairline.
 #' @param extreme_colours Length-2 vector of colours for the minimum and
@@ -35,7 +39,8 @@
 sparkline <- function(values, index = seq_along(values),
                       band = c(0.25, 0.75), band_fill = "grey90",
                       extremes = TRUE, last_point = TRUE, label = TRUE,
-                      accuracy = 0.1, colour = "grey15", linewidth = 0.3,
+                      accuracy = 0.1, big.mark = ",", colour = "grey15",
+                      linewidth = 0.3,
                       extreme_colours = c("#4a6b82", "#a1483c")) {
   values <- as.numeric(values)
   if (length(values) < 2) .abort("{.arg values} needs at least two points.")
@@ -73,7 +78,7 @@ sparkline <- function(values, index = seq_along(values),
     p <- p + ggplot2::geom_point(data = lastd, colour = colour, size = 0.8)
   }
   if (label) {
-    fmt <- scales::label_number(accuracy = accuracy)
+    fmt <- scales::label_number(accuracy = accuracy, big.mark = big.mark)
     p <- p + ggplot2::geom_text(
       data = lastd, ggplot2::aes(label = fmt(.data$y)),
       hjust = -0.25, size = 2.4, colour = colour
@@ -98,7 +103,7 @@ sparkline <- function(values, index = seq_along(values),
 #'
 #' @param data A data frame.
 #' @param x,y,group Bare column names for position, value and series.
-#' @param band,band_fill,colour,linewidth,accuracy As in
+#' @param band,band_fill,colour,linewidth,accuracy,big.mark As in
 #'   \code{\link{sparkline}()}.
 #' @param extremes Logical. Mark each series' minimum and maximum?
 #' @param label Logical. Print each series' final value at the right?
@@ -115,7 +120,8 @@ sparkline <- function(values, index = seq_along(values),
 #' sparklines(d, t, v, series)
 sparklines <- function(data, x, y, group, band = c(0.25, 0.75),
                        band_fill = "grey90", extremes = TRUE, label = TRUE,
-                       accuracy = 0.1, colour = "grey15", linewidth = 0.3) {
+                       accuracy = 0.1, big.mark = ",", colour = "grey15",
+                       linewidth = 0.3) {
   if (!is.data.frame(data)) .abort("{.arg data} must be a data frame.")
   d <- data.frame(
     x = as.numeric(rlang::eval_tidy(rlang::enquo(x), data)),
@@ -164,7 +170,7 @@ sparklines <- function(data, x, y, group, band = c(0.25, 0.75),
   p <- p + ggplot2::geom_point(data = lastd, colour = colour, size = 0.8)
 
   if (label) {
-    fmt <- scales::label_number(accuracy = accuracy)
+    fmt <- scales::label_number(accuracy = accuracy, big.mark = big.mark)
     p <- p + ggplot2::geom_text(
       data = lastd, ggplot2::aes(label = fmt(.data$y)),
       hjust = -0.25, size = 2.4, colour = colour

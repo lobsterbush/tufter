@@ -274,8 +274,8 @@ check_labels_fit(wordy, width = 6.5, height = 4)
 #> 1 layout (non-panel width)           0.609         6.5  TRUE 
 #> 2 layout (non-panel height)          0.809         4    TRUE 
 #> 3 subtitle                          10.2           6.5  FALSE
-#> 4 x axis title                       1.49          6.5  TRUE 
-#> 5 y axis title                       0.125         6.5  TRUE 
+#> 4 x axis title                       1.49          5.89 TRUE 
+#> 5 y axis title                       0.681         3.19 TRUE 
 #> 6 x axis labels (side by side)       0.667         5.89 TRUE 
 #> 7 y axis labels (stacked)            0.556         3.19 TRUE
 ```
@@ -302,8 +302,8 @@ check_labels_fit(
 #>   <chr>                              <dbl>        <dbl> <lgl>
 #> 1 layout (non-panel width)           0.526         4    TRUE 
 #> 2 layout (non-panel height)          0.581         3    TRUE 
-#> 3 x axis title                       0.694         4    TRUE 
-#> 4 y axis title                       0.125         4    TRUE 
+#> 3 x axis title                       0.694         3.47 TRUE 
+#> 4 y axis title                       0.417         2.42 TRUE 
 #> 5 x axis labels (side by side)       5.08          3.47 FALSE
 #> 6 y axis labels (stacked)            0.667         2.42 TRUE
 ```
