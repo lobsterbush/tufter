@@ -89,6 +89,22 @@ NULL
 #' @noRd
 .hairline <- 0.3
 
+# Build a plot's gtable without side effects.
+#
+# ggplotGrob() needs a graphics device to measure text against. With none open,
+# R starts the default device, which in a non-interactive session is pdf() and
+# leaves an unasked-for Rplots.pdf in the user's working directory. pdf(NULL)
+# is a device that writes no file, so the measurement borrows one and gives it
+# back.
+#' @noRd
+.grob_of <- function(plot) {
+  if (grDevices::dev.cur() == 1L) {
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off(), add = TRUE)
+  }
+  ggplot2::ggplotGrob(plot)
+}
+
 # Give a grob a unique name, as ggplot2 does internally for its own layers.
 # A zeroGrob is left alone: it draws nothing, so it needs no identity.
 #' @noRd

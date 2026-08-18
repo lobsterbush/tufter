@@ -63,7 +63,7 @@ fromJSON(paste0(
 The snapshot ships with the package, so everything below runs offline.
 
 ``` r
-live <- readRDS(system.file("extdata", "live-examples.rds", package = "tufter"))
+live <- readRDS("../../data-raw/live-examples.rds")
 
 format(live$fetched_at, "%d %B %Y")
 #> [1] "02 August 2026"

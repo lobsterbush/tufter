@@ -96,6 +96,8 @@ navbar:
     articles:
       text: Articles
       menu:
+      - text: Working through a real dataset
+        href: articles/real-data.html
       - text: Examples with simulated data
         href: articles/simulated-examples.html
       - text: Examples with live API data

@@ -24,7 +24,7 @@
 #' check_labels_fit(p, width = 6.5, height = 4)
 check_labels_fit <- function(plot, width = 6.5, height = 4) {
   .check_gg(plot)
-  gt <- ggplot2::ggplotGrob(plot)
+  gt <- .grob_of(plot)
 
   f <- tempfile(fileext = ".png")
   args <- list(filename = f, width = width, height = height, units = "in",

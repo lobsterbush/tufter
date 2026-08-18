@@ -15,6 +15,9 @@
   What the data-ink ratio, the lie factor and data density actually
   compute, and where each of them will mislead you.
 
+- [Working through a real
+  dataset](https://lobsterbush.github.io/tufter/articles/real-data.md):
+
 - [Examples with simulated
   data](https://lobsterbush.github.io/tufter/articles/simulated-examples.md):
 

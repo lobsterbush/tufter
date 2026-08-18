@@ -39,15 +39,20 @@ replace_block <- function(text, marker, lines) {
   c(text[seq_len(i)], lines, text[j:length(text)])
 }
 
-base <- ggplot(mtcars, aes(wt, mpg)) + geom_point()
+library(palmerpenguins)
+peng <- as.data.frame(penguins[complete.cases(penguins), ])
+
+base <- ggplot(peng, aes(flipper_length_mm, body_mass_g)) + geom_point()
 lean <- base + geom_rangeframe() + theme_tufte()
 
 short <- c(
   "```r",
   "library(ggplot2)",
   "library(tufter)",
+  "library(palmerpenguins)",
   "",
-  "base <- ggplot(mtcars, aes(wt, mpg)) + geom_point()",
+  "peng <- penguins[complete.cases(penguins), ]",
+  "base <- ggplot(peng, aes(flipper_length_mm, body_mass_g)) + geom_point()",
   "",
   "data_ink_ratio(base)",
   transcript(print(data_ink_ratio(base)))[1:2],
@@ -71,7 +76,7 @@ audit_lines <- audit_lines[!grepl(
   audit_lines
 )]
 
-audit <- c("```r", "tufte_audit(ggplot(mtcars, aes(wt, mpg)) + geom_point())",
+audit <- c("```r", "tufte_audit(base)",
            audit_lines, "```")
 
 readme <- readLines("README.md")

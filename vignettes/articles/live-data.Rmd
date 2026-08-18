@@ -76,7 +76,7 @@ fromJSON(paste0(
 The snapshot ships with the package, so everything below runs offline.
 
 ```{r load}
-live <- readRDS(system.file("extdata", "live-examples.rds", package = "tufter"))
+live <- readRDS("../../data-raw/live-examples.rds")
 
 format(live$fetched_at, "%d %B %Y")
 vapply(live[c("cran", "quakes", "climate", "pageviews")], nrow, integer(1))

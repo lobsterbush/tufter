@@ -1,28 +1,31 @@
 Package: tufter
 Type: Package
 Title: Implement Edward Tufte's Principles of Graphical Design
-Version: 0.4.2
+Version: 0.5.0
 Authors@R: person("Charles", "Crabtree",
                   email = "charles.crabtree@monash.edu",
                   role = c("aut", "cre"),
                   comment = c(ORCID = "0000-0001-5144-8671"))
 Description: A toolkit that turns Edward Tufte's principles of statistical
-    graphics into working 'ggplot2' code and into measurements that can be
-    applied to an existing figure. The generative side supplies the graphical
-    forms Tufte designed or advocated: range frames and quartile frames,
-    minimal box plots, dot-dash marginal distributions, bar charts with
-    gridlines erased through the bars, sparklines, slopegraphs, small
-    multiples, muted palettes, and direct labelling in place of legends. The
-    evaluative side supplies the quantities Tufte defined so that a figure can
-    be scored rather than admired: the data-ink ratio, estimated empirically by
-    rendering the plot with and without its data layers, the lie factor, and
-    data density. 'tufte_audit()' runs both sides together and reports which
-    principles a plot satisfies. For the underlying principles see Tufte (2001)
-    "The Visual Display of Quantitative Information" (ISBN:0961392142), Tufte
-    (1990) "Envisioning Information" (ISBN:0961392118), Tufte (1997) "Visual
-    Explanations" (ISBN:0961392126), and Tufte (2006) "Beautiful Evidence"
-    (ISBN:0961392177).
-Language: en-US
+    graphics into working 'ggplot2' code, and into measurements that can be
+    applied to a figure you have already drawn. The drawing side supplies the
+    graphical forms Tufte designed or argued for: range frames and quartile
+    frames, minimal box plots, dot-dash marginal distributions, bar charts with
+    the gridlines erased through the bars, Cleveland dot plots, sparklines,
+    slopegraphs, small multiples, muted palettes, and direct labelling in place
+    of legends. The measuring side supplies the quantities Tufte defined: the
+    data-ink ratio, estimated empirically by rendering a plot with and without
+    its data layers, the lie factor, and data density. 'tufte_audit()' runs
+    both sides together. It grades the principles for which Tufte states a
+    criterion a graphic either meets or does not, and merely measures those for
+    which he states only a direction, so that no threshold of the package
+    author's is presented in his voice. For the underlying principles see Tufte
+    (2001) "The Visual Display of Quantitative Information" (ISBN:0961392142),
+    Tufte (1990) "Envisioning Information" (ISBN:0961392118), Tufte (1997)
+    "Visual Explanations" (ISBN:0961392126), and Tufte (2006) "Beautiful
+    Evidence" (ISBN:0961392177). For banking to 45 degrees see Cleveland,
+    McGill and McGill (1988) <doi:10.1080/01621459.1988.10478598>.
+Language: en-GB
 License: MIT + file LICENSE
 Encoding: UTF-8
 RoxygenNote: 7.3.3
@@ -44,7 +47,9 @@ Suggests:
     knitr,
     rmarkdown,
     dplyr,
+    gapminder,
     jsonlite,
+    palmerpenguins,
     ragg,
     withr,
     vdiffr

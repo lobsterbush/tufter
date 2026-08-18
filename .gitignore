@@ -7,3 +7,5 @@ inst/doc
 *.tar.gz
 .DS_Store
 Rplots.pdf
+/doc/
+/Meta/

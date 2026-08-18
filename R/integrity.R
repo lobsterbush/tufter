@@ -35,7 +35,7 @@
 data_ink_ratio <- function(plot, width = 6.5, height = 4, res = 150,
                            background = "white") {
   .check_gg(plot)
-  gt <- ggplot2::ggplotGrob(plot)
+  gt <- .grob_of(plot)
 
   total <- .measure_ink(gt, width, height, res, background)
   non_data <- .measure_ink(.strip_data_grobs(gt), width, height, res, background)
@@ -412,7 +412,7 @@ print.tufte_density <- function(x, ...) {
 #' @noRd
 .panel_area_share <- function(plot, width, height) {
   tryCatch({
-    gt <- ggplot2::ggplotGrob(plot)
+    gt <- .grob_of(plot)
     f <- tempfile(fileext = ".png")
     args <- list(filename = f, width = width, height = height, units = "in",
                  res = 72)

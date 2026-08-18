@@ -4,7 +4,12 @@
 devtools::load_all(".")
 library(ggplot2)
 library(grid)
+library(palmerpenguins)
+library(gapminder)
 set.seed(1)
+
+peng <- as.data.frame(penguins[complete.cases(penguins), ])
+gap <- as.data.frame(gapminder)
 
 lay <- function(file, plots, ncol, width, height, res = 200) {
   png(file, width = width, height = height, units = "in", res = res,
@@ -24,21 +29,18 @@ lay <- function(file, plots, ncol, width, height, res = 200) {
 
 # --- before and after --------------------------------------------------------
 
-base <- ggplot(mtcars, aes(wt, mpg)) +
-  geom_point(size = 1.4) +
-  labs(x = "Weight (1000 lbs)", y = "Miles per gallon")
+base <- ggplot(peng, aes(flipper_length_mm, body_mass_g)) +
+  geom_point(size = 1.2, alpha = 0.65) +
+  labs(x = "Flipper length (mm)", y = "Body mass (g)")
 
 before <- base +
   labs(title = "Default ggplot2",
        subtitle = sprintf("data-ink ratio %.2f",
                           data_ink_ratio(base)$ratio))
 
-# min_gap is set here rather than defaulted in the function: at this font and
-# figure size mtcars$wt has two quartiles close enough to overprint, and that
-# is a judgement about this figure, not a general rule.
 after_p <- base + geom_quartileframe() +
-  scale_x_continuous(breaks = quartile_breaks(mtcars$wt, min_gap = 0.12)) +
-  scale_y_continuous(breaks = quartile_breaks(mtcars$mpg)) +
+  scale_x_continuous(breaks = quartile_breaks(peng$flipper_length_mm)) +
+  scale_y_continuous(breaks = quartile_breaks(peng$body_mass_g)) +
   theme_tufte()
 after <- after_p +
   labs(title = "tufter",
@@ -50,35 +52,34 @@ lay("man/figures/README-before-after.png", list(before, after),
 
 # --- gallery -----------------------------------------------------------------
 
-boxes <- ggplot(mtcars, aes(factor(cyl), mpg)) +
+boxes <- ggplot(peng, aes(species, body_mass_g)) +
   geom_tufteboxplot() +
   geom_rangeframe(sides = "l") +
-  labs(x = "Cylinders", y = "MPG", title = "geom_tufteboxplot()") +
+  labs(x = NULL, y = "Body mass (g)", title = "geom_tufteboxplot()") +
   theme_tufte()
 
-crops <- data.frame(
-  crop = c("Wheat", "Maize", "Rice", "Barley", "Oats"),
-  yield = c(3.5, 5.8, 4.6, 3.1, 2.5)
-)
-bars <- ggplot(crops, aes(crop, yield)) +
+# Bars need a quantity that actually varies, or the erased gridlines have
+# nothing to measure against and the form is the wrong choice anyway.
+gdp <- subset(gap, year == 2007 & country %in%
+                c("Japan", "Korea, Rep.", "Malaysia", "China", "Indonesia",
+                  "India"))
+bars <- ggplot(gdp, aes(stats::reorder(country, -gdpPercap), gdpPercap)) +
   geom_col_tufte(fill = "grey72") +
-  labs(x = NULL, y = "t/ha", title = "geom_col_tufte()") +
-  theme_tufte()
+  scale_y_continuous(labels = scales::label_comma()) +
+  labs(x = NULL, y = "GDP per capita, 2007", title = "geom_col_tufte()") +
+  theme_tufte() +
+  theme(axis.text.x = element_text(size = rel(0.72)))
 
-spend <- data.frame(
-  country = rep(c("Sweden", "Japan", "Chile", "Canada", "Greece"), each = 2),
-  year = rep(c("1970", "2020"), 5),
-  value = c(30.1, 41.2, 20.7, 32.9, 22.5, 21.0, 31.0, 38.4, 25.2, 29.7)
-)
-slopes <- slopegraph(spend, year, value, country, label_size = 2.4) +
+sea <- subset(gap, country %in% c("Cambodia", "Indonesia", "Malaysia",
+                                  "Thailand", "Vietnam") &
+                year %in% c(1952, 2007))
+sea$year <- factor(sea$year)
+slopes <- slopegraph(sea, year, lifeExp, country, label_size = 2.4,
+                     min_gap = 0.05) +
   labs(title = "slopegraph()")
 
-series <- data.frame(
-  month = rep(1:60, 3),
-  value = c(cumsum(rnorm(60)), cumsum(rnorm(60)), cumsum(rnorm(60))),
-  series = rep(c("Wheat", "Maize", "Rice"), each = 60)
-)
-sparks <- sparklines(series, month, value, series) +
+four <- subset(gap, country %in% c("China", "India", "Japan"))
+sparks <- sparklines(four, year, gdpPercap, country, accuracy = 1) +
   labs(title = "sparklines()") +
   theme(plot.title = element_text(size = 11, hjust = 0))
 

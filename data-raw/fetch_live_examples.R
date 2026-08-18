@@ -8,7 +8,7 @@
 #
 #   Rscript data-raw/fetch_live_examples.R
 #
-# Writes inst/extdata/live-examples.rds, a list with a `fetched_at` stamp and
+# Writes data-raw/live-examples.rds, a list with a `fetched_at` stamp and
 # one data frame per source.
 
 library(jsonlite)
@@ -150,10 +150,10 @@ live <- list(
   )
 )
 
-dir.create("inst/extdata", recursive = TRUE, showWarnings = FALSE)
-saveRDS(live, "inst/extdata/live-examples.rds", compress = "xz")
+dir.create("data-raw", recursive = TRUE, showWarnings = FALSE)
+saveRDS(live, "data-raw/live-examples.rds", compress = "xz")
 
-message("\nwrote inst/extdata/live-examples.rds")
+message("\nwrote data-raw/live-examples.rds")
 for (nm in c("cran", "quakes", "climate", "pageviews")) {
   message(sprintf("  %-10s %5d rows", nm, nrow(live[[nm]])))
 }

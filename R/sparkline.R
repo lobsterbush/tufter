@@ -202,5 +202,5 @@ sparklines <- function(data, x, y, group, band = c(0.25, 0.75),
 #' grid::grid.newpage()
 #' grid::grid.draw(g)
 sparkline_grob <- function(values, ...) {
-  ggplot2::ggplotGrob(sparkline(values, ...))
+  .grob_of(sparkline(values, ...))
 }

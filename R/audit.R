@@ -339,7 +339,7 @@ print.tufte_audit <- function(x, ...) {
 #' @noRd
 .has_legend <- function(plot) {
   tryCatch({
-    gt <- ggplot2::ggplotGrob(plot)
+    gt <- .grob_of(plot)
     i <- which(grepl("^guide-box", gt$layout$name))
     if (length(i) == 0) return(FALSE)
     any(vapply(i, function(k) {

@@ -1,8 +1,11 @@
 # tufter
 
-Documentation lives at <https://lobsterbush.github.io/tufter/>. There's a
-[gallery built on simulated data](https://lobsterbush.github.io/tufter/articles/simulated-examples.html),
-a second one [built on live API data](https://lobsterbush.github.io/tufter/articles/live-data.html)
+Documentation lives at <https://lobsterbush.github.io/tufter/>. Start with
+[working through a real dataset](https://lobsterbush.github.io/tufter/articles/real-data.html),
+which takes `gapminder` and `palmerpenguins` through every form and every
+measurement. There's also a
+[gallery on simulated data](https://lobsterbush.github.io/tufter/articles/simulated-examples.html),
+a third [built on live API data](https://lobsterbush.github.io/tufter/articles/live-data.html)
 from CRAN logs, USGS earthquakes, Open-Meteo and Wikipedia, and a walk through
 [what each measurement actually computes](https://lobsterbush.github.io/tufter/articles/measuring.html).
 
@@ -65,18 +68,20 @@ The quantities he defined:
 ```r
 library(ggplot2)
 library(tufter)
+library(palmerpenguins)
 
-base <- ggplot(mtcars, aes(wt, mpg)) + geom_point()
+peng <- penguins[complete.cases(penguins), ]
+base <- ggplot(peng, aes(flipper_length_mm, body_mass_g)) + geom_point()
 
 data_ink_ratio(base)
 #> ── Data-ink ratio
-#> 6% of the ink in this figure varies with the data.
+#> 34% of the ink in this figure varies with the data.
 
 lean <- base + geom_rangeframe() + theme_tufte()
 
 data_ink_ratio(lean)
 #> ── Data-ink ratio
-#> 74% of the ink in this figure varies with the data.
+#> 87% of the ink in this figure varies with the data.
 ```
 <!-- readme-short:end -->
 
@@ -84,7 +89,7 @@ data_ink_ratio(lean)
 
 <!-- readme-audit:start -->
 ```r
-tufte_audit(ggplot(mtcars, aes(wt, mpg)) + geom_point())
+tufte_audit(base)
 #> ── Tufte audit ──
 #> At 6.5in x 4in: 3 stated criteria not met.
 #> ── Not met
@@ -101,8 +106,10 @@ tufte_audit(ggplot(mtcars, aes(wt, mpg)) + geom_point())
 #> ── Measured, not graded
 #> Tufte states a direction for these rather than a threshold. Read them against
 #> another draft of the same figure.
-#> • Data-ink ratio 0.06: 6% of the ink varies with the data.
-#> • Data density 3.1 numbers per square inch.
+#> • Data-ink ratio 0.34: 34% of the ink varies with the data.
+#>   this be maximised within reason and names no threshold, so read it against
+#>   another draft of this figure rather than against a target.
+#> • Data density 32.9 numbers per square inch.
 #> • 1 distinct colour in use.
 #> • 1 series overlaid in one panel.
 #> ── Met
