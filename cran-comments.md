@@ -33,7 +33,7 @@ predates the version R now wants.
 ## Notes for the reviewer
 
 `data_ink_ratio()` and `check_labels_fit()` render the plot to a temporary PNG
-in order to measure it, using `ragg` when it is installed and `grDevices::png()`
+in order to measure it, using `ragg` when that's installed and `grDevices::png()`
 otherwise. Both write only to `tempfile()`, delete what they write, and restore
 the previously active graphics device.
 

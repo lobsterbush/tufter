@@ -205,7 +205,7 @@ bank_to_45(series, width = 6.5)
 That height is for the panel. A saved figure needs more, for the axis
 labels and the y title, and
 [`check_labels_fit()`](https://lobsterbush.github.io/tufter/reference/check_labels_fit.md)
-will tell you when you have not left enough.
+will tell you when you haven’t left enough.
 
 ``` r
 series
@@ -225,7 +225,7 @@ sparklines(four, year, gdpPercap, country, accuracy = 1)
 
 Four series whose levels differ by an order of magnitude. On shared axes
 three of them would flatten against the bottom; each on its own scale,
-the shapes are comparable even though the levels are not. That is the
+the shapes are comparable even though the levels aren’t. That’s the
 opposite choice from the small multiples above, and both are honest.
 
 ## Dot plots, when zero is a long way away

@@ -216,51 +216,72 @@ ships Few, Cleveland, Tableau and Ptol palettes, but nothing from Tufte.
 The measurement half is why this package exists. The drawing half is partly
 convenience and partly consolidation.
 
-<!-- HIDDEN FOR NOW. Restore before any public release, and before any JOSS or
-     journal submission, where a disclosure of this kind is usually required.
-     Delete this comment marker and the closing one below the "Standing
-     caveat" paragraph to bring it back.
-
 ## AI usage disclosure
 
-I wrote this package with substantial help from a large language model
-(Anthropic's Claude, via Claude Code). I think anyone reading the code deserves
-to know which parts that covers and what a person actually checked.
+I wrote this package with substantial help from a large language model,
+Anthropic's Claude, run through Claude Code. Anyone reading the code deserves to
+know which parts that covers and what a person actually checked, so here it is.
 
-What the model did. It produced essentially all of the R source in 
-test suite, the roxygen documentation, the vignette and the two articles, and
-the first draft of this README. It also ran the survey of existing packages I
-summarise above.
+The model produced essentially all of the R source in `R/`, the tests, the
+roxygen documentation, both vignettes, the three site articles, and the first
+drafts of this README and the changelog. It also ran the survey of existing
+packages I summarise above.
 
-What I did. I specified the package: the decision to implement Tufte's
-measurements and not only his aesthetics, which principles to cover, and where
-the honest limits of the exercise sit. I reviewed the code and the prose, and I
-ran the checks below.
+I specified the package. The decision to implement Tufte's measurements and not
+only his aesthetics is mine, as is the choice of which principles to cover,
+where the honest limits of the exercise sit, and the later decision to tear out
+every invented threshold and the score along with them. I reviewed the code and
+the prose and ran the checks below.
 
-What got verified, and how. All 289 tests pass and 
-errors, warnings or notes. Every figure in the README, the vignette and the
-articles was rendered and looked at, which is how three real bugs turned up: a
-median dot drawn off the whisker in the offset box plot, colliding axis labels
-from 
-as supplied. I sanity-checked 
-known ahead of time, like a plot with no data layers, which has to come back at
-roughly zero.
+What's verified. All 431 tests pass, and `R CMD check --as-cran` on the
+built tarball returns two notes, one of which is "New submission" and the other
+of which is my local HTML Tidy being too old. I installed the tarball into a
+clean library and confirmed it loads and runs. Every figure in the README, the
+vignettes and the articles was rendered and looked at, which is how several
+bugs turned up that no test would have caught: a median dot drawn off the
+whisker, axis labels colliding, sparkline panels ordered alphabetically instead
+of as supplied, a value label printed as "66 638", a y axis title running off
+the top of a banked panel, and a bar chart demonstrating bars on six values
+that barely differ.
+
+Pointing the package at itself found more. The range frame was being charged to
+the furniture, so adding it made the data-ink ratio worse. Data density counted
+the same observations three times. Banking a circle returned 0.016 where the
+answer is 1. A horizontal bar chart's lie factor came back at 1.4 where the
+truth was 16.7, which is worse than an obvious error because it's believable.
+And the principles table disagreed with the audit in four separate ways about
+what the package even does.
+
+Real data contradicted five things I'd written from expectation, and I'd rather
+say so than quietly fix them: the data-ink ratio of a dense scatterplot is high
+and not low, Tokyo crosses Melbourne on the temperature slopegraph, deep
+earthquakes are slightly smaller than shallow ones, Cambodia finishes last
+rather than overtaking anyone, and a "sevenfold" improvement was fourfold by
+the time I checked. Every number quoted in the prose is now computed inline
+from the data so it can't drift again.
 
 What isn't verified. The empirical citations in the
 [measuring article](https://lobsterbush.github.io/tufter/articles/measuring.html#and-a-larger-caveat-the-principle-itself-is-contested)
 are named inline and I haven't checked their DOIs against Crossref, so please
-don't carry them into a paper without doing that first. The claim that no other
-package computes these quantities rests on a search of CRAN titles and
-descriptions plus GitHub, which can't rule out an implementation that describes
-itself some other way. Neither the model nor I have replicated the
-human-subjects findings cited against the data-ink principle.
+don't carry them into a paper without doing that first. The Cleveland citation
+in `DESCRIPTION` has been checked, and it needed it: the first DOI reached for
+resolved to an unrelated paper about bivariate exponential conditionals. The
+claim that no other package computes these quantities rests on a search of CRAN
+titles and descriptions plus GitHub, which can't rule out an implementation
+that describes itself some other way. Neither the model nor I have replicated
+the human-subjects findings cited against the data-ink principle.
+
+One more thing worth saying about working this way. An automated edit pass over
+the prose once silently dropped formatting from this very section, and I only
+found it by comparing against the git history rather than by reading. Bulk
+edits by machine are fast and they fail quietly, which is an argument for
+version control and for looking at the output, not an argument against the
+tool.
 
 Errors that survive are mine. If you find one, please
 [open an issue](https://github.com/lobsterbush/tufter/issues) rather than
 trusting a measurement because a computer produced it. That's the advice this
 package would give about any number on a graph.
-
-     END OF HIDDEN SECTION -->
 
 ## Sources
 

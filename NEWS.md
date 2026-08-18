@@ -22,7 +22,7 @@ Prepared for CRAN, and moved onto real data throughout.
   `mtcars`.
 * The live API article stays, as a documentation-site extra. Its cached data has
   moved out of the installed package: the Wikipedia component is CC-BY-SA, which
-  does not belong inside an MIT package.
+  doesn't belong inside an MIT package.
 
 ## CRAN preparation
 
@@ -36,6 +36,14 @@ Prepared for CRAN, and moved onto real data throughout.
   for resolved to an unrelated paper about bivariate exponential conditionals;
   the one in `DESCRIPTION` now was checked against Crossref.
 * `cran-comments.md` records the two notes and the one outstanding blocker.
+
+## Disclosure
+
+* The AI usage disclosure is no longer hidden. It says which parts of the
+  package a language model wrote, what I specified and reviewed, what was
+  verified and how, and what remains unverified. It also lists the claims of
+  mine that the data contradicted, since those seem worth keeping on the record
+  rather than quietly correcting.
 
 ## Outstanding
 
@@ -308,11 +316,8 @@ First release.
 * `tufte_audit()`, which runs all of the above plus the structural checks.
 * `tufte_principles()`, listing every principle and whether it can be audited.
 
-<!-- HIDDEN FOR NOW, alongside the disclosure itself in README.md.
-
 ## Documentation
 
 * Added an AI usage disclosure to the README, naming what was model-generated,
   what was human-verified and how, and what remains unverified.
 
-END OF HIDDEN SECTION -->

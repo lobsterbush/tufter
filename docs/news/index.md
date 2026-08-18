@@ -1,5 +1,69 @@
 # Changelog
 
+## tufter 0.5.0
+
+Prepared for CRAN, and moved onto real data throughout.
+
+### A bug that reached outside the package
+
+- [`check_labels_fit()`](https://lobsterbush.github.io/tufter/reference/check_labels_fit.md),
+  [`data_ink_ratio()`](https://lobsterbush.github.io/tufter/reference/data_ink_ratio.md),
+  [`data_density()`](https://lobsterbush.github.io/tufter/reference/data_density.md)
+  and
+  [`sparkline_grob()`](https://lobsterbush.github.io/tufter/reference/sparkline_grob.md)
+  wrote an unasked-for `Rplots.pdf` into the user’s working directory
+  and left a graphics device open behind them.
+  [`ggplotGrob()`](https://ggplot2.tidyverse.org/reference/ggplotGrob.html)
+  needs a device to measure text against, and with none open R starts
+  the default one, which in a script is
+  [`pdf()`](https://rdrr.io/r/grDevices/pdf.html). Grob construction now
+  borrows a `pdf(NULL)` device, which writes no file, and gives it back.
+  A test starts from no device at all in a temporary directory and
+  asserts that nothing is created and nothing is left open.
+
+### Real data
+
+- New vignette, “Working through a real dataset”, which takes
+  `gapminder` and `palmerpenguins` through every form and every
+  measurement. Both are suggested and both are guarded, so the vignette
+  builds when neither is installed.
+- The README figures and example output now use those two datasets
+  rather than `mtcars`.
+- The live API article stays, as a documentation-site extra. Its cached
+  data has moved out of the installed package: the Wikipedia component
+  is CC-BY-SA, which doesn’t belong inside an MIT package.
+
+### CRAN preparation
+
+- `R CMD check --as-cran` on the built tarball: 0 errors, 0 warnings, 2
+  notes. One is “New submission”; the other is the local HTML Tidy being
+  too old.
+- `Language` corrected from `en-US` to `en-GB`, which is what the prose
+  is, with an `inst/WORDLIST` for the technical terms. The spell check
+  is clean.
+- The `Description` no longer says the audit scores a figure. It stopped
+  doing that in 0.3.0.
+- Cleveland, McGill and McGill (1988) is cited by DOI. The first DOI I
+  reached for resolved to an unrelated paper about bivariate exponential
+  conditionals; the one in `DESCRIPTION` now was checked against
+  Crossref.
+- `cran-comments.md` records the two notes and the one outstanding
+  blocker.
+
+### Disclosure
+
+- The AI usage disclosure is no longer hidden. It says which parts of
+  the package a language model wrote, what I specified and reviewed,
+  what was verified and how, and what remains unverified. It also lists
+  the claims of mine that the data contradicted, since those seem worth
+  keeping on the record rather than quietly correcting.
+
+### Outstanding
+
+- The GitHub repository is private, so the two URLs in `DESCRIPTION`
+  return 404 and `--as-cran` flags them. Publish the repository or drop
+  the URLs before submitting.
+
 ## tufter 0.4.2
 
 An audit of the package’s own bookkeeping. Nothing here changes a
@@ -338,3 +402,9 @@ First release.
   which runs all of the above plus the structural checks.
 - [`tufte_principles()`](https://lobsterbush.github.io/tufter/reference/tufte_principles.md),
   listing every principle and whether it can be audited.
+
+### Documentation
+
+- Added an AI usage disclosure to the README, naming what was
+  model-generated, what was human-verified and how, and what remains
+  unverified.
