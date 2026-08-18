@@ -172,10 +172,10 @@ tufte_audit(lean + label_source("Motor Trend, 1974"), width = 6.5, height = 4)
 #> • Nothing is clipped at the printed size
 ```
 
-Notice what the audit won’t do. It never grades the data-ink ratio or
-the data density. Tufte asks that both go in a direction and never says
-how far, so the audit reports them and leaves the judgement with you.
-Read them against another draft of the same figure.
+The audit never grades the data-ink ratio or the data density. Tufte
+asks that both go in a direction and never says how far, so it reports
+them and leaves the judgement with you. Read them against another draft
+of the same figure.
 
 Meeting every stated criterion doesn’t make a figure good. Tufte’s first
 principle is that content counts most of all, and no function evaluates

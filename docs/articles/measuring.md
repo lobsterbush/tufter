@@ -49,11 +49,7 @@ r_base
 ```
 
 Four fifths of that ink is furniture. The grey panel alone is most of
-it, and it doesn’t change when the data change. Four hundred
-semi-transparent points still put a fair amount of ink on the page,
-which is why the figure isn’t as lopsided as the forty-point scatterplot
-in the [getting started
-vignette](https://lobsterbush.github.io/tufter/articles/tufter.md).
+it, and it doesn’t change when the data change.
 
 ``` r
 lean <- base + geom_rangeframe() + theme_tufte()
@@ -67,10 +63,7 @@ r_lean
 #> • measured at 6.5in x 4in, 150 dpi
 ```
 
-The same numbers, with 4.3 times the share of the ink doing work. That
-multiple is written in by inline code rather than typed, because it
-moves whenever the measurement does, and it has already moved once while
-I was writing this page.
+The same numbers, with 4.3 times the share of the ink doing work.
 
 ### Where it misleads
 
@@ -466,18 +459,11 @@ in one call if the figures were saved with
 
 ## Why there’s no score
 
-An earlier version of this package reported a score, the share of checks
-passed. It’s gone, for two reasons.
-
-The first is that it meant making up thresholds. Tufte gives a testable
-line for some principles and only a direction for others, so a pass or
-fail on the second kind can only come from me. The version of
-[`data_ink_ratio()`](https://lobsterbush.github.io/tufter/reference/data_ink_ratio.md)
-that failed a figure below 0.5 was asserting something Tufte never
-wrote, in his voice.
+Tufte gives a testable line for some principles and only a direction for
+others, so a pass or fail on the second kind could only come from me.
+The audit grades the first kind and measures the second.
 [`tufte_principles()`](https://lobsterbush.github.io/tufter/reference/tufte_principles.md)
-now marks the difference in its `criterion` column, and the audit grades
-only the principles that carry one.
+marks the difference in its `criterion` column.
 
 ``` r
 p <- tufte_principles()
@@ -497,17 +483,16 @@ p[p$criterion, c("principle", "source")]
 #> 10 Documentation                    Beautiful Evidence ch. 6
 ```
 
-The second is that a score needs a weighting. Saying a figure is at
-seventy percent means you’ve decided how many missing source notes equal
-one pie chart, and Tufte doesn’t offer an exchange rate. So the audit
-reports a count of stated criteria not met, which is comparable across
-figures because every figure gets counted against the same list, plus a
-set of measurements you can read against another draft.
+A score would also need a weighting. Saying a figure is at seventy
+percent means deciding how many missing source notes equal one pie
+chart, and Tufte doesn’t offer an exchange rate. The audit reports a
+count of stated criteria not met, which is comparable across figures
+because every figure gets counted against the same list, plus a set of
+measurements you can read against another draft.
 
-None of this puts the remaining criteria beyond argument. They’re my
-reading of what Tufte states outright, and I’ve tried to keep that
-reading visible in the source of each check instead of burying it in a
-number.
+None of this puts the criteria beyond argument. They’re my reading of
+what Tufte states outright, and that reading is visible in the source of
+each check.
 
 [`tufte_principles()`](https://lobsterbush.github.io/tufter/reference/tufte_principles.md)
 is the honest inventory. The `audited` column marks which principles a

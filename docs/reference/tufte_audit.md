@@ -41,18 +41,16 @@ and 1.05, graphics tend toward the horizontal, non-data ink comes off
 the page. Those are reported as met or not met.
 
 For others he states only a direction. He asks that the data-ink ratio
-be maximised "within reason" and that data density be increased, and he
+be maximised "within reason" and that data density be increased, and
 nowhere says how much is enough, because the answer depends on the
-content. Those are measured and reported without a verdict. Earlier
-versions of this package invented thresholds for them, which put a
-number of mine in the same voice as a principle of his; the numbers were
-never his and are now gone.
+content. Those are measured and reported without a verdict, since any
+threshold would be the package author's rather than his.
 
-The consequence is that there's no score. Counting satisfied principles
-would mean weighting them against each other, and Tufte offers no
-exchange rate between a pie chart and a missing source note. What the
-audit gives you is a list of stated criteria that aren't met, and a set
-of measurements to compare against another draft of the same figure.
+There's no score. Counting satisfied principles would mean weighting
+them against each other, and Tufte offers no exchange rate between a pie
+chart and a missing source note. The audit gives you a list of stated
+criteria that aren't met, and a set of measurements to compare against
+another draft of the same figure.
 
 ## See also
 

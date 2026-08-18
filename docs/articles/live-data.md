@@ -122,13 +122,11 @@ bank_to_45(series, width = 6.5)
 #> titles.
 ```
 
-That height is for the panel, and a saved figure needs room on top of it
-for the axis labels and the y title. I found this out the hard way while
-writing this page: at the banked height exactly, “Daily downloads” runs
-off the top of the figure.
+That height is for the panel. A saved figure needs room on top of it for
+the axis labels and the y title, and at the banked height exactly the y
+title runs off the top.
 [`check_labels_fit()`](https://lobsterbush.github.io/tufter/reference/check_labels_fit.md)
-now catches it, and it didn’t before, which is the second bug this
-article turned up.
+measures that.
 
 ``` r
 check_labels_fit(series, width = 6.5, height = 1.3)
@@ -145,8 +143,8 @@ check_labels_fit(series, width = 6.5, height = 1.3)
 #> 5 y axis labels (stacked)            0.222         0.92 TRUE
 ```
 
-So give it a little more room. The panel is still close to banked and
-the title now fits.
+So give it a little more room. The panel stays close to banked and the
+title fits.
 
 ``` r
 series
@@ -248,23 +246,19 @@ ggplot(q, aes(zone, magnitude)) +
 
 ![](live-data_files/figure-html/quakes-box-1.png)
 
-Two things to say about that figure, both of which took me a moment.
+Two things about that figure.
 
-The first is that the three distributions are nearly identical. Deep
-events are much rarer, 289 against 6,272 shallow ones, and their median
-magnitude is 4.6 against 4.7 for shallow. I’d not make anything of a
-tenth of a magnitude unit in a catalogue that’s been censored at 4.5,
-and I mention it mostly because I’d assumed going in that deep
-earthquakes would be larger. They aren’t, at least not here.
+The three distributions are nearly identical. Deep events are much
+rarer, 289 against 6,272 shallow ones, and their median magnitude is 4.6
+against 4.7 for shallow. A tenth of a magnitude unit in a catalogue
+censored at 4.5 is not worth much.
 
-The second is that I’ve turned the outlying points off, which needs
-defending in a package that keeps telling you outliers are data.
-Earthquake magnitudes follow roughly an exponential distribution, so the
-usual rule of 1.5 times the interquartile range flags between four and
-eleven percent of events depending on the class. Those aren’t anomalies,
-they’re the ordinary tail, and drawing three hundred of them buries the
-summary the box plot exists to show. The scatterplot above already shows
-every one of them.
+The outlying points are off. Earthquake magnitudes follow roughly an
+exponential distribution, so the usual rule of 1.5 times the
+interquartile range flags between four and eleven percent of events
+depending on the class. Those are the ordinary tail rather than
+anomalies, and drawing three hundred of them buries the summary the box
+plot exists to show. The scatterplot above shows every one.
 
 The lower whiskers are worth reading carefully too. They stop at 4.5
 because that’s what I asked the API for, so they’re an artefact of the
@@ -393,10 +387,8 @@ because overlapping points get counted once and this plot has a great
 many piled up near the origin. The measuring article works through that
 bias.
 
-Those two numbers are written into the sentence by inline R code rather
-than typed, which is the habit I’d recommend for any figure whose values
-appear in the surrounding prose. Refresh the data and the sentence
-refreshes with it.
+Both numbers are written into the sentence by inline R code, so
+refreshing the data refreshes the prose with it.
 
 ## Contrast, on a figure drawn faintly on purpose
 
@@ -433,10 +425,6 @@ points instead.
 Rscript data-raw/fetch_live_examples.R
 ```
 
-That rewrites `inst/extdata/live-examples.rds` and this page picks up
-the new numbers on the next build. The prose above quotes specific
-values, so if you refresh and the numbers move, the sentences around
-them need a read as well. That’s the same problem as any paper with
-numbers in the text, and the same fix: pipe the values in from the data
-rather than typing them, which is what the inline code in this article
-does.
+That rewrites `data-raw/live-examples.rds`, and this page picks up the
+new numbers on the next build. Every value quoted in the prose is inline
+R code, so it moves with the data.

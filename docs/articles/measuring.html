@@ -182,10 +182,7 @@ data ink.</p>
 <span><span class="co">#&gt; • non-data ink: <span style="color: #0000BB;">36866</span></span></span>
 <span><span class="co">#&gt; • measured at 6.5in x 4in, 150 dpi</span></span></code></pre></div>
 <p>Four fifths of that ink is furniture. The grey panel alone is most of
-it, and it doesn’t change when the data change. Four hundred
-semi-transparent points still put a fair amount of ink on the page,
-which is why the figure isn’t as lopsided as the forty-point scatterplot
-in the <a href="tufter.html">getting started vignette</a>.</p>
+it, and it doesn’t change when the data change.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lean</span> <span class="op">&lt;-</span> <span class="va">base</span> <span class="op">+</span> <span class="fu"><a href="../reference/geom_rangeframe.html">geom_rangeframe</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="../reference/theme_tufte.html">theme_tufte</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">r_lean</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/data_ink_ratio.html">data_ink_ratio</a></span><span class="op">(</span><span class="va">lean</span><span class="op">)</span></span>
@@ -196,10 +193,7 @@ in the <a href="tufter.html">getting started vignette</a>.</p>
 <span><span class="co">#&gt; • data ink: <span style="color: #0000BB;">10762</span> pixel-equivalents</span></span>
 <span><span class="co">#&gt; • non-data ink: <span style="color: #0000BB;">2560</span></span></span>
 <span><span class="co">#&gt; • measured at 6.5in x 4in, 150 dpi</span></span></code></pre></div>
-<p>The same numbers, with 4.3 times the share of the ink doing work.
-That multiple is written in by inline code rather than typed, because it
-moves whenever the measurement does, and it has already moved once while
-I was writing this page.</p>
+<p>The same numbers, with 4.3 times the share of the ink doing work.</p>
 <div class="section level3">
 <h3 id="where-it-misleads">Where it misleads<a class="anchor" aria-label="anchor" href="#where-it-misleads"></a>
 </h3>
@@ -557,16 +551,11 @@ package in one call if the figures were saved with
 <div class="section level2">
 <h2 id="why-theres-no-score">Why there’s no score<a class="anchor" aria-label="anchor" href="#why-theres-no-score"></a>
 </h2>
-<p>An earlier version of this package reported a score, the share of
-checks passed. It’s gone, for two reasons.</p>
-<p>The first is that it meant making up thresholds. Tufte gives a
-testable line for some principles and only a direction for others, so a
-pass or fail on the second kind can only come from me. The version of
-<code><a href="../reference/data_ink_ratio.html">data_ink_ratio()</a></code> that failed a figure below 0.5 was
-asserting something Tufte never wrote, in his voice.
-<code><a href="../reference/tufte_principles.html">tufte_principles()</a></code> now marks the difference in its
-<code>criterion</code> column, and the audit grades only the principles
-that carry one.</p>
+<p>Tufte gives a testable line for some principles and only a direction
+for others, so a pass or fail on the second kind could only come from
+me. The audit grades the first kind and measures the second.
+<code><a href="../reference/tufte_principles.html">tufte_principles()</a></code> marks the difference in its
+<code>criterion</code> column.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tufte_principles.html">tufte_principles</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">p</span><span class="op">[</span><span class="va">p</span><span class="op">$</span><span class="va">criterion</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"principle"</span>, <span class="st">"source"</span><span class="op">)</span><span class="op">]</span></span>
@@ -583,16 +572,15 @@ that carry one.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Legibility                       WCAG 2.1, not Tufte     </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Integrate word, number and image Beautiful Evidence ch. 5</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Documentation                    Beautiful Evidence ch. 6</span></span></code></pre></div>
-<p>The second is that a score needs a weighting. Saying a figure is at
-seventy percent means you’ve decided how many missing source notes equal
-one pie chart, and Tufte doesn’t offer an exchange rate. So the audit
-reports a count of stated criteria not met, which is comparable across
-figures because every figure gets counted against the same list, plus a
-set of measurements you can read against another draft.</p>
-<p>None of this puts the remaining criteria beyond argument. They’re my
-reading of what Tufte states outright, and I’ve tried to keep that
-reading visible in the source of each check instead of burying it in a
-number.</p>
+<p>A score would also need a weighting. Saying a figure is at seventy
+percent means deciding how many missing source notes equal one pie
+chart, and Tufte doesn’t offer an exchange rate. The audit reports a
+count of stated criteria not met, which is comparable across figures
+because every figure gets counted against the same list, plus a set of
+measurements you can read against another draft.</p>
+<p>None of this puts the criteria beyond argument. They’re my reading of
+what Tufte states outright, and that reading is visible in the source of
+each check.</p>
 <p><code><a href="../reference/tufte_principles.html">tufte_principles()</a></code> is the honest inventory. The
 <code>audited</code> column marks which principles a function can reach
 at all, and <code>criterion</code> marks which of those Tufte states a

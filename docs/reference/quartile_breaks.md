@@ -41,12 +41,12 @@ A function suitable for the `breaks` argument of a continuous scale.
 
 All five values are returned by default, because the five-number summary
 is what a quartile frame reports. Where two of them fall close enough
-together that their labels overprint, `min_gap` will drop the crowded
-ones, but it's off unless you ask for it: the spacing at which labels
-collide depends on the font, the figure size and the number of digits,
-none of which a breaks function can see.
+together that their labels overprint, `min_gap` drops the crowded ones.
+It's off by default: the spacing at which labels collide depends on the
+font, the figure size and the number of digits, none of which a breaks
+function can see.
 [`check_labels_fit()`](https://lobsterbush.github.io/tufter/reference/check_labels_fit.md)
-measures the collision properly, at the size you intend to print.
+measures the collision at the size you intend to print.
 
 ## Examples
 

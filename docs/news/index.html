@@ -106,238 +106,115 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0" id="tufter-050">tufter 0.5.0<a class="anchor" aria-label="anchor" href="#tufter-050"></a></h2>
-<p>Prepared for CRAN, and moved onto real data throughout.</p>
-<div class="section level3">
-<h3 id="a-bug-that-reached-outside-the-package-0-5-0">A bug that reached outside the package<a class="anchor" aria-label="anchor" href="#a-bug-that-reached-outside-the-package-0-5-0"></a></h3>
-<ul><li>
-<code><a href="../reference/check_labels_fit.html">check_labels_fit()</a></code>, <code><a href="../reference/data_ink_ratio.html">data_ink_ratio()</a></code>, <code><a href="../reference/data_density.html">data_density()</a></code> and <code><a href="../reference/sparkline_grob.html">sparkline_grob()</a></code> wrote an unasked-for <code>Rplots.pdf</code> into the user’s working directory and left a graphics device open behind them. <code><a href="https://ggplot2.tidyverse.org/reference/ggplotGrob.html" class="external-link">ggplotGrob()</a></code> needs a device to measure text against, and with none open R starts the default one, which in a script is <code><a href="https://rdrr.io/r/grDevices/pdf.html" class="external-link">pdf()</a></code>. Grob construction now borrows a <code>pdf(NULL)</code> device, which writes no file, and gives it back. A test starts from no device at all in a temporary directory and asserts that nothing is created and nothing is left open.</li>
-</ul></div>
-<div class="section level3">
-<h3 id="real-data-0-5-0">Real data<a class="anchor" aria-label="anchor" href="#real-data-0-5-0"></a></h3>
-<ul><li>New vignette, “Working through a real dataset”, which takes <code>gapminder</code> and <code>palmerpenguins</code> through every form and every measurement. Both are suggested and both are guarded, so the vignette builds when neither is installed.</li>
-<li>The README figures and example output now use those two datasets rather than <code>mtcars</code>.</li>
-<li>The live API article stays, as a documentation-site extra. Its cached data has moved out of the installed package: the Wikipedia component is CC-BY-SA, which doesn’t belong inside an MIT package.</li>
-</ul></div>
-<div class="section level3">
-<h3 id="cran-preparation-0-5-0">CRAN preparation<a class="anchor" aria-label="anchor" href="#cran-preparation-0-5-0"></a></h3>
-<ul><li>
-<code>R CMD check --as-cran</code> on the built tarball: 0 errors, 0 warnings, 2 notes. One is “New submission”; the other is the local HTML Tidy being too old.</li>
+<ul><li>New vignette, “Working through a real dataset”, using <code>gapminder</code> and <code>palmerpenguins</code>. Both are suggested and guarded.</li>
 <li>
-<code>Language</code> corrected from <code>en-US</code> to <code>en-GB</code>, which is what the prose is, with an <code>inst/WORDLIST</code> for the technical terms. The spell check is clean.</li>
-<li>The <code>Description</code> no longer says the audit scores a figure. It stopped doing that in 0.3.0.</li>
-<li>Cleveland, McGill and McGill (1988) is cited by DOI. The first DOI I reached for resolved to an unrelated paper about bivariate exponential conditionals; the one in <code>DESCRIPTION</code> now was checked against Crossref.</li>
+<code><a href="../reference/check_labels_fit.html">check_labels_fit()</a></code>, <code><a href="../reference/data_ink_ratio.html">data_ink_ratio()</a></code>, <code><a href="../reference/data_density.html">data_density()</a></code> and <code><a href="../reference/sparkline_grob.html">sparkline_grob()</a></code> no longer leave a graphics device open or write an <code>Rplots.pdf</code> into the working directory. Grob construction borrows a <code>pdf(NULL)</code> device.</li>
+<li>README figures and example output use <code>palmerpenguins</code> and <code>gapminder</code>.</li>
+<li>The cached API data behind the live-data article has moved to <code>data-raw/</code> and is no longer installed with the package.</li>
 <li>
-<code>cran-comments.md</code> records the two notes and the one outstanding blocker.</li>
+<code>Language</code> is <code>en-GB</code>, with an <code>inst/WORDLIST</code>.</li>
+<li>Cleveland, McGill and McGill (1988) cited by DOI in <code>DESCRIPTION</code>.</li>
+<li>AI usage disclosure added to the README.</li>
 </ul></div>
-<div class="section level3">
-<h3 id="disclosure-0-5-0">Disclosure<a class="anchor" aria-label="anchor" href="#disclosure-0-5-0"></a></h3>
-<ul><li>The AI usage disclosure is no longer hidden. It says which parts of the package a language model wrote, what I specified and reviewed, what was verified and how, and what remains unverified. It also lists the claims of mine that the data contradicted, since those seem worth keeping on the record rather than quietly correcting.</li>
-</ul></div>
-<div class="section level3">
-<h3 id="outstanding-0-5-0">Outstanding<a class="anchor" aria-label="anchor" href="#outstanding-0-5-0"></a></h3>
-<ul><li>The GitHub repository is private, so the two URLs in <code>DESCRIPTION</code> return 404 and <code>--as-cran</code> flags them. Publish the repository or drop the URLs before submitting.</li>
-</ul></div>
-</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.2" id="tufter-042">tufter 0.4.2<a class="anchor" aria-label="anchor" href="#tufter-042"></a></h2>
-<p>An audit of the package’s own bookkeeping. Nothing here changes a measurement; all of it changes what the package says about itself.</p>
-<div class="section level3">
-<h3 id="the-principles-table-and-the-audit-disagreed-0-4-2">The principles table and the audit disagreed<a class="anchor" aria-label="anchor" href="#the-principles-table-and-the-audit-disagreed-0-4-2"></a></h3>
-<p><code><a href="../reference/tufte_principles.html">tufte_principles()</a></code> is the package’s own account of what it does, so it mattered that it was wrong in four places.</p>
-<ul><li>Two principles were named differently in the table and in the audit output, so the same principle appeared under two names depending on where you looked. The audit now uses the table’s names.</li>
-<li>Two more were marked <code>audited = TRUE</code> when no check produced a row for them. “Above all else show the data” and “Layering and separation” are generative instructions that nothing reports on, and now say so.</li>
-<li>Three citations had drifted apart between the two, which happened because each check carried its own copy. The audit now looks the source up from the table, so there’s only one copy to get wrong.</li>
-</ul><p>Two tests hold this shut from both directions: every principle marked audited must appear in an audit of some plot, and every principle the audit names must appear in the table with the same citation.</p>
-</div>
-<div class="section level3">
-<h3 id="documentation-0-4-2">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-4-2"></a></h3>
-<ul><li>The README’s example output is generated by <code>data-raw/make_readme_output.R</code> rather than transcribed by hand. It had drifted twice, once when the range-frame fix moved the data-ink ratio and once when the audit messages were rewritten.</li>
-</ul></div>
-<div class="section level3">
-<h3 id="coverage-0-4-2">Coverage<a class="anchor" aria-label="anchor" href="#coverage-0-4-2"></a></h3>
 <ul><li>
-<code><a href="../reference/scale_colour_tufte.html">scale_fill_tufte_c()</a></code> was the one exported function with no test. It has one now, which brings the suite to every non-ggproto export.</li>
+<code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> and <code><a href="../reference/tufte_principles.html">tufte_principles()</a></code> use the same names and the same citations for every principle. The audit looks each source up from the table.</li>
+<li>Two principles are marked <code>audited = FALSE</code>: nothing reports on them.</li>
+<li>README example output is generated by <code>data-raw/make_readme_output.R</code>.</li>
+<li>
+<code><a href="../reference/scale_colour_tufte.html">scale_fill_tufte_c()</a></code> gains a test.</li>
 </ul></div>
-</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.1" id="tufter-041">tufter 0.4.1<a class="anchor" aria-label="anchor" href="#tufter-041"></a></h2>
-<p>More defects found by pointing the package at awkward plots. Two of these changed reported numbers.</p>
-<div class="section level3">
-<h3 id="orientation-0-4-1">Orientation<a class="anchor" aria-label="anchor" href="#orientation-0-4-1"></a></h3>
 <ul><li>
-<code><a href="../reference/lie_factor.html">lie_factor()</a></code> read a horizontal bar chart along the wrong axis, measuring the category position instead of the bar’s length. A sixteenfold distortion came back as 1.4, which sits close enough to honest to be believed. Horizontal bars, bars written with <code><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip()</a></code> and ordinary vertical bars now all report the same lie factor for the same distortion.</li>
+<code><a href="../reference/lie_factor.html">lie_factor()</a></code> reads horizontal bars and <code><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip()</a></code> bars along the axis that carries their length. All three orientations report the same distortion.</li>
 <li>
-<code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> had the same fault in its baseline check. It reached the right verdict by accident and then named the wrong axis, so the explanation pointed a reader at an axis that was fine. It now names the axis they can see.</li>
+<code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> names the axis a reader can see when a bar baseline is not zero.</li>
 <li>
-<code><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip()</a></code> on an honest bar chart returned 1.004 rather than 1, because the baseline came from the category range.</li>
-</ul></div>
-<div class="section level3">
-<h3 id="banking-0-4-1">Banking<a class="anchor" aria-label="anchor" href="#banking-0-4-1"></a></h3>
-<ul><li>
-<code><a href="../reference/bank_to_45.html">bank_to_45()</a></code> normalised every panel by the first panel’s ranges. Under free scales that rescales every other panel’s slopes by the wrong factor: two lines each running corner to corner of their own panel came back at 2 instead of 1. Each panel is now normalised by its own ranges, and the answer still differs between fixed and free scales, as it should.</li>
-</ul></div>
-<div class="section level3">
-<h3 id="fewer-false-alarms-0-4-1">Fewer false alarms<a class="anchor" aria-label="anchor" href="#fewer-false-alarms-0-4-1"></a></h3>
-<ul><li>The audit accused any plot that sets two fixed colours outside <code><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes()</a></code> of carrying a legend. Red points under a blue fit line draw no key at all. It now asks the assembled figure whether a guide box is really there.</li>
-</ul></div>
-<div class="section level3">
-<h3 id="elsewhere-0-4-1">Elsewhere<a class="anchor" aria-label="anchor" href="#elsewhere-0-4-1"></a></h3>
-<ul><li>
-<code><a href="../reference/slopegraph.html">slopegraph()</a></code> warns when a unit has more than one value in a period instead of printing two labels on top of each other, and draws the first.</li>
+<code><a href="../reference/bank_to_45.html">bank_to_45()</a></code> normalises each panel by its own ranges, which matters under free scales.</li>
+<li>A plot setting fixed colours outside <code><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes()</a></code> is no longer reported as carrying a legend.</li>
 <li>
-<code><a href="../reference/tufte_principles.html">tufte_principles()</a></code> puts <code>NA</code> in <code>implemented_by</code> for the principles no function reaches, rather than prose in a column of function names. A test now asserts that every function it does name is exported by the package, so a rename can’t leave the table pointing at nothing.</li>
+<code><a href="../reference/slopegraph.html">slopegraph()</a></code> warns when a unit has more than one value in a period.</li>
+<li>
+<code><a href="../reference/tufte_principles.html">tufte_principles()</a></code> uses <code>NA</code> in <code>implemented_by</code> where no function reaches a principle.</li>
 </ul></div>
-</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.0" id="tufter-040">tufter 0.4.0<a class="anchor" aria-label="anchor" href="#tufter-040"></a></h2>
-<div class="section level3">
-<h3 id="a-second-gallery-on-real-data-0-4-0">A second gallery, on real data<a class="anchor" aria-label="anchor" href="#a-second-gallery-on-real-data-0-4-0"></a></h3>
-<ul><li>New article, <a href="https://lobsterbush.github.io/tufter/articles/live-data.html">Examples with live API data</a>, drawing every form in the package from four public APIs that need no key: CRAN download logs, the USGS earthquake catalogue, the Open-Meteo ERA5 archive and Wikipedia pageviews.</li>
+<ul><li>New article, “Examples with live API data”, drawing on CRAN download logs, the USGS earthquake catalogue, the Open-Meteo ERA5 archive and Wikipedia pageviews. <code>data-raw/fetch_live_examples.R</code> does the fetching and caches the result.</li>
 <li>
-<code>data-raw/fetch_live_examples.R</code> does the fetching and caches the result to <code>inst/extdata/live-examples.rds</code>, so the article builds offline and the page stays reproducible. Run the script to refresh it.</li>
-</ul></div>
-<div class="section level3">
-<h3 id="two-bugs-the-real-data-found-0-4-0">Two bugs the real data found<a class="anchor" aria-label="anchor" href="#two-bugs-the-real-data-found-0-4-0"></a></h3>
-<ul><li>
-<code><a href="../reference/check_labels_fit.html">check_labels_fit()</a></code> measured a rotated y axis title along the wrong axis. The width of a rotated text grob is the height of the lettering, which always fits, so a y title running off a short panel was reported as fine. It now measures the length of the string against the height of the panel area.</li>
+<code><a href="../reference/check_labels_fit.html">check_labels_fit()</a></code> measures a rotated y axis title along the length of the string, against the height of the panel area.</li>
 <li>
-<code><a href="../reference/sparkline.html">sparkline()</a></code> and <code><a href="../reference/sparklines.html">sparklines()</a></code> printed their end labels with the  default separator, a space, so 66638 came out as “66 638” and read as two numbers at sparkline size. Both gain a <code>big.mark</code> argument, defaulting to a comma.</li>
+<code><a href="../reference/sparkline.html">sparkline()</a></code> and <code><a href="../reference/sparklines.html">sparklines()</a></code> gain a <code>big.mark</code> argument, defaulting to a comma.</li>
+<li>
+<code><a href="../reference/bank_to_45.html">bank_to_45()</a></code> documents that the height it returns is for the panel.</li>
 </ul></div>
-<div class="section level3">
-<h3 id="elsewhere-0-4-0">Elsewhere<a class="anchor" aria-label="anchor" href="#elsewhere-0-4-0"></a></h3>
-<ul><li>
-<code><a href="../reference/bank_to_45.html">bank_to_45()</a></code> says plainly that the height it returns is for the panel. A saved figure needs more, for the axis labels and titles, which is how the first of those two bugs turned up.</li>
-</ul></div>
-</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="tufter-030">tufter 0.3.0<a class="anchor" aria-label="anchor" href="#tufter-030"></a></h2>
-<p>The audit no longer invents thresholds, and no longer reports a score. This changes its output, so anything that read <code>attr(a, "score")</code> needs updating to <code>attr(a, "violations")</code>.</p>
-<div class="section level3">
-<h3 id="no-invented-thresholds-0-3-0">No invented thresholds<a class="anchor" aria-label="anchor" href="#no-invented-thresholds-0-3-0"></a></h3>
-<p>Tufte states two different kinds of thing, and earlier versions collapsed them. For some principles he gives a criterion a graphic either meets or does not: bars measured from zero, the lie factor between 0.95 and 1.05, graphics wider than they are tall, non-data ink erased. Those are still graded. For others he gives only a direction, asking that the data-ink ratio be maximised “within reason” and that data density be increased, and names no threshold anywhere.</p>
-<p>Those are now measured and reported without a verdict. The cutoffs that used to grade them were the package author’s, presented in Tufte’s voice, and are gone:</p>
-<ul><li>a data-ink ratio below 0.5 no longer fails;</li>
-<li>a data density below 2 numbers per square inch no longer fails;</li>
-<li>a banked height more than a factor of two from the given one no longer fails, since Cleveland states 45 degrees as the target and no tolerance around it;</li>
-<li>more than seven hues no longer fails, and hues are counted instead;</li>
-<li>more than six overlaid series no longer draws a remark;</li>
-<li>a major gridline is no longer graded by an invented line weight;</li>
-<li>an aspect ratio above 3:1 no longer draws a remark, since Tufte states the criterion at 1 and nothing above it;</li>
+<ul><li>
+<code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> grades only the principles for which Tufte states a criterion, and measures the rest without a verdict. The thresholds that used to grade the measurements are removed.</li>
+<li>The <code>score</code> attribute is replaced by <code>violations</code>, a count of stated criteria not met. <code><a href="../reference/audit_figures.html">audit_figures()</a></code> orders figures by that count.</li>
 <li>
-<code><a href="../reference/quartile_breaks.html">quartile_breaks()</a></code> now returns the whole five-number summary by default. The spacing at which labels collide depends on font and figure size, which a breaks function cannot see, so <code>min_gap</code> is off unless you set it.</li>
-</ul><p>The legend check no longer fails on a count. It fails when a legend names series that could have been labelled on the data, and merely reports a key for a continuous scale, where there are no series to name and Tufte keys the shading himself.</p>
-</div>
-<div class="section level3">
-<h3 id="no-score-0-3-0">No score<a class="anchor" aria-label="anchor" href="#no-score-0-3-0"></a></h3>
-<p><code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> reported the share of checks passed. Collapsing the two kinds of principle into one number needs a weighting between a pie chart and a missing source note, and Tufte offers no exchange rate. The <code>score</code> attribute is replaced by <code>violations</code>, a count of stated criteria not met.</p>
-<p><code><a href="../reference/audit_figures.html">audit_figures()</a></code> now orders figures by that count rather than by a proportion. A count is comparable across figures; the old proportion divided by a denominator that changed with the plot type, so it ranked figures on numbers that were not on the same scale.</p>
-</div>
-<div class="section level3">
-<h3 id="elsewhere-0-3-0">Elsewhere<a class="anchor" aria-label="anchor" href="#elsewhere-0-3-0"></a></h3>
-<ul><li>All the prose is rewritten: README, the vignette, both articles, the roxygen documentation and the audit’s own messages. Contractions throughout, no dashes used as connectors, and none of the antithesis constructions (“not X, it’s Y”) that had crept in.</li>
+<code><a href="../reference/tufte_principles.html">tufte_principles()</a></code> gains a <code>criterion</code> column.</li>
+<li>The legend check fails on named series and reports a continuous key.</li>
 <li>
-<code><a href="../reference/tufte_principles.html">tufte_principles()</a></code> gains a <code>criterion</code> column marking which principles Tufte states a testable line for. Ten of twenty-six do.</li>
-<li>The audit cites WCAG rather than Tufte for the contrast minimum, and Cleveland rather than Tufte for banking, in the output itself.</li>
-<li>
-<code><a href="../reference/tufte_pal.html">tufte_pal()</a></code> no longer claims a number at which hues stop being a code; it warns only that the extra colours are interpolated.</li>
-<li>
-<code><a href="../reference/slopegraph.html">slopegraph()</a></code>’s <code>min_gap</code> is documented as a typesetting allowance rather than a quantity from Tufte.</li>
+<code><a href="../reference/quartile_breaks.html">quartile_breaks()</a></code> returns the whole five-number summary by default.</li>
+<li>The audit cites WCAG for the contrast minimum and Cleveland for banking.</li>
 </ul></div>
-</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.1" id="tufter-021">tufter 0.2.1<a class="anchor" aria-label="anchor" href="#tufter-021"></a></h2>
-<p>Bug fixes found by auditing the package against itself. Three of these changed reported numbers, so figures measured with 0.2.0 should be measured again.</p>
-<div class="section level3">
-<h3 id="measurement-correctness-0-2-1">Measurement correctness<a class="anchor" aria-label="anchor" href="#measurement-correctness-0-2-1"></a></h3>
 <ul><li>
-<code><a href="../reference/geom_rangeframe.html">geom_rangeframe()</a></code> and <code><a href="../reference/geom_rangeframe.html">geom_quartileframe()</a></code> returned an unnamed grob, so <code><a href="../reference/data_ink_ratio.html">data_ink_ratio()</a></code> counted the frame as furniture rather than as data. Adding a range frame therefore <em>lowered</em> the measured ratio, inverting the package’s own advice. Frames are now named like every other layer; the ratio for a framed scatterplot rises from 0.60 to 0.73.</li>
+<code><a href="../reference/geom_rangeframe.html">geom_rangeframe()</a></code> and <code><a href="../reference/geom_rangeframe.html">geom_quartileframe()</a></code> name their grobs, so <code><a href="../reference/data_ink_ratio.html">data_ink_ratio()</a></code> counts them as data ink.</li>
 <li>
-<code><a href="../reference/data_density.html">data_density()</a></code> summed rows across layers, so a range frame and a dot-dash drawn over the same thirty-two observations were counted as ninety-six entries. Layers are now grouped by the data they read, and a layer carrying its own data still counts separately.</li>
+<code><a href="../reference/data_density.html">data_density()</a></code> groups layers by the data they read, and resolves aesthetics to the columns they use.</li>
 <li>
-<code><a href="../reference/data_density.html">data_density()</a></code> counted <code>factor(cyl)</code> and <code>cyl</code> as two variables. Aesthetics are now resolved to the columns they actually read.</li>
+<code><a href="../reference/bank_to_45.html">bank_to_45()</a></code> reads segments in drawn order and keeps vertical ones. A path that is more than half vertical is refused.</li>
 <li>
-<code><a href="../reference/bank_to_45.html">bank_to_45()</a></code> sorted points by x and discarded segments with no horizontal extent, which silently assumed every path was a function of x. A circle returned an aspect ratio of 0.016 instead of 1. Segments are now read in drawn order and verticals are kept as the infinite slopes they are. A path that is more than half vertical is refused rather than answered wrongly.</li>
+<code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> treats a continuous colour scale as one code, catches redundant encoding through a transformation, and fails a bar chart on a transformed scale. <code><a href="../reference/lie_factor.html">lie_factor()</a></code> returns <code>NA</code> for the same.</li>
 </ul></div>
-<div class="section level3">
-<h3 id="fewer-false-alarms-0-2-1">Fewer false alarms<a class="anchor" aria-label="anchor" href="#fewer-false-alarms-0-2-1"></a></h3>
-<ul><li>
-<code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> no longer reports a continuous colour scale as “22 distinct colours”. A gradient is one code, not a set of competing hues.</li>
-<li>Redundant encoding is now detected through a transformation, so <code>x = factor(cyl)</code> with <code>colour = cyl</code> is caught.</li>
-<li>
-<code><a href="../reference/lie_factor.html">lie_factor()</a></code> returned 1 for a bar chart on a log scale, which read as a clean bill of health for one of the more distorting things you can do to a bar. It now returns <code>NA</code>, and the audit fails the plot with an explanation.</li>
-</ul></div>
-<div class="section level3">
-<h3 id="documentation-0-2-1">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-2-1"></a></h3>
-<ul><li>
-<code><a href="../reference/bank_to_45.html">bank_to_45()</a></code> claimed <code><a href="../reference/save_tufte.html">save_tufte()</a></code> would bank for you. It will not, and never did; the cross-reference now says so.</li>
-</ul></div>
-</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="tufter-020">tufter 0.2.0<a class="anchor" aria-label="anchor" href="#tufter-020"></a></h2>
-<div class="section level3">
-<h3 id="measuring-0-2-0">Measuring<a class="anchor" aria-label="anchor" href="#measuring-0-2-0"></a></h3>
 <ul><li>
-<code><a href="../reference/bank_to_45.html">bank_to_45()</a></code> computes the aspect ratio that brings a plot’s slopes nearest 45 degrees, where slope is judged most accurately. Two methods: Cleveland’s median absolute slope, and mean absolute orientation, optionally weighted by segment length.</li>
+<code><a href="../reference/bank_to_45.html">bank_to_45()</a></code> computes the aspect ratio that brings slopes nearest 45 degrees, by median absolute slope or mean absolute orientation.</li>
 <li>
-<code><a href="../reference/check_contrast.html">check_contrast()</a></code> and <code><a href="../reference/contrast_ratio.html">contrast_ratio()</a></code> measure every colour a plot draws with against its background, using the WCAG 2.1 minima. Transparency is composited first, so a colour is judged as the reader sees it. Erasing ink is only a virtue up to the point where what remains can still be seen.</li>
+<code><a href="../reference/check_contrast.html">check_contrast()</a></code> and <code><a href="../reference/contrast_ratio.html">contrast_ratio()</a></code> measure every colour a plot draws with against its background, using the WCAG 2.1 minima.</li>
 <li>
-<code><a href="../reference/audit_figures.html">audit_figures()</a></code> runs the audit across every figure in a paper, given a list of plots or a directory of saved ones, and returns them worst first with the failing checks named.</li>
+<code><a href="../reference/audit_figures.html">audit_figures()</a></code> runs the audit across a list of plots or a directory.</li>
+<li>
+<code><a href="../reference/geom_cleveland_dot.html">geom_cleveland_dot()</a></code> draws a dot plot with leader lines.</li>
 </ul></div>
-<div class="section level3">
-<h3 id="drawing-0-2-0">Drawing<a class="anchor" aria-label="anchor" href="#drawing-0-2-0"></a></h3>
-<ul><li>
-<code><a href="../reference/geom_cleveland_dot.html">geom_cleveland_dot()</a></code> draws a dot plot with leader lines. This is the second answer to a bar chart whose baseline is not zero, and until now the audit recommended it without the package providing it.</li>
-</ul></div>
-<div class="section level3">
-<h3 id="auditing-0-2-0">Auditing<a class="anchor" aria-label="anchor" href="#auditing-0-2-0"></a></h3>
-<ul><li>
-<code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> gains two checks: whether the given aspect ratio banks the slopes near 45 degrees, and whether the ink is dark enough to see.</li>
-</ul></div>
-</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="tufter-010">tufter 0.1.0<a class="anchor" aria-label="anchor" href="#tufter-010"></a></h2>
 <p>First release.</p>
 <div class="section level3">
-<h3 id="generative-0-1-0">Generative<a class="anchor" aria-label="anchor" href="#generative-0-1-0"></a></h3>
+<h3 id="drawing-0-1-0">Drawing<a class="anchor" aria-label="anchor" href="#drawing-0-1-0"></a></h3>
 <ul><li>
 <code><a href="../reference/theme_tufte.html">theme_tufte()</a></code>, <code><a href="../reference/theme_sparkline.html">theme_sparkline()</a></code>, <code><a href="../reference/theme_slopegraph.html">theme_slopegraph()</a></code>.</li>
 <li>
-<code><a href="../reference/geom_rangeframe.html">geom_rangeframe()</a></code>, <code><a href="../reference/geom_rangeframe.html">geom_quartileframe()</a></code> and <code><a href="../reference/quartile_breaks.html">quartile_breaks()</a></code>.</li>
+<code><a href="../reference/geom_rangeframe.html">geom_rangeframe()</a></code>, <code><a href="../reference/geom_rangeframe.html">geom_quartileframe()</a></code>, <code><a href="../reference/quartile_breaks.html">quartile_breaks()</a></code>.</li>
 <li>
 <code><a href="../reference/geom_tufteboxplot.html">geom_tufteboxplot()</a></code>, with <code>"point"</code>, <code>"line"</code> and <code>"offset"</code> variants.</li>
 <li>
-<code><a href="../reference/geom_dotdash.html">geom_dotdash()</a></code> for marginal distributions on the axes.</li>
+<code><a href="../reference/geom_dotdash.html">geom_dotdash()</a></code>.</li>
 <li>
-<code><a href="../reference/geom_col_tufte.html">geom_col_tufte()</a></code> and <code><a href="../reference/geom_col_tufte.html">geom_bar_tufte()</a></code>, which erase the gridlines where they cross the bars.</li>
+<code><a href="../reference/geom_col_tufte.html">geom_col_tufte()</a></code> and <code><a href="../reference/geom_col_tufte.html">geom_bar_tufte()</a></code>.</li>
 <li>
-<code><a href="../reference/slopegraph.html">slopegraph()</a></code>, <code><a href="../reference/sparkline.html">sparkline()</a></code>, <code><a href="../reference/sparklines.html">sparklines()</a></code> and <code><a href="../reference/sparkline_grob.html">sparkline_grob()</a></code>.</li>
+<code><a href="../reference/slopegraph.html">slopegraph()</a></code>, <code><a href="../reference/sparkline.html">sparkline()</a></code>, <code><a href="../reference/sparklines.html">sparklines()</a></code>, <code><a href="../reference/sparkline_grob.html">sparkline_grob()</a></code>.</li>
 <li>
-<code><a href="../reference/facet_tufte.html">facet_tufte()</a></code> for small multiples, with scales fixed.</li>
+<code><a href="../reference/facet_tufte.html">facet_tufte()</a></code>.</li>
 <li>
-<code><a href="../reference/geom_text_last.html">geom_text_last()</a></code> and <code><a href="../reference/geom_text_last.html">geom_text_first()</a></code> for direct labelling.</li>
+<code><a href="../reference/geom_text_last.html">geom_text_last()</a></code> and <code><a href="../reference/geom_text_last.html">geom_text_first()</a></code>.</li>
 <li>
 <code><a href="../reference/tufte_pal.html">tufte_pal()</a></code>, <code><a href="../reference/tufte_pal.html">tufte_colours()</a></code> and the <code>scale_*_tufte()</code> family.</li>
 <li>
 <code><a href="../reference/label_source.html">label_source()</a></code> and <code><a href="../reference/save_tufte.html">save_tufte()</a></code>.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="evaluative-0-1-0">Evaluative<a class="anchor" aria-label="anchor" href="#evaluative-0-1-0"></a></h3>
+<h3 id="measuring-0-1-0">Measuring<a class="anchor" aria-label="anchor" href="#measuring-0-1-0"></a></h3>
 <ul><li>
-<code><a href="../reference/data_ink_ratio.html">data_ink_ratio()</a></code>, estimated by rendering the plot with and without its data layers and comparing weighted non-background pixels.</li>
+<code><a href="../reference/data_ink_ratio.html">data_ink_ratio()</a></code>, <code><a href="../reference/lie_factor.html">lie_factor()</a></code>, <code><a href="../reference/data_density.html">data_density()</a></code>, <code><a href="../reference/check_labels_fit.html">check_labels_fit()</a></code>.</li>
 <li>
-<code><a href="../reference/lie_factor.html">lie_factor()</a></code>, for numeric vectors and for bar charts with a truncated baseline.</li>
-<li>
-<code><a href="../reference/data_density.html">data_density()</a></code>.</li>
-<li>
-<code><a href="../reference/check_labels_fit.html">check_labels_fit()</a></code>, which catches clipped titles and overlapping axis labels at the intended print size.</li>
-<li>
-<code><a href="../reference/tufte_audit.html">tufte_audit()</a></code>, which runs all of the above plus the structural checks.</li>
-<li>
-<code><a href="../reference/tufte_principles.html">tufte_principles()</a></code>, listing every principle and whether it can be audited.</li>
-</ul></div>
-<div class="section level3">
-<h3 id="documentation-0-1-0">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-1-0"></a></h3>
-<ul><li>Added an AI usage disclosure to the README, naming what was model-generated, what was human-verified and how, and what remains unverified.</li>
+<code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> and <code><a href="../reference/tufte_principles.html">tufte_principles()</a></code>.</li>
 </ul></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

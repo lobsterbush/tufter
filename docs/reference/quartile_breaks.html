@@ -158,11 +158,11 @@ code rather than in a default here.</p></dd>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>All five values are returned by default, because the five-number summary is
 what a quartile frame reports. Where two of them fall close enough together
-that their labels overprint, <code>min_gap</code> will drop the crowded ones, but
-it's off unless you ask for it: the spacing at which labels collide depends
-on the font, the figure size and the number of digits, none of which a breaks
-function can see. <code><a href="check_labels_fit.html">check_labels_fit()</a></code> measures the collision
-properly, at the size you intend to print.</p>
+that their labels overprint, <code>min_gap</code> drops the crowded ones. It's off
+by default: the spacing at which labels collide depends on the font, the
+figure size and the number of digits, none of which a breaks function can
+see. <code><a href="check_labels_fit.html">check_labels_fit()</a></code> measures the collision at the size you
+intend to print.</p>
     </div>
 
     <div class="section level2">

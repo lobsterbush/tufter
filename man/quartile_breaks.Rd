@@ -34,11 +34,11 @@ by the plotting software.
 \details{
 All five values are returned by default, because the five-number summary is
 what a quartile frame reports. Where two of them fall close enough together
-that their labels overprint, \code{min_gap} will drop the crowded ones, but
-it's off unless you ask for it: the spacing at which labels collide depends
-on the font, the figure size and the number of digits, none of which a breaks
-function can see. \code{\link{check_labels_fit}()} measures the collision
-properly, at the size you intend to print.
+that their labels overprint, \code{min_gap} drops the crowded ones. It's off
+by default: the spacing at which labels collide depends on the font, the
+figure size and the number of digits, none of which a breaks function can
+see. \code{\link{check_labels_fit}()} measures the collision at the size you
+intend to print.
 }
 \examples{
 library(ggplot2)
