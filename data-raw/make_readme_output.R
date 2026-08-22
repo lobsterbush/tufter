@@ -55,29 +55,22 @@ short <- c(
   "base <- ggplot(peng, aes(flipper_length_mm, body_mass_g)) + geom_point()",
   "",
   "data_ink_ratio(base)",
-  transcript(print(data_ink_ratio(base)))[1:2],
+  transcript(print(data_ink_ratio(base))),
   "",
   "lean <- base + geom_rangeframe() + theme_tufte()",
   "",
   "data_ink_ratio(lean)",
-  transcript(print(data_ink_ratio(lean)))[1:2],
+  transcript(print(data_ink_ratio(lean))),
   "```"
 )
 
-audit_lines <- transcript(print(tufte_audit(base)))
-# The measured section repeats a paragraph of explanation per line, which is
-# right in a console and too long for a README. Keep the numbers, cut the gloss.
-audit_lines <- sub("(numbers per square inch): .*$", "\\1.", audit_lines)
-audit_lines <- sub("(varies with the data)\\. Tufte asks.*$", "\\1.", audit_lines)
-audit_lines <- sub("(in use)\\. Tufte's advice.*$", "\\1.", audit_lines)
-audit_lines <- sub("(in one panel)\\. facet_tufte.*$", "\\1.", audit_lines)
-audit_lines <- audit_lines[!grepl(
-  "^#> +(be maximised|draft of this|inches\\.|a count and|small multiples|Tufte ranks)",
-  audit_lines
-)]
-
+# Verbatim, with nothing cut. An earlier version trimmed the explanation off
+# each measured bullet with a regex, but cli decides where to wrap, so the
+# pattern matched the first line of a bullet and left its continuation lines
+# stranded in the README. A transcript that doesn't match the console is worse
+# than a long one.
 audit <- c("```r", "tufte_audit(base)",
-           audit_lines, "```")
+           transcript(print(tufte_audit(base))), "```")
 
 readme <- readLines("README.md")
 readme <- replace_block(readme, "readme-short", short)

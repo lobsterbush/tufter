@@ -22,11 +22,11 @@ to do it with: the data-ink ratio, the lie factor, data density. This
 package does both halves.
 
 ![Default ggplot2 next to the same plot with a quartile frame and
-theme_tufte, with measured data-ink ratios of 0.05 and
-0.48](reference/figures/README-before-after.png)
+theme_tufte, with measured data-ink ratios of 0.22 and
+0.78](reference/figures/README-before-after.png)
 
 Default ggplot2 next to the same plot with a quartile frame and
-theme_tufte, with measured data-ink ratios of 0.05 and 0.48
+theme_tufte, with measured data-ink ratios of 0.22 and 0.78
 
 ## Installation
 
@@ -89,12 +89,18 @@ base <- ggplot(peng, aes(flipper_length_mm, body_mass_g)) + geom_point()
 data_ink_ratio(base)
 #> ── Data-ink ratio
 #> 34% of the ink in this figure varies with the data.
+#> • data ink: 18613 pixel-equivalents
+#> • non-data ink: 36472
+#> • measured at 6.5in x 4in, 150 dpi
 
 lean <- base + geom_rangeframe() + theme_tufte()
 
 data_ink_ratio(lean)
 #> ── Data-ink ratio
 #> 87% of the ink in this figure varies with the data.
+#> • data ink: 24298 pixel-equivalents
+#> • non-data ink: 3579
+#> • measured at 6.5in x 4in, 150 dpi
 ```
 
 ## The audit
@@ -117,12 +123,15 @@ tufte_audit(base)
 #> ── Measured, not graded
 #> Tufte states a direction for these rather than a threshold. Read them against
 #> another draft of the same figure.
-#> • Data-ink ratio 0.34: 34% of the ink varies with the data.
+#> • Data-ink ratio 0.34: 34% of the ink varies with the data. Tufte asks that
 #>   this be maximised within reason and names no threshold, so read it against
 #>   another draft of this figure rather than against a target.
-#> • Data density 32.9 numbers per square inch.
-#> • 1 distinct colour in use.
-#> • 1 series overlaid in one panel.
+#> • Data density 32.9 numbers per square inch: 666 entries over 20.2 square
+#>   inches. Tufte ranks published graphics by this and sets no minimum.
+#> • 1 distinct colour in use. Tufte's advice on colour is qualitative, so this is
+#>   a count and not a verdict.
+#> • 1 series overlaid in one panel. facet_tufte() would show the same data as
+#>   small multiples. Tufte gives no number at which to switch.
 #> ── Met
 #> • No full panel border
 #> • No pie chart

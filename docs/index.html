@@ -134,7 +134,7 @@
 <p>Edward Tufte’s principles of graphical design, as working <code>ggplot2</code> code and as measurements you can apply to a figure you’ve already drawn.</p>
 <p>Most Tufte packages give you a theme. That’s one principle out of about twenty, and I think it’s the easiest one. His real argument is that statistical graphics can be <em>evaluated</em>, and he hands you the quantities to do it with: the data-ink ratio, the lie factor, data density. This package does both halves.</p>
 <div class="float">
-<img src="reference/figures/README-before-after.png" alt="Default ggplot2 next to the same plot with a quartile frame and theme_tufte, with measured data-ink ratios of 0.05 and 0.48"><div class="figcaption">Default ggplot2 next to the same plot with a quartile frame and theme_tufte, with measured data-ink ratios of 0.05 and 0.48</div>
+<img src="reference/figures/README-before-after.png" alt="Default ggplot2 next to the same plot with a quartile frame and theme_tufte, with measured data-ink ratios of 0.22 and 0.78"><div class="figcaption">Default ggplot2 next to the same plot with a quartile frame and theme_tufte, with measured data-ink ratios of 0.22 and 0.78</div>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -286,12 +286,18 @@
 <span><span class="fu"><a href="reference/data_ink_ratio.html">data_ink_ratio</a></span><span class="op">(</span><span class="va">base</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ── Data-ink ratio</span></span>
 <span><span class="co">#&gt; 34% of the ink in this figure varies with the data.</span></span>
+<span><span class="co">#&gt; • data ink: 18613 pixel-equivalents</span></span>
+<span><span class="co">#&gt; • non-data ink: 36472</span></span>
+<span><span class="co">#&gt; • measured at 6.5in x 4in, 150 dpi</span></span>
 <span></span>
 <span><span class="va">lean</span> <span class="op">&lt;-</span> <span class="va">base</span> <span class="op">+</span> <span class="fu"><a href="reference/geom_rangeframe.html">geom_rangeframe</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="reference/theme_tufte.html">theme_tufte</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/data_ink_ratio.html">data_ink_ratio</a></span><span class="op">(</span><span class="va">lean</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ── Data-ink ratio</span></span>
-<span><span class="co">#&gt; 87% of the ink in this figure varies with the data.</span></span></code></pre></div>
+<span><span class="co">#&gt; 87% of the ink in this figure varies with the data.</span></span>
+<span><span class="co">#&gt; • data ink: 24298 pixel-equivalents</span></span>
+<span><span class="co">#&gt; • non-data ink: 3579</span></span>
+<span><span class="co">#&gt; • measured at 6.5in x 4in, 150 dpi</span></span></code></pre></div>
 <!-- readme-short:end -->
 </div>
 <div class="section level2">
@@ -316,12 +322,15 @@
 <span><span class="co">#&gt; ── Measured, not graded</span></span>
 <span><span class="co">#&gt; Tufte states a direction for these rather than a threshold. Read them against</span></span>
 <span><span class="co">#&gt; another draft of the same figure.</span></span>
-<span><span class="co">#&gt; • Data-ink ratio 0.34: 34% of the ink varies with the data.</span></span>
+<span><span class="co">#&gt; • Data-ink ratio 0.34: 34% of the ink varies with the data. Tufte asks that</span></span>
 <span><span class="co">#&gt;   this be maximised within reason and names no threshold, so read it against</span></span>
 <span><span class="co">#&gt;   another draft of this figure rather than against a target.</span></span>
-<span><span class="co">#&gt; • Data density 32.9 numbers per square inch.</span></span>
-<span><span class="co">#&gt; • 1 distinct colour in use.</span></span>
-<span><span class="co">#&gt; • 1 series overlaid in one panel.</span></span>
+<span><span class="co">#&gt; • Data density 32.9 numbers per square inch: 666 entries over 20.2 square</span></span>
+<span><span class="co">#&gt;   inches. Tufte ranks published graphics by this and sets no minimum.</span></span>
+<span><span class="co">#&gt; • 1 distinct colour in use. Tufte's advice on colour is qualitative, so this is</span></span>
+<span><span class="co">#&gt;   a count and not a verdict.</span></span>
+<span><span class="co">#&gt; • 1 series overlaid in one panel. facet_tufte() would show the same data as</span></span>
+<span><span class="co">#&gt;   small multiples. Tufte gives no number at which to switch.</span></span>
 <span><span class="co">#&gt; ── Met</span></span>
 <span><span class="co">#&gt; • No full panel border</span></span>
 <span><span class="co">#&gt; • No pie chart</span></span>
