@@ -1,0 +1,562 @@
+/* Monograph · archetype: long document (package documentation) · one action: read the real-data walkthrough · P5 H4 E4 S4 R5 V5 */
+
+/* ---------------------------------------------------------------------------
+   House tokens. Every value used below comes from here; nothing is set inline.
+   --------------------------------------------------------------------------- */
+
+:root {
+  --color-bg:     oklch(0.982 0.004 91);
+  --color-paper:  oklch(1 0 0);
+  --color-ink:    oklch(0.209 0.010 268);
+  --color-ink-2:  oklch(0.447 0.034 261);
+  --color-rule:   oklch(0.924 0.009 258);
+  --color-accent: oklch(0.345 0.073 254);
+  --color-focus:  oklch(0.520 0.074 254);
+  --color-code-bg: oklch(0.955 0.006 91);
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  --measure: 68ch;
+  --ease: cubic-bezier(0.2, 0, 0.2, 1);
+}
+
+/* ---------------------------------------------------------------------------
+   Ground and type.
+   --------------------------------------------------------------------------- */
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+  font-size: 17px;
+  line-height: 1.65;
+  padding-top: 0 !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6,
+.navbar-brand {
+  font-family: $headings-font-family;
+  font-style: normal;
+  letter-spacing: -0.015em;
+  color: var(--color-ink);
+}
+
+h1 { font-weight: 600; line-height: 1.15; }
+h2, h3, h4 { font-weight: 600; line-height: 1.25; }
+
+/* Long headings must never push a narrow screen sideways. */
+h1, h2, h3, h4, h5, h6 { overflow-wrap: anywhere; }
+
+/* Numbers in prose, code and tables line up in columns. */
+code, pre, table, .ref-index td:first-child {
+  font-variant-numeric: tabular-nums;
+}
+
+/* pkgdown hyphenates on narrow screens, and the browser's dictionary breaks
+   words in the wrong place ("statist-ical"). A ragged edge is the lesser
+   problem. */
+main p, main li, main dd { hyphens: manual; }
+
+/* Keep prose at a readable measure; let figures, tables and code use the
+   whole column. */
+main p,
+main ul,
+main ol,
+main dl,
+main blockquote {
+  max-width: var(--measure);
+}
+
+/* ---------------------------------------------------------------------------
+   Masthead. The markup is pkgdown's; only the shape changes. The wordmark sits
+   over a ruled row of links rather than beside them.
+   --------------------------------------------------------------------------- */
+
+.navbar {
+  position: static !important;
+  transform: none !important;
+  background-color: var(--color-paper) !important;
+  border-bottom: 1px solid var(--color-rule);
+  padding: var(--space-8) 0 0;
+  box-shadow: none;
+}
+
+.navbar > .container {
+  flex-wrap: wrap;
+  justify-content: center;
+  row-gap: var(--space-6);
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-right: var(--space-2) !important;
+  color: var(--color-ink) !important;
+}
+
+.navbar .nav-text {
+  font-family: $font-family-monospace;
+  font-size: 0.78rem;
+  color: var(--color-ink-2) !important;
+  margin-right: 0 !important;
+  align-self: center;
+}
+
+/* The link row: full width, ruled off from the wordmark, centred. */
+#navbar {
+  flex-basis: 100%;
+  margin-left: 0 !important;
+  justify-content: center;
+  border-top: 1px solid var(--color-rule);
+  margin-top: var(--space-6);
+}
+
+#navbar .navbar-nav {
+  margin-right: 0 !important;
+  align-items: center;
+}
+
+.navbar-nav .nav-link {
+  color: var(--color-ink-2) !important;
+  font-size: 0.95rem;
+  padding: var(--space-4) var(--space-4) !important;
+  border-bottom: 2px solid transparent;
+  transition: color 160ms var(--ease), border-color 160ms var(--ease);
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link:focus-visible {
+  color: var(--color-ink) !important;
+  border-bottom-color: var(--color-rule);
+}
+
+.navbar-nav .active > .nav-link,
+.navbar-nav .nav-link.active {
+  color: var(--color-ink) !important;
+  border-bottom-color: var(--color-accent);
+  background-color: transparent !important;
+}
+
+.navbar-toggler {
+  border: 1px solid var(--color-rule);
+  border-radius: 0;
+  padding: var(--space-2) var(--space-3);
+}
+
+/* ---------------------------------------------------------------------------
+   Dropdown and search: flat, square, hairlined.
+   --------------------------------------------------------------------------- */
+
+.dropdown-menu {
+  border: 1px solid var(--color-rule);
+  border-radius: 0;
+  box-shadow: none;
+  padding: var(--space-2) 0;
+  background-color: var(--color-paper);
+}
+
+.dropdown-item {
+  color: var(--color-ink-2);
+  padding: var(--space-2) var(--space-4);
+  white-space: normal;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus-visible {
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+}
+
+.form-control,
+#search-input {
+  border: 1px solid var(--color-rule);
+  border-radius: 0;
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+  font-size: 0.9rem;
+  box-shadow: none !important;
+}
+
+.form-control::placeholder { color: var(--color-ink-2); }
+
+.form-control:focus {
+  border-color: var(--color-focus);
+  background-color: var(--color-paper);
+}
+
+/* ---------------------------------------------------------------------------
+   Page shape.
+   --------------------------------------------------------------------------- */
+
+main { padding-top: var(--space-12); }
+
+.page-header {
+  border-bottom: 0;
+  margin: 0 0 var(--space-6);
+  padding-bottom: 0;
+  min-height: 0;
+}
+
+/* pkgdown reserves 88px under every title, and 104px on the home page, to
+   clear a floated package logo. There's no logo here, so the reservation is
+   just a hole under the heading. The home-page rule needs matching
+   specificity to undo. */
+.template-home .page-header { min-height: 0; }
+
+.page-header h1 { margin-bottom: 0; }
+
+/* Bootstrap and pkgdown each contribute a margin here; together they open a
+   gap that reads as a missing element. */
+.page-header + p,
+.page-header + div > p:first-child { margin-top: 0; }
+
+.page-header h1 { font-size: clamp(2rem, calc(1.4rem + 2.4vw), 2.9rem); }
+
+main h1 { font-size: clamp(2rem, calc(1.4rem + 2.4vw), 2.9rem); margin-bottom: var(--space-4); }
+main h2 { font-size: 1.5rem; margin-top: var(--space-12); }
+main h3 { font-size: 1.2rem; margin-top: var(--space-8); }
+
+/* Ruled sections, in the house long-document manner. The rule sits above the
+   heading so it reads as a division rather than an underline. */
+main .section > h2 {
+  border-top: 1px solid var(--color-rule);
+  padding-top: var(--space-6);
+}
+
+/* ---------------------------------------------------------------------------
+   Links. Quiet by default, underlined so they are still obvious.
+   --------------------------------------------------------------------------- */
+
+a, a:visited {
+  color: var(--color-accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  text-decoration-color: var(--color-rule);
+  transition: text-decoration-color 160ms var(--ease);
+}
+
+a:hover { text-decoration-color: var(--color-accent); }
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: 0;
+}
+
+h1 a, h2 a, h3 a, h4 a { color: inherit; }
+
+/* pkgdown's heading anchors */
+.anchor { color: var(--color-rule) !important; }
+.anchor:hover { color: var(--color-accent) !important; }
+
+/* ---------------------------------------------------------------------------
+   Code. No box, no radius, no shadow: a tinted ground and a hairline on the
+   reading edge, which is the least ink that still separates it from prose.
+   --------------------------------------------------------------------------- */
+
+pre, div.sourceCode {
+  background-color: var(--color-paper);
+  border: 0;
+  border-left: 2px solid var(--color-rule);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+div.sourceCode { margin: var(--space-6) 0; }
+
+pre {
+  padding: var(--space-4) var(--space-6);
+  font-size: 0.86rem;
+  line-height: 1.6;
+  margin: 0;
+  overflow-x: auto;
+}
+
+code {
+  font-size: 0.88em;
+  color: var(--color-ink);
+}
+
+/* Inline code sits inside a sentence, so it gets a ground and no border. */
+p > code, li > code, td > code, dd > code, h1 code, h2 code, h3 code {
+  background-color: var(--color-code-bg);
+  padding: 0.1em 0.2em;
+  border: 0;
+}
+
+pre code { background: none; padding: 0; border: 0; }
+
+/* Console output is evidence, not instruction: hold it back from the code. */
+pre:has(> code.language-r) { color: var(--color-ink); }
+.sourceCode .co { color: var(--color-ink-2); font-style: normal; }
+
+/* ---------------------------------------------------------------------------
+   Tables, ruled the way Tufte rules them: horizontals only, no verticals, no
+   zebra, no outer box.
+   --------------------------------------------------------------------------- */
+
+main table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--space-6) 0;
+  font-size: 0.94rem;
+}
+
+main table th,
+main table td {
+  border: 0;
+  border-bottom: 1px solid var(--color-rule);
+  padding: var(--space-3) var(--space-4) var(--space-3) 0;
+  vertical-align: top;
+  text-align: left;
+}
+
+main table thead th {
+  border-bottom: 1px solid var(--color-ink-2);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+main table tbody tr:last-child td { border-bottom: 0; }
+main table tbody tr:hover { background-color: var(--color-paper); }
+
+/* Wide tables scroll inside their own box rather than the page. */
+main .table-responsive { overflow-x: auto; }
+
+/* ---------------------------------------------------------------------------
+   Figures.
+   --------------------------------------------------------------------------- */
+
+main img {
+  max-width: 100%;
+  height: auto;
+}
+
+main figure { margin: var(--space-8) 0; }
+
+main figcaption,
+main .figure p.caption {
+  font-size: 0.9rem;
+  color: var(--color-ink-2);
+  margin-top: var(--space-3);
+  max-width: var(--measure);
+}
+
+/* ---------------------------------------------------------------------------
+   Sidebar. A stack of underlined links is a lot of ink for navigation, so the
+   links lose their rules until they are wanted.
+   --------------------------------------------------------------------------- */
+
+.template-home aside,
+main aside {
+  font-size: 0.92rem;
+}
+
+aside h2, aside h3 {
+  font-family: $font-family-base;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-2);
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-2);
+  border-top: 1px solid var(--color-rule);
+  padding-top: var(--space-4);
+}
+
+aside h2:first-child, aside h3:first-child {
+  margin-top: 0;
+  border-top: 0;
+  padding-top: 0;
+}
+
+aside a {
+  color: var(--color-ink-2);
+  text-decoration: none;
+}
+
+aside a:hover,
+aside a:focus-visible {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+aside .list-unstyled li { margin-bottom: var(--space-1); }
+
+/* Table of contents on article pages */
+#toc .nav-link {
+  color: var(--color-ink-2) !important;
+  padding: var(--space-1) 0 var(--space-1) var(--space-3) !important;
+  border-left: 1px solid var(--color-rule);
+  border-bottom: 0;
+  font-size: 0.9rem;
+}
+
+#toc .nav-link:hover { color: var(--color-ink) !important; }
+
+#toc .nav-link,
+#toc .nav-link.active,
+#toc .nav-link:hover {
+  background-color: transparent !important;
+}
+
+#toc .nav-link.active {
+  color: var(--color-ink) !important;
+  border-left-color: var(--color-accent);
+  font-weight: 500;
+}
+
+/* ---------------------------------------------------------------------------
+   Reference index: a ruled list, function name against description.
+   --------------------------------------------------------------------------- */
+
+main dl { margin: var(--space-6) 0; }
+
+main dl dt {
+  font-family: $font-family-monospace;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-ink);
+  border-top: 1px solid var(--color-rule);
+  padding-top: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+main dl dt:first-child {
+  border-top: 0;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+/* A name in a dt is already set in the code face, so it needs no second
+   marking. */
+main dl dt code {
+  background: none;
+  padding: 0;
+  font-size: 1em;
+}
+
+main dl dd {
+  margin: var(--space-1) 0 0;
+  padding-left: 0;
+}
+
+/* On the index a description is secondary to the name it explains. In an
+   argument list it is the content, so it keeps full ink. */
+.template-reference-index main dl dd { color: var(--color-ink-2); }
+
+/* ---------------------------------------------------------------------------
+   News.
+   --------------------------------------------------------------------------- */
+
+.template-news main h2 {
+  font-family: $font-family-monospace;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   Footer.
+   --------------------------------------------------------------------------- */
+
+footer {
+  border-top: 1px solid var(--color-rule);
+  margin-top: var(--space-16);
+  padding: var(--space-8) 0;
+  font-size: 0.9rem;
+  color: var(--color-ink-2);
+  background-color: transparent;
+}
+
+footer a { color: var(--color-ink-2); }
+footer a:hover { color: var(--color-accent); }
+
+footer p { margin: 0; }
+
+/* The wordmark signs the page off; the line under it is the contact line. */
+.footer-mark {
+  display: inline-block;
+  font-family: $headings-font-family;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--color-ink);
+  margin-bottom: var(--space-1);
+}
+
+.pkgdown-footer-right { color: var(--color-ink-2); align-self: end; }
+
+/* ---------------------------------------------------------------------------
+   Motion.
+   --------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 150ms !important;
+    animation-duration: 150ms !important;
+    transition-property: opacity !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Mobile floor. Nothing may scroll sideways at 320px.
+   --------------------------------------------------------------------------- */
+
+@media (max-width: 991.98px) {
+  .navbar { padding-top: var(--space-4); }
+
+  .navbar > .container {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    row-gap: 0;
+  }
+
+  .navbar .nav-text { margin-right: auto !important; }
+
+  #navbar {
+    flex-basis: auto;
+    justify-content: flex-start;
+    margin-top: var(--space-4);
+    padding-top: var(--space-2);
+  }
+
+  #navbar .navbar-nav { align-items: flex-start; }
+
+  .navbar-nav .nav-link {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    border-bottom: 0;
+  }
+
+  .navbar-nav .active > .nav-link,
+  .navbar-nav .nav-link.active {
+    border-bottom: 0;
+    text-decoration: underline;
+    text-decoration-color: var(--color-accent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
+  }
+
+  main { padding-top: var(--space-8); }
+  main h2 { margin-top: var(--space-8); }
+}
+
+@media (max-width: 575.98px) {
+  body { font-size: 16px; }
+  pre { padding: var(--space-3) var(--space-4); font-size: 0.8rem; }
+  .ref-index td:first-child { width: auto; }
+}

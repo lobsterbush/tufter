@@ -51,6 +51,9 @@ R/
 ├── batch.R            # audit_figures()
 ├── save.R             # save_tufte()
 └── principles.R       # tufte_principles()
+
+pkgdown/
+└── extra.scss         # site styling: house tokens, masthead, Tufte ruling
 ```
 
 ### Key design patterns
@@ -103,6 +106,14 @@ devtools::document()     # Regenerate docs (ALWAYS after editing roxygen)
 devtools::test()         # Run all tests
 devtools::check()        # Full R CMD check
 ```
+
+The documentation site is styled in `pkgdown/extra.scss`, which sets the house
+tokens (Newsreader, IBM Plex Sans, JetBrains Mono, one navy accent, radius 0)
+and reshapes pkgdown's navbar into a masthead. Tables and definition lists are
+ruled the way Tufte rules them: horizontals only, no verticals, no zebra, no
+outer box. Colours are declared once as custom properties at the top of that
+file and nowhere else. Some pkgdown rules need matching specificity to undo,
+`.template-home .page-header` among them.
 
 Site and generated assets are rebuilt from `data-raw/`: `build_site.R` builds
 the pkgdown site behind its password gate, `make_readme_figures.R` and

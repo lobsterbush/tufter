@@ -1,13 +1,4 @@
-# tufter
-
-Documentation lives at <https://lobsterbush.github.io/tufter/>. Start with
-[working through a real dataset](https://lobsterbush.github.io/tufter/articles/real-data.html),
-which takes `gapminder` and `palmerpenguins` through every form and every
-measurement. There's also a
-[gallery on simulated data](https://lobsterbush.github.io/tufter/articles/simulated-examples.html),
-a third [built on live API data](https://lobsterbush.github.io/tufter/articles/live-data.html)
-from CRAN logs, USGS earthquakes, Open-Meteo and Wikipedia, and a walk through
-[what each measurement actually computes](https://lobsterbush.github.io/tufter/articles/measuring.html).
+# Tufte's design principles as R code
 
 Edward Tufte's principles of graphical design, as working `ggplot2` code and as
 measurements you can apply to a figure you've already drawn.
@@ -17,7 +8,17 @@ and I think it's the easiest one. His real argument is that statistical graphics
 can be *evaluated*, and he hands you the quantities to do it with: the data-ink
 ratio, the lie factor, data density. This package does both halves.
 
-![Default ggplot2 next to the same plot with a quartile frame and theme_tufte, with measured data-ink ratios of 0.22 and 0.78](man/figures/README-before-after.png)
+![The same penguins, drawn twice. Erasing the panel, the grid and the border, then putting a quartile frame where the border was, moves the data-ink ratio from 0.22 to 0.78.](man/figures/README-before-after.png)
+
+## Where to start
+
+[Working through a real dataset](https://lobsterbush.github.io/tufter/articles/real-data.html)
+takes `gapminder` and `palmerpenguins` through every form and every measurement.
+There's also a
+[gallery on simulated data](https://lobsterbush.github.io/tufter/articles/simulated-examples.html),
+a third [built on live API data](https://lobsterbush.github.io/tufter/articles/live-data.html)
+from CRAN logs, USGS earthquakes, Open-Meteo and Wikipedia, and a walk through
+[what each measurement actually computes](https://lobsterbush.github.io/tufter/articles/measuring.html).
 
 ## Installation
 

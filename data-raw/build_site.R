@@ -31,6 +31,7 @@ build_private_site <- function(private_files = "WARP.md") {
 
   pkgdown::build_site(preview = FALSE, install = TRUE)
   strip_hidden_comments()
+  drop_unused_deps()
 
   leaked <- list.files("docs", pattern = "^WARP", recursive = TRUE)
   if (length(leaked)) {
@@ -39,6 +40,29 @@ build_private_site <- function(private_files = "WARP.md") {
     message("site built into docs/; no internal files present")
   }
   invisible(TRUE)
+}
+
+# pkgdown writes each dependency into its own directory under docs/deps/ and
+# never removes one it has stopped using, so a font swap leaves the old family
+# behind, still published. Anything under deps/ that no built page mentions is
+# dead weight and goes.
+drop_unused_deps <- function() {
+  deps <- list.dirs("docs/deps", recursive = FALSE)
+  if (!length(deps)) return(invisible(0L))
+
+  pages <- list.files("docs", pattern = "\\.(html|css|js)$", recursive = TRUE,
+                      full.names = TRUE)
+  pages <- pages[!startsWith(pages, "docs/deps/")]
+  refs <- paste(unlist(lapply(pages, readLines, warn = FALSE)), collapse = "\n")
+
+  unused <- deps[!vapply(basename(deps),
+                         function(d) grepl(d, refs, fixed = TRUE), logical(1))]
+  if (length(unused)) {
+    unlink(unused, recursive = TRUE)
+    message("removed unused dependencies: ",
+            paste(basename(unused), collapse = ", "))
+  }
+  invisible(length(unused))
 }
 
 # Markdown passes HTML comments straight through to the built page, so a

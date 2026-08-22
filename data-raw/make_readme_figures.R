@@ -54,9 +54,12 @@ lay("man/figures/README-before-after.png", list(before, after),
 # them or a screen reader gets less than a sighted reader. Quoting them by hand
 # meant they went stale the moment the measurement changed, so write the image
 # line from the same numbers the subtitles use.
+# pkgdown renders the alt text as a visible caption, so it has to work as
+# both: what a reader takes from the figure, and what a screen reader is told.
 alt <- sprintf(
-  paste0("![Default ggplot2 next to the same plot with a quartile frame and ",
-         "theme_tufte, with measured data-ink ratios of %.2f and %.2f]",
+  paste0("![The same penguins, drawn twice. Erasing the panel, the grid and ",
+         "the border, then putting a quartile frame where the border was, ",
+         "moves the data-ink ratio from %.2f to %.2f.]",
          "(man/figures/README-before-after.png)"),
   data_ink_ratio(base)$ratio, data_ink_ratio(after_p)$ratio
 )
