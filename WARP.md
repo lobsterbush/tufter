@@ -123,6 +123,9 @@ rather than the block.
   `@examples`. Examples have to run without extra packages.
 - Prose in roxygen, vignettes and the README is written in the author's voice:
   contractions, no em or en dashes as connectors, no "not X but Y".
+  `python3 data-raw/check_voice.py` checks it and should print an empty total.
+  It flags natural phrasings too, so read what it reports rather than fixing
+  every hit.
 
 ## Important notes
 
