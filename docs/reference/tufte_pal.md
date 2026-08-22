@@ -32,9 +32,11 @@ For `tufte_pal()`, a function of `n` returning `n` colours. For
 
 - `"accent"`:
 
-  Greys plus one signal red. Use when exactly one series matters and the
-  rest are context. This is the palette that does the most work in
-  *Envisioning Information*: layering by value, not by hue.
+  Greys plus one signal red, which always goes to the last level, so
+  order your factor to put the series that matters last. Use when
+  exactly one series matters and the rest are context. This is the
+  palette that does the most work in *Envisioning Information*: layering
+  by value, not by hue.
 
 - `"muted"`:
 
@@ -53,5 +55,5 @@ For `tufte_pal()`, a function of `n` returning `n` colours. For
 tufte_pal("muted")(4)
 #> [1] "#7c6a55" "#8a9a5b" "#9c6b6b" "#5b7c8a"
 tufte_colours("accent")
-#> [1] "#8c8c8c" "#b3b3b3" "#c8102e" "#d9d9d9" "#595959"
+#> [1] "#8c8c8c" "#b3b3b3" "#d9d9d9" "#595959" "#c8102e"
 ```

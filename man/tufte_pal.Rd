@@ -27,10 +27,11 @@ Four palettes, each answering a different question about colour.
 \describe{
   \item{\code{"grey"}}{Tufte's default. Grey encodes an ordered variable
     without introducing a second, unwanted, categorical signal.}
-  \item{\code{"accent"}}{Greys plus one signal red. Use when exactly one
-    series matters and the rest are context. This is the palette that does
-    the most work in \emph{Envisioning Information}: layering by value, not
-    by hue.}
+  \item{\code{"accent"}}{Greys plus one signal red, which always goes to the
+    last level, so order your factor to put the series that matters last.
+    Use when exactly one series matters and the rest are context. This is
+    the palette that does the most work in \emph{Envisioning Information}:
+    layering by value, not by hue.}
   \item{\code{"muted"}}{Desaturated earth tones, after the maps and
     timetables Tufte reproduces. Colours this weak sit behind text and
     annotation without fighting them.}

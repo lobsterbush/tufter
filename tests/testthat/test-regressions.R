@@ -458,3 +458,28 @@ test_that("measure = FALSE does not change any figure's verdict", {
   expect_false("Data-ink ratio" %in% fast_checks)
   expect_true("Nothing is clipped at the printed size" %in% fast_checks)
 })
+
+test_that("the accent palette always contains its accent", {
+  # The palette is documented as greys plus one signal colour, for when one
+  # series matters. It took the first n of a fixed vector whose third element
+  # was the signal, so with two series you got two greys and no signal at all.
+  signal <- "#c8102e"
+  f <- tufte_pal("accent")
+  for (n in 2:5) {
+    cols <- f(n)
+    expect_length(cols, n)
+    expect_true(signal %in% cols, info = paste("n =", n))
+    expect_equal(sum(cols == signal), 1L, info = paste("n =", n))
+    # The signal is the last level, so a reader can put it where they mean to.
+    expect_identical(cols[n], signal, info = paste("n =", n))
+  }
+  # One series has nothing to stand out from, so it stays neutral.
+  expect_false(signal %in% f(1))
+
+  # Past the palette's length the greys interpolate, with a warning, and the
+  # signal still survives exactly once.
+  expect_warning(wide <- f(8), "greys")
+  expect_length(wide, 8)
+  expect_equal(sum(wide == signal), 1L)
+  expect_identical(wide[8], signal)
+})

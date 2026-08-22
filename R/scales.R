@@ -5,10 +5,11 @@
 #' \describe{
 #'   \item{\code{"grey"}}{Tufte's default. Grey encodes an ordered variable
 #'     without introducing a second, unwanted, categorical signal.}
-#'   \item{\code{"accent"}}{Greys plus one signal red. Use when exactly one
-#'     series matters and the rest are context. This is the palette that does
-#'     the most work in \emph{Envisioning Information}: layering by value, not
-#'     by hue.}
+#'   \item{\code{"accent"}}{Greys plus one signal red, which always goes to the
+#'     last level, so order your factor to put the series that matters last.
+#'     Use when exactly one series matters and the rest are context. This is
+#'     the palette that does the most work in \emph{Envisioning Information}:
+#'     layering by value, not by hue.}
 #'   \item{\code{"muted"}}{Desaturated earth tones, after the maps and
 #'     timetables Tufte reproduces. Colours this weak sit behind text and
 #'     annotation without fighting them.}
@@ -37,6 +38,24 @@ tufte_pal <- function(palette = c("grey", "accent", "muted", "divergent")) {
       # Evenly spaced greys, dark to light, never reaching white.
       return(grDevices::grey.colors(n, start = 0.15, end = 0.75, gamma = 1))
     }
+    if (palette == "accent") {
+      # The whole point of this palette is that one level is the signal, so it
+      # has to survive every n. Taking the first n of a fixed vector did not:
+      # with two series you got two greys and no accent at all, which is the
+      # one thing the palette exists to provide. The signal is the last colour,
+      # and the greys fill in ahead of it.
+      signal <- cols[length(cols)]
+      greys <- cols[-length(cols)]
+      if (n == 1) return(greys[1])
+      if (n - 1 > length(greys)) {
+        .warn(c(
+          "Palette {.val accent} has {length(greys)} greys but {n - 1} were requested.",
+          i = "The extra greys are interpolated, so neighbouring levels will be harder to tell apart than the palette intends."
+        ))
+        greys <- grDevices::colorRampPalette(greys)(n - 1)
+      }
+      return(c(greys[seq_len(n - 1)], signal))
+    }
     if (n > length(cols)) {
       .warn(c(
         "Palette {.val {palette}} has {length(cols)} colours but {n} were requested.",
@@ -54,7 +73,8 @@ tufte_colours <- function(palette = c("grey", "accent", "muted", "divergent")) {
   palette <- match.arg(palette)
   switch(palette,
     grey = c("#262626", "#4d4d4d", "#737373", "#999999", "#bfbfbf"),
-    accent = c("#8c8c8c", "#b3b3b3", "#c8102e", "#d9d9d9", "#595959"),
+    # Greys first, the signal colour last, so tufte_pal() can always keep it.
+    accent = c("#8c8c8c", "#b3b3b3", "#d9d9d9", "#595959", "#c8102e"),
     muted = c("#7c6a55", "#8a9a5b", "#9c6b6b", "#5b7c8a", "#b0a084", "#6b6b6b"),
     divergent = c("#4a6b82", "#93a9b8", "#d8d5cd", "#c49a8a", "#a1483c")
   )

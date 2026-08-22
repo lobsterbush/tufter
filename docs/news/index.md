@@ -1,5 +1,13 @@
 # Changelog
 
+## tufter 0.5.3
+
+- The `"accent"` palette always contains its accent. It took the first
+  `n` of a fixed vector whose third element was the signal colour, so
+  two series gave two greys and no signal, which is the one thing that
+  palette exists to provide. The signal is now the last level at every
+  `n`, and the greys fill in ahead of it.
+
 ## tufter 0.5.2
 
 - [`quartile_breaks()`](https://lobsterbush.github.io/tufter/reference/quartile_breaks.md)
