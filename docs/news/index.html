@@ -108,7 +108,7 @@
 <h2 class="pkg-version" data-toc-text="0.5.0" id="tufter-050">tufter 0.5.0<a class="anchor" aria-label="anchor" href="#tufter-050"></a></h2>
 <ul><li>New vignette, “Working through a real dataset”, using <code>gapminder</code> and <code>palmerpenguins</code>. Both are suggested and guarded.</li>
 <li>
-<code><a href="../reference/check_labels_fit.html">check_labels_fit()</a></code>, <code><a href="../reference/data_ink_ratio.html">data_ink_ratio()</a></code>, <code><a href="../reference/data_density.html">data_density()</a></code> and <code><a href="../reference/sparkline_grob.html">sparkline_grob()</a></code> no longer leave a graphics device open or write an <code>Rplots.pdf</code> into the working directory. Grob construction borrows a <code>pdf(NULL)</code> device.</li>
+<code><a href="../reference/check_labels_fit.html">check_labels_fit()</a></code>, <code><a href="../reference/data_ink_ratio.html">data_ink_ratio()</a></code>, <code><a href="../reference/data_density.html">data_density()</a></code> and <code><a href="../reference/sparkline_grob.html">sparkline_grob()</a></code> no longer leave a graphics device open or write an <code>Rplots.pdf</code> into the working directory. Measuring borrows a <code>pdf(NULL)</code> device for the whole measurement, which covers unit conversion as well as building the gtable. <code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> on a plot with a legend was a second route to the same stray file.</li>
 <li>README figures and example output use <code>palmerpenguins</code> and <code>gapminder</code>.</li>
 <li>The cached API data behind the live-data article has moved to <code>data-raw/</code> and is no longer installed with the package.</li>
 <li>
@@ -130,7 +130,7 @@
 <ul><li>
 <code><a href="../reference/lie_factor.html">lie_factor()</a></code> reads horizontal bars and <code><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip()</a></code> bars along the axis that carries their length. All three orientations report the same distortion.</li>
 <li>
-<code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> names the axis a reader can see when a bar baseline is not zero.</li>
+<code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> names the axis a reader can see when a bar baseline isn’t zero.</li>
 <li>
 <code><a href="../reference/bank_to_45.html">bank_to_45()</a></code> normalises each panel by its own ranges, which matters under free scales.</li>
 <li>A plot setting fixed colours outside <code><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes()</a></code> is no longer reported as carrying a legend.</li>
@@ -168,7 +168,7 @@
 <li>
 <code><a href="../reference/data_density.html">data_density()</a></code> groups layers by the data they read, and resolves aesthetics to the columns they use.</li>
 <li>
-<code><a href="../reference/bank_to_45.html">bank_to_45()</a></code> reads segments in drawn order and keeps vertical ones. A path that is more than half vertical is refused.</li>
+<code><a href="../reference/bank_to_45.html">bank_to_45()</a></code> reads segments in drawn order and keeps vertical ones. A path that’s more than half vertical is refused.</li>
 <li>
 <code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> treats a continuous colour scale as one code, catches redundant encoding through a transformation, and fails a bar chart on a transformed scale. <code><a href="../reference/lie_factor.html">lie_factor()</a></code> returns <code>NA</code> for the same.</li>
 </ul></div>

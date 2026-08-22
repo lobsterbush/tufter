@@ -118,7 +118,7 @@ bank_to_45(series, width = 6.5)
 #> 
 #> ── Banking to 45 degrees
 #> Aspect ratio 0.148 (height / width), from 180 segments by "median_slope".
-#> At 6.5in wide, that is a panel 0.96in tall. Allow more for axis labels and
+#> At 6.5in wide, that's a panel 0.96in tall. Allow more for axis labels and
 #> titles.
 ```
 

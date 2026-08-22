@@ -17,7 +17,7 @@
 #' @param measure Logical. Run the rendering-based measurements? Defaults to
 #'   \code{TRUE}. Set to \code{FALSE} for a fast structural pass.
 #' Figures are ordered by the number of stated criteria they fail, most first.
-#' That is a count and not a score: it's comparable across figures because
+#' That's a count and not a score: it's comparable across figures because
 #' every figure is being counted against the same criteria, whereas a
 #' proportion would divide by a denominator that changes with the plot type.
 #'
@@ -58,7 +58,7 @@ audit_figures <- function(plots, width = 6.5, height = 4, measure = TRUE) {
       audits[[i]] <- NULL
       rows[[i]] <- data.frame(
         figure = names(plots)[i], violations = NA_integer_, met = NA_integer_,
-        failing = paste("could not be audited:", conditionMessage(a)),
+        failing = paste("couldn't be audited:", conditionMessage(a)),
         stringsAsFactors = FALSE
       )
       next
@@ -137,7 +137,7 @@ print.tufte_audit_batch <- function(x, ...) {
     }
     if (any(!keep)) {
       cli::cli_alert_info(
-        "Skipped {sum(!keep)} file{?s} that did not contain a ggplot."
+        "Skipped {sum(!keep)} file{?s} that didn't contain a ggplot."
       )
     }
     return(loaded[keep])

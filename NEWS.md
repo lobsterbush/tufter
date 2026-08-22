@@ -4,8 +4,10 @@
   `palmerpenguins`. Both are suggested and guarded.
 * `check_labels_fit()`, `data_ink_ratio()`, `data_density()` and
   `sparkline_grob()` no longer leave a graphics device open or write an
-  `Rplots.pdf` into the working directory. Grob construction borrows a
-  `pdf(NULL)` device.
+  `Rplots.pdf` into the working directory. Measuring borrows a `pdf(NULL)`
+  device for the whole measurement, which covers unit conversion as well as
+  building the gtable. `tufte_audit()` on a plot with a legend was a second
+  route to the same stray file.
 * README figures and example output use `palmerpenguins` and `gapminder`.
 * The cached API data behind the live-data article has moved to `data-raw/` and
   is no longer installed with the package.
@@ -25,7 +27,7 @@
 
 * `lie_factor()` reads horizontal bars and `coord_flip()` bars along the axis
   that carries their length. All three orientations report the same distortion.
-* `tufte_audit()` names the axis a reader can see when a bar baseline is not
+* `tufte_audit()` names the axis a reader can see when a bar baseline isn't
   zero.
 * `bank_to_45()` normalises each panel by its own ranges, which matters under
   free scales.
@@ -66,7 +68,7 @@
 * `data_density()` groups layers by the data they read, and resolves aesthetics
   to the columns they use.
 * `bank_to_45()` reads segments in drawn order and keeps vertical ones. A path
-  that is more than half vertical is refused.
+  that's more than half vertical is refused.
 * `tufte_audit()` treats a continuous colour scale as one code, catches
   redundant encoding through a transformation, and fails a bar chart on a
   transformed scale. `lie_factor()` returns `NA` for the same.

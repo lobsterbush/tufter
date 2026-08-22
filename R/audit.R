@@ -337,20 +337,27 @@ print.tufte_audit <- function(x, ...) {
 # Does the assembled figure carry a guide box with anything in it?
 #' @noRd
 .has_legend <- function(plot) {
-  tryCatch({
-    gt <- .grob_of(plot)
-    i <- which(grepl("^guide-box", gt$layout$name))
-    if (length(i) == 0) return(FALSE)
-    any(vapply(i, function(k) {
-      g <- gt$grobs[[k]]
-      if (inherits(g, "zeroGrob")) return(FALSE)
-      w <- tryCatch(
-        sum(grid::convertWidth(grid::grobWidth(g), "in", valueOnly = TRUE)),
-        error = function(e) 0
-      )
-      is.finite(w) && w > 0
-    }, logical(1)))
-  }, error = function(e) FALSE)
+  tryCatch(
+    .with_null_device(.guide_box_drawn(ggplot2::ggplotGrob(plot))),
+    error = function(e) FALSE
+  )
+}
+
+# A guide box is in the layout whether or not a legend was drawn, so the test
+# is whether one of them has any width. Called only from inside a device guard.
+#' @noRd
+.guide_box_drawn <- function(gt) {
+  i <- which(grepl("^guide-box", gt$layout$name))
+  if (length(i) == 0) return(FALSE)
+  any(vapply(i, function(k) {
+    g <- gt$grobs[[k]]
+    if (inherits(g, "zeroGrob")) return(FALSE)
+    w <- tryCatch(
+      sum(grid::convertWidth(grid::grobWidth(g), "in", valueOnly = TRUE)),
+      error = function(e) 0
+    )
+    is.finite(w) && w > 0
+  }, logical(1)))
 }
 
 #' @noRd

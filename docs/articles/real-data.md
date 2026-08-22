@@ -50,8 +50,8 @@ r_default
 #> • measured at 6.5in x 4in, 150 dpi
 ```
 
-Most of that is the grey panel and the white grid, and none of it
-changes when a penguin does.
+The grey panel and the white grid account for most of that, and none of
+it changes when a penguin does.
 
 ## Erase, then replace the frame
 
@@ -198,7 +198,7 @@ bank_to_45(series, width = 6.5)
 #> 
 #> ── Banking to 45 degrees
 #> Aspect ratio 1.169 (height / width), from 11 segments by "median_slope".
-#> At 6.5in wide, that is a panel 7.6in tall. Allow more for axis labels and
+#> At 6.5in wide, that's a panel 7.6in tall. Allow more for axis labels and
 #> titles.
 ```
 
@@ -260,7 +260,7 @@ c(from_zero = lie_factor(bars),
 ```
 
 A dot encodes its value by position, so it can be read against a scale
-that excludes zero without claiming anything about proportions. That is
+that excludes zero without claiming anything about proportions. That’s
 the whole reason to reach for one.
 
 ## Auditing the result

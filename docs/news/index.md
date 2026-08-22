@@ -10,7 +10,11 @@
   and
   [`sparkline_grob()`](https://lobsterbush.github.io/tufter/reference/sparkline_grob.md)
   no longer leave a graphics device open or write an `Rplots.pdf` into
-  the working directory. Grob construction borrows a `pdf(NULL)` device.
+  the working directory. Measuring borrows a `pdf(NULL)` device for the
+  whole measurement, which covers unit conversion as well as building
+  the gtable.
+  [`tufte_audit()`](https://lobsterbush.github.io/tufter/reference/tufte_audit.md)
+  on a plot with a legend was a second route to the same stray file.
 - README figures and example output use `palmerpenguins` and
   `gapminder`.
 - The cached API data behind the live-data article has moved to
@@ -39,7 +43,7 @@
   bars along the axis that carries their length. All three orientations
   report the same distortion.
 - [`tufte_audit()`](https://lobsterbush.github.io/tufter/reference/tufte_audit.md)
-  names the axis a reader can see when a bar baseline is not zero.
+  names the axis a reader can see when a bar baseline isn’t zero.
 - [`bank_to_45()`](https://lobsterbush.github.io/tufter/reference/bank_to_45.md)
   normalises each panel by its own ranges, which matters under free
   scales.
@@ -97,7 +101,7 @@
   groups layers by the data they read, and resolves aesthetics to the
   columns they use.
 - [`bank_to_45()`](https://lobsterbush.github.io/tufter/reference/bank_to_45.md)
-  reads segments in drawn order and keeps vertical ones. A path that is
+  reads segments in drawn order and keeps vertical ones. A path that’s
   more than half vertical is refused.
 - [`tufte_audit()`](https://lobsterbush.github.io/tufter/reference/tufte_audit.md)
   treats a continuous colour scale as one code, catches redundant

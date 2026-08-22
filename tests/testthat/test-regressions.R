@@ -21,6 +21,11 @@ test_that("every drawn layer is named so the ink stripper can find it", {
     boxplot = ggplot(mtcars, aes(factor(cyl), mpg)) + geom_tufteboxplot()
   )
 
+  # Measuring needs a device. Without one R starts the default, which writes an
+  # Rplots.pdf into the test directory.
+  grDevices::pdf(NULL)
+  on.exit(grDevices::dev.off(), add = TRUE)
+
   for (nm in names(plots)) {
     gt <- ggplotGrob(plots[[nm]])
     panel <- gt$grobs[[which(grepl("^panel", gt$layout$name))[1]]]

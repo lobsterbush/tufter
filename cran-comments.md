@@ -7,19 +7,17 @@
 
 0 errors | 0 warnings | 2 notes
 
-This is a new submission.
+The first is CRAN incoming feasibility, reporting a new submission and a 404 on
+`https://github.com/lobsterbush/tufter`. The repo is still private. Make it
+public, or drop the two URLs from `DESCRIPTION`, before submitting.
 
-The second note reports that `https://github.com/lobsterbush/tufter` returns
-404. Make the repository public, or drop the two URLs from `DESCRIPTION`, before
-submitting.
-
-The third-party note is local: this machine's HTML Tidy predates the version R
-now asks for, so the HTML manual check is skipped.
+The second is local rather than about the package: this machine's HTML Tidy
+predates the version R now asks for, so the HTML manual check is skipped.
 
 ## Notes for the reviewer
 
 `data_ink_ratio()` and `check_labels_fit()` render the plot to a temporary PNG
-in order to measure it, using `ragg` when that's installed and `grDevices::png()`
+to measure it, using `ragg` when that's installed and `grDevices::png()`
 otherwise. Both write only to `tempfile()`, delete what they write, and restore
 the previously active graphics device.
 

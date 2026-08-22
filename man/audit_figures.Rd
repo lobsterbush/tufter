@@ -17,7 +17,7 @@ Pass a vector as long as \code{plots} to give each its own size.}
 \item{measure}{Logical. Run the rendering-based measurements? Defaults to
   \code{TRUE}. Set to \code{FALSE} for a fast structural pass.
 Figures are ordered by the number of stated criteria they fail, most first.
-That is a count and not a score: it's comparable across figures because
+That's a count and not a score: it's comparable across figures because
 every figure is being counted against the same criteria, whereas a
 proportion would divide by a denominator that changes with the plot type.}
 }

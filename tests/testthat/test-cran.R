@@ -118,6 +118,10 @@ test_that("measuring never leaves a stray device or an Rplots.pdf behind", {
   p <- ggplot(mtcars, aes(wt, mpg)) + geom_point() + theme_tufte()
   line <- ggplot(data.frame(x = 1:20, y = cumsum(rnorm(20))), aes(x, y)) +
     geom_line()
+  # A plot that actually draws a legend. The guide box is in the layout either
+  # way, but only a real one gets its width converted, and that conversion was
+  # a second leak that a legend-free plot never reached.
+  legended <- ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) + geom_point()
 
   # Start from no device at all, which is the case that used to leak.
   while (grDevices::dev.cur() > 1) grDevices::dev.off()
@@ -127,6 +131,8 @@ test_that("measuring never leaves a stray device or an Rplots.pdf behind", {
   invisible(data_density(p, width = 3, height = 2))
   invisible(sparkline_grob(cumsum(rnorm(20))))
   invisible(tufte_audit(p, width = 3, height = 2, measure = FALSE))
+  invisible(tufte_audit(legended, width = 3, height = 2, measure = FALSE))
+  invisible(tufte_audit(legended, width = 3, height = 2))
   invisible(bank_to_45(line))
 
   expect_equal(unname(grDevices::dev.cur()), 1L)

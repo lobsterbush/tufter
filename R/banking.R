@@ -31,7 +31,7 @@
 #'   the given \code{width}, the \code{method} used, and \code{n_segments}, the
 #'   number of line segments the answer was computed from.
 #'
-#'   The aspect ratio describes the \emph{panel}, since that is where the slopes
+#'   The aspect ratio describes the \emph{panel}, since that's where the slopes
 #'   are drawn. A saved figure needs room for axis labels and titles on top of
 #'   it, so pass something larger than \code{height} to
 #'   \code{\link{save_tufte}()} and check the result with
@@ -105,7 +105,7 @@ print.tufte_banking <- function(x, ...) {
     "from {x$n_segments} segment{?s} by {.val {x$method}}."
   )
   cli::cli_text(
-    "At {x$width}in wide, that is a panel {.strong {round(x$height, 2)}in} tall. ",
+    "At {x$width}in wide, that's a panel {.strong {round(x$height, 2)}in} tall. ",
     "Allow more for axis labels and titles."
   )
   invisible(x)

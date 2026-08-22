@@ -27,7 +27,7 @@ An object of class \code{tufte_banking}: a list with the recommended
   the given \code{width}, the \code{method} used, and \code{n_segments}, the
   number of line segments the answer was computed from.
 
-  The aspect ratio describes the \emph{panel}, since that is where the slopes
+  The aspect ratio describes the \emph{panel}, since that's where the slopes
   are drawn. A saved figure needs room for axis labels and titles on top of
   it, so pass something larger than \code{height} to
   \code{\link{save_tufte}()} and check the result with

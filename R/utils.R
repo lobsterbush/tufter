@@ -89,20 +89,31 @@ NULL
 #' @noRd
 .hairline <- 0.3
 
-# Build a plot's gtable without side effects.
+# Evaluate something that measures grobs, with a device guaranteed open.
 #
-# ggplotGrob() needs a graphics device to measure text against. With none open,
-# R starts the default device, which in a non-interactive session is pdf() and
-# leaves an unasked-for Rplots.pdf in the user's working directory. pdf(NULL)
-# is a device that writes no file, so the measurement borrows one and gives it
-# back.
+# Measuring text needs a graphics device to measure against. With none open, R
+# starts the default one, which in a non-interactive session is pdf() and leaves
+# an unasked-for Rplots.pdf in the user's working directory. pdf(NULL) is a
+# device that writes no file, so the measurement borrows one and gives it back.
+#
+# This wraps the whole measurement rather than the grob build alone. Building
+# the gtable under a guard and then calling convertWidth() on the result once
+# the guard has closed puts you right back where you started, because the unit
+# conversion is what needs the device, not just the build.
 #' @noRd
-.grob_of <- function(plot) {
+.with_null_device <- function(expr) {
   if (grDevices::dev.cur() == 1L) {
     grDevices::pdf(NULL)
     on.exit(grDevices::dev.off(), add = TRUE)
   }
-  ggplot2::ggplotGrob(plot)
+  force(expr)
+}
+
+# Build a plot's gtable without side effects. Safe on its own; anything that
+# goes on to convert units from the result belongs inside .with_null_device().
+#' @noRd
+.grob_of <- function(plot) {
+  .with_null_device(ggplot2::ggplotGrob(plot))
 }
 
 # Give a grob a unique name, as ggplot2 does internally for its own layers.

@@ -58,8 +58,8 @@ r_default <- data_ink_ratio(default)
 r_default
 ```
 
-Most of that is the grey panel and the white grid, and none of it changes when
-a penguin does.
+The grey panel and the white grid account for most of that, and none of it
+changes when a penguin does.
 
 ## Erase, then replace the frame
 
@@ -230,7 +230,7 @@ c(from_zero = lie_factor(bars),
 ```
 
 A dot encodes its value by position, so it can be read against a scale that
-excludes zero without claiming anything about proportions. That is the whole
+excludes zero without claiming anything about proportions. That's the whole
 reason to reach for one.
 
 ## Auditing the result
