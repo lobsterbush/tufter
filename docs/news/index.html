@@ -73,7 +73,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,6 +106,13 @@
       <small>Source: <a href="https://github.com/lobsterbush/tufter/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.5.2" id="tufter-052">tufter 0.5.2<a class="anchor" aria-label="anchor" href="#tufter-052"></a></h2>
+<ul><li>
+<code><a href="../reference/quartile_breaks.html">quartile_breaks()</a></code> puts the axis labels where the quartile frame actually breaks. It used <code><a href="https://rdrr.io/r/stats/fivenum.html" class="external-link">stats::fivenum()</a></code> while the frame used <code>stats::quantile(type = 7)</code>, so for most sample sizes the printed labels sat somewhere other than the gaps they were meant to name. At n = 8 the axis read 56 next to a break at 53.4. With too few distinct values for a summary it now returns the two ends, matching the plain range the frame draws there.</li>
+<li>
+<code>tufte_audit(measure = FALSE)</code> no longer changes a figure’s verdict. The clipping check was gated behind <code>measure</code> although it’s a stated criterion, so a figure with a subtitle too wide to fit reported no violations on the fast path. <code>measure</code> now governs only the data-ink ratio and the data density, which are ungraded.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.1" id="tufter-051">tufter 0.5.1<a class="anchor" aria-label="anchor" href="#tufter-051"></a></h2>
 <ul><li>

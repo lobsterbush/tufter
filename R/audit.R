@@ -23,8 +23,11 @@
 #' @param plot A \code{ggplot} object.
 #' @param width,height Intended printed size in inches, used by the checks and
 #'   measurements that depend on it. Defaults to 6.5 by 4.
-#' @param measure Logical. Run the rendering-based measurements, which are the
-#'   slow part? Defaults to \code{TRUE}.
+#' @param measure Logical. Report the data-ink ratio and the data density,
+#'   which are the slow part? Defaults to \code{TRUE}. This governs only those
+#'   two, which Tufte states no threshold for and the audit therefore doesn't
+#'   grade. Every stated criterion is checked either way, so the count of
+#'   violations means the same thing whichever you pass.
 #' @return An object of class \code{tufte_audit}: a tibble with one row per
 #'   check, whose \code{status} is \code{"fail"} for a stated criterion that's
 #'   not met, \code{"pass"} for one that's met, \code{"report"} for a
@@ -461,7 +464,9 @@ print.tufte_audit <- function(x, ...) {
 
 #' @noRd
 .check_fit <- function(ctx) {
-  if (!isTRUE(ctx$measure)) return(NULL)
+  # Not gated on ctx$measure. This is a stated criterion the figure passes or
+  # fails, and dropping it turned a figure with a clipped subtitle into one
+  # with no violations at all. Only the ungraded measurements are optional.
   fits <- tryCatch(
     suppressWarnings(check_labels_fit(ctx$plot, ctx$width, ctx$height)),
     error = function(e) NULL

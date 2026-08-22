@@ -1,3 +1,17 @@
+# tufter 0.5.2
+
+* `quartile_breaks()` puts the axis labels where the quartile frame actually
+  breaks. It used `stats::fivenum()` while the frame used
+  `stats::quantile(type = 7)`, so for most sample sizes the printed labels sat
+  somewhere other than the gaps they were meant to name. At n = 8 the axis read
+  56 next to a break at 53.4. With too few distinct values for a summary it now
+  returns the two ends, matching the plain range the frame draws there.
+* `tufte_audit(measure = FALSE)` no longer changes a figure's verdict. The
+  clipping check was gated behind `measure` although it's a stated criterion,
+  so a figure with a subtitle too wide to fit reported no violations on the
+  fast path. `measure` now governs only the data-ink ratio and the data
+  density, which are ungraded.
+
 # tufter 0.5.1
 
 * `tufte_audit()` no longer counts categories along a discrete axis as

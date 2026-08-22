@@ -27,12 +27,14 @@ audit_figures(plots, width = 6.5, height = 4, measure = TRUE)
 
 - measure:
 
-  Logical. Run the rendering-based measurements? Defaults to `TRUE`. Set
-  to `FALSE` for a fast structural pass. Figures are ordered by the
-  number of stated criteria they fail, most first. That's a count and
-  not a score: it's comparable across figures because every figure is
-  being counted against the same criteria, whereas a proportion would
-  divide by a denominator that changes with the plot type.
+  Logical. Report the data-ink ratio and the data density? Defaults to
+  `TRUE`. Setting it to `FALSE` skips only those two, which are
+  ungraded, so the ordering by unmet criteria is the same either way and
+  roughly twice as fast to get. Figures are ordered by the number of
+  stated criteria they fail, most first. That's a count and not a score:
+  it's comparable across figures because every figure is being counted
+  against the same criteria, whereas a proportion would divide by a
+  denominator that changes with the plot type.
 
 ## Value
 

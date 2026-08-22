@@ -380,3 +380,81 @@ test_that("tufte_principles() columns are the types the docs promise", {
   # Nothing can be graded that isn't audited at all.
   expect_true(all(p$audited[p$criterion]))
 })
+
+test_that("axis labels land where the quartile frame actually breaks", {
+  # quartile_breaks() used stats::fivenum() while the frame used
+  # stats::quantile(type = 7). Both docs and the vignette promise the labels
+  # sit at the breaks, and for most sample sizes they did not: at n = 8 the
+  # axis printed 56 next to a gap at 53.4.
+  set.seed(3)
+  for (n in c(5, 6, 7, 8, 9, 12, 20, 33, 47, 60, 101, 200)) {
+    v <- sort(round(rnorm(n, 50, 10), 3))
+    labels <- quartile_breaks(v)(range(v))
+    frame <- unique(signif(
+      as.numeric(stats::quantile(v, c(0, .25, .5, .75, 1), names = FALSE,
+                                 type = 7)), 3))
+    expect_equal(labels, frame,
+                 info = paste("n =", n))
+  }
+})
+
+test_that("the box plot, the quartile frame and the axis labels share one convention", {
+  set.seed(11)
+  v <- rnorm(40, 50, 10)
+  box <- ggplot_build(
+    ggplot(data.frame(g = "a", y = v), aes(g, y)) + geom_tufteboxplot())$data[[1]]
+  q <- stats::quantile(v, c(.25, .75), names = FALSE, type = 7)
+
+  # The geom follows ggplot2's own boxplot, which is quantile type 7.
+  gg <- ggplot_build(
+    ggplot(data.frame(g = "a", y = v), aes(g, y)) + geom_boxplot())$data[[1]]
+  expect_equal(c(box$lower[1], box$upper[1]), c(gg$lower[1], gg$upper[1]))
+  expect_equal(unname(c(box$lower[1], box$upper[1])), q)
+
+  # And the axis labels agree with it.
+  labels <- quartile_breaks(v)(range(v))
+  expect_true(all(signif(q, 3) %in% labels))
+})
+
+test_that("with too few values for a summary the labels match the plain frame", {
+  # .frame_spans() draws a plain range whenever there are fewer than four
+  # distinct values, so the labels must not claim quartiles there either.
+  expect_equal(quartile_breaks()(c(0, 10)), c(0, 10))
+  expect_equal(quartile_breaks(c(2, 2, 9))(c(2, 9)), c(2, 9))
+  expect_length(quartile_breaks(rep(5, 20))(c(5, 5)), 1L)
+  # Four distinct values is enough, and then all five points are reported.
+  expect_length(quartile_breaks(c(1, 2, 3, 4))(c(1, 4)), 5L)
+})
+
+test_that("measure = FALSE does not change any figure's verdict", {
+  # check_labels_fit() was gated behind measure, and it is a stated criterion
+  # rather than a measurement. A figure with a subtitle too wide to fit
+  # reported one violation with measure = TRUE and none with measure = FALSE,
+  # so the fast path called a failing figure clean.
+  set.seed(2)
+  d <- data.frame(x = rnorm(40), y = rnorm(40))
+  clipped <- ggplot(d, aes(x, y)) + geom_point() + theme_tufte() +
+    label_source("somewhere") +
+    labs(subtitle = strrep("a subtitle that will not fit ", 8))
+
+  full <- suppressWarnings(tufte_audit(clipped, width = 6.5, height = 4))
+  fast <- suppressWarnings(tufte_audit(clipped, width = 6.5, height = 4,
+                                       measure = FALSE))
+  expect_equal(attr(fast, "violations"), attr(full, "violations"))
+  expect_gt(attr(fast, "violations"), 0)
+
+  # The same holds for a figure that passes everything.
+  clean <- ggplot(d, aes(x, y)) + geom_point() + theme_tufte() +
+    label_source("somewhere")
+  expect_equal(
+    attr(suppressWarnings(tufte_audit(clean, width = 6.5, height = 4,
+                                      measure = FALSE)), "violations"),
+    attr(suppressWarnings(tufte_audit(clean, width = 6.5, height = 4)),
+         "violations"))
+
+  # measure still governs the two ungraded measurements.
+  fast_checks <- suppressWarnings(
+    tufte_audit(clean, width = 6.5, height = 4, measure = FALSE))$check
+  expect_false("Data-ink ratio" %in% fast_checks)
+  expect_true("Nothing is clipped at the printed size" %in% fast_checks)
+})

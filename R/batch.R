@@ -14,8 +14,10 @@
 #'   file in it's read and any that contains a \code{ggplot} is audited.
 #' @param width,height Intended printed size in inches, applied to every figure.
 #'   Pass a vector as long as \code{plots} to give each its own size.
-#' @param measure Logical. Run the rendering-based measurements? Defaults to
-#'   \code{TRUE}. Set to \code{FALSE} for a fast structural pass.
+#' @param measure Logical. Report the data-ink ratio and the data density?
+#'   Defaults to \code{TRUE}. Setting it to \code{FALSE} skips only those two,
+#'   which are ungraded, so the ordering by unmet criteria is the same either
+#'   way and roughly twice as fast to get.
 #' Figures are ordered by the number of stated criteria they fail, most first.
 #' That's a count and not a score: it's comparable across figures because
 #' every figure is being counted against the same criteria, whereas a

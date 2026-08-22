@@ -79,7 +79,7 @@ you were looking at."><meta name="robots" content="noindex, nofollow, noarchive,
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -141,8 +141,10 @@ Pass a vector as long as <code>plots</code> to give each its own size.</p></dd>
 
 
 <dt id="arg-measure">measure<a class="anchor" aria-label="anchor" href="#arg-measure"></a></dt>
-<dd><p>Logical. Run the rendering-based measurements? Defaults to
-  <code>TRUE</code>. Set to <code>FALSE</code> for a fast structural pass.
+<dd><p>Logical. Report the data-ink ratio and the data density?
+  Defaults to <code>TRUE</code>. Setting it to <code>FALSE</code> skips only those two,
+  which are ungraded, so the ordering by unmet criteria is the same either
+  way and roughly twice as fast to get.
 Figures are ordered by the number of stated criteria they fail, most first.
 That's a count and not a score: it's comparable across figures because
 every figure is being counted against the same criteria, whereas a

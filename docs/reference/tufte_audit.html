@@ -75,7 +75,7 @@ about the difference between the two kinds of thing he wrote."><meta name="robot
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -133,8 +133,11 @@ measurements that depend on it. Defaults to 6.5 by 4.</p></dd>
 
 
 <dt id="arg-measure">measure<a class="anchor" aria-label="anchor" href="#arg-measure"></a></dt>
-<dd><p>Logical. Run the rendering-based measurements, which are the
-slow part? Defaults to <code>TRUE</code>.</p></dd>
+<dd><p>Logical. Report the data-ink ratio and the data density,
+which are the slow part? Defaults to <code>TRUE</code>. This governs only those
+two, which Tufte states no threshold for and the audit therefore doesn't
+grade. Every stated criterion is checked either way, so the count of
+violations means the same thing whichever you pass.</p></dd>
 
 </dl></div>
     <div class="section level2">

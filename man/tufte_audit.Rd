@@ -12,8 +12,11 @@ tufte_audit(plot, width = 6.5, height = 4, measure = TRUE)
 \item{width, height}{Intended printed size in inches, used by the checks and
 measurements that depend on it. Defaults to 6.5 by 4.}
 
-\item{measure}{Logical. Run the rendering-based measurements, which are the
-slow part? Defaults to \code{TRUE}.}
+\item{measure}{Logical. Report the data-ink ratio and the data density,
+which are the slow part? Defaults to \code{TRUE}. This governs only those
+two, which Tufte states no threshold for and the audit therefore doesn't
+grade. Every stated criterion is checked either way, so the count of
+violations means the same thing whichever you pass.}
 }
 \value{
 An object of class \code{tufte_audit}: a tibble with one row per

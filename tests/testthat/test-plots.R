@@ -64,9 +64,11 @@ test_that("quartile_breaks returns the five-number summary", {
   expect_equal(min(b), signif(min(mtcars$mpg), 3))
   expect_equal(max(b), signif(max(mtcars$mpg), 3))
 
-  # With no vector supplied it works from the scale limits. Two limits give a
-  # three-point summary, since the quartiles coincide with the extremes.
-  expect_equal(quartile_breaks()(c(0, 10)), c(0, 5, 10))
+  # With no vector supplied it works from the scale limits. Two numbers are not
+  # a five-number summary, and the frame draws a plain range for them, so the
+  # axis gets the two ends. It used to print a label at 5, standing for a
+  # quartile nothing had computed and sitting where the frame has no break.
+  expect_equal(quartile_breaks()(c(0, 10)), c(0, 10))
   expect_length(quartile_breaks()(numeric(0)), 0)
 })
 
