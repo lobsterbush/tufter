@@ -337,3 +337,46 @@ test_that("a transformed scale is found through coord_flip", {
   msg <- a$message[a$check == "Bars measured from zero"]
   expect_match(msg, "^The X axis uses a log-10 transformation")
 })
+
+test_that("categories along a discrete axis are not counted as overlaid series", {
+  # ggplot2 groups by the interaction of every discrete aesthetic, positional
+  # ones included, so a dot plot of five countries used to report "5 series
+  # overlaid in one panel" and recommend faceting, which would have put one
+  # point in each panel.
+  d <- data.frame(g = letters[1:5], v = c(3, 7, 5, 2, 9))
+
+  dots <- tufte_audit(
+    ggplot(d, aes(v, g)) + geom_cleveland_dot() + theme_tufte(),
+    width = 5, height = 3, measure = FALSE)
+  series <- dots$message[dots$check == "Overlaid series"]
+  expect_match(series, "One series", fixed = TRUE)
+  expect_false(grepl("5 series", series))
+
+  # A genuine set of overlaid series, told apart by colour rather than by
+  # position, is still counted.
+  ts <- data.frame(x = rep(1:10, 3), y = rnorm(30),
+                   s = rep(c("a", "b", "c"), each = 10))
+  lines <- tufte_audit(
+    ggplot(ts, aes(x, y, colour = s)) + geom_line() + theme_tufte(),
+    width = 5, height = 3, measure = FALSE)
+  expect_match(lines$message[lines$check == "Overlaid series"], "3 series")
+})
+
+test_that("the audit's return documentation describes what it returns", {
+  # A contraction sweep once cut the verb out of this sentence, leaving
+  # '"pass" for one that's,'.
+  a <- tufte_audit(ggplot(mtcars, aes(wt, mpg)) + geom_point(),
+                   width = 5, height = 3, measure = FALSE)
+  v <- attr(a, "violations")
+  expect_type(v, "integer")
+  expect_length(v, 1L)
+  expect_identical(v, sum(a$status == "fail"))
+})
+
+test_that("tufte_principles() columns are the types the docs promise", {
+  p <- tufte_principles()
+  expect_type(p$audited, "logical")
+  expect_type(p$criterion, "logical")
+  # Nothing can be graded that isn't audited at all.
+  expect_true(all(p$audited[p$criterion]))
+})

@@ -79,7 +79,7 @@ criterion a graphic either meets or doesn't."><meta name="robots" content="noind
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -140,7 +140,11 @@ Defaults to <code>FALSE</code>.</p></dd>
   <code>statement</code>, <code>implemented_by</code>, <code>audited</code> and
   <code>criterion</code>. <code>implemented_by</code> is a comma-separated list of
   functions in this package, or <code>NA</code> for the principles no function
-  reaches.</p>
+  reaches. <code>audited</code> and <code>criterion</code> are both logical:
+  <code>audited</code> says whether any function reports on the principle, and
+  <code>criterion</code> whether Tufte states a threshold, so that
+  <code>criterion</code> is the column that separates what the audit grades from
+  what it only measures.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

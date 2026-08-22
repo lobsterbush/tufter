@@ -24,7 +24,11 @@ tufte_principles(audited_only = FALSE)
 A tibble with columns `principle`, `source`, `statement`,
 `implemented_by`, `audited` and `criterion`. `implemented_by` is a
 comma-separated list of functions in this package, or `NA` for the
-principles no function reaches.
+principles no function reaches. `audited` and `criterion` are both
+logical: `audited` says whether any function reports on the principle,
+and `criterion` whether Tufte states a threshold, so that `criterion` is
+the column that separates what the audit grades from what it only
+measures.
 
 ## Details
 

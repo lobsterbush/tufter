@@ -27,10 +27,10 @@
 #'   slow part? Defaults to \code{TRUE}.
 #' @return An object of class \code{tufte_audit}: a tibble with one row per
 #'   check, whose \code{status} is \code{"fail"} for a stated criterion that's
-#'   not met, \code{"pass"} for one that's, \code{"report"} for a measurement
-#'   Tufte gives no threshold for, and \code{"skip"} for a check that could not
-#'   run. The number of unmet criteria is attached as the \code{"violations"}
-#'   attribute.
+#'   not met, \code{"pass"} for one that's met, \code{"report"} for a
+#'   measurement Tufte gives no threshold for, and \code{"skip"} for a check
+#'   that couldn't run. The count of unmet criteria, a single integer, is
+#'   attached as the \code{"violations"} attribute.
 #' @seealso \code{\link{tufte_principles}()}, which marks which principles carry
 #'   a stated criterion and which don't.
 #' @export
@@ -560,11 +560,25 @@ print.tufte_audit <- function(x, ...) {
     if (is.null(d$group)) 0L else length(unique(d$group[d$group > 0]))
   }, integer(1)), 1L)
 
+  # ggplot2 groups by the interaction of every discrete aesthetic, positional
+  # ones included, so a dot plot of five countries arrives here as five groups.
+  # Five points along a discrete axis are one series, not five overlaid ones,
+  # and telling someone to facet them would put one point in each panel. Only
+  # a non-positional aesthetic separates series that genuinely share a panel.
+  if (!.has_series_aesthetic(ctx$plot)) groups <- 1L
+
   if (faceted) {
     return(.row(
       "Small multiples",
       "Overlaid series", "report",
       "The plot uses small multiples."
+    ))
+  }
+  if (groups == 1L) {
+    return(.row(
+      "Small multiples",
+      "Overlaid series", "report",
+      "One series in one panel, so there is nothing to separate into small multiples."
     ))
   }
   .row(
@@ -573,4 +587,15 @@ print.tufte_audit <- function(x, ...) {
     sprintf("%d series overlaid in one panel. facet_tufte() would show the same data as small multiples. Tufte gives no number at which to switch.",
             groups)
   )
+}
+
+# Is anything other than position telling the series apart? Position alone
+# gives categories along an axis; colour, fill, linetype, shape or an explicit
+# group give series that sit on top of one another.
+#' @noRd
+.has_series_aesthetic <- function(plot) {
+  maps <- .all_mappings(plot)
+  keys <- c("group", "colour", "color", "fill", "linetype", "shape")
+  any(vapply(maps[names(maps) %in% keys],
+             function(q) length(.mapped_base_vars(q)) > 0, logical(1)))
 }

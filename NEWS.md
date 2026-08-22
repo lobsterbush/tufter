@@ -1,3 +1,19 @@
+# tufter 0.5.1
+
+* `tufte_audit()` no longer counts categories along a discrete axis as
+  overlaid series. A dot plot of five countries reported "5 series overlaid in
+  one panel" and recommended small multiples, which would have put one point
+  in each panel. Only a non-positional aesthetic separates series now.
+* `data_ink_ratio()` documents the case where the number runs the wrong way: a
+  pie chart of continental population measures 0.75 against 0.16 for the dot
+  plot that replaces it, because filled interiors count and dots are small.
+  The graded criteria separate them correctly, six unmet against one, which is
+  why the audit reports the ratio rather than scoring it.
+* `tufte_principles()` says in its documentation that `audited` and
+  `criterion` are logical, and which of the two separates graded from
+  measured.
+* The description of `tufte_audit()`'s return value had lost a verb.
+
 # tufter 0.5.0
 
 * New vignette, "Working through a real dataset", using `gapminder` and

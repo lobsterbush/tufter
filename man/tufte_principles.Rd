@@ -15,7 +15,11 @@ A tibble with columns \code{principle}, \code{source},
   \code{statement}, \code{implemented_by}, \code{audited} and
   \code{criterion}. \code{implemented_by} is a comma-separated list of
   functions in this package, or \code{NA} for the principles no function
-  reaches.
+  reaches. \code{audited} and \code{criterion} are both logical:
+  \code{audited} says whether any function reports on the principle, and
+  \code{criterion} whether Tufte states a threshold, so that
+  \code{criterion} is the column that separates what the audit grades from
+  what it only measures.
 }
 \description{
 Returns the table this package is built around: each principle, the book it

@@ -73,7 +73,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,6 +106,16 @@
       <small>Source: <a href="https://github.com/lobsterbush/tufter/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.5.1" id="tufter-051">tufter 0.5.1<a class="anchor" aria-label="anchor" href="#tufter-051"></a></h2>
+<ul><li>
+<code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> no longer counts categories along a discrete axis as overlaid series. A dot plot of five countries reported “5 series overlaid in one panel” and recommended small multiples, which would have put one point in each panel. Only a non-positional aesthetic separates series now.</li>
+<li>
+<code><a href="../reference/data_ink_ratio.html">data_ink_ratio()</a></code> documents the case where the number runs the wrong way: a pie chart of continental population measures 0.75 against 0.16 for the dot plot that replaces it, because filled interiors count and dots are small. The graded criteria separate them correctly, six unmet against one, which is why the audit reports the ratio rather than scoring it.</li>
+<li>
+<code><a href="../reference/tufte_principles.html">tufte_principles()</a></code> says in its documentation that <code>audited</code> and <code>criterion</code> are logical, and which of the two separates graded from measured.</li>
+<li>The description of <code><a href="../reference/tufte_audit.html">tufte_audit()</a></code>’s return value had lost a verb.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0" id="tufter-050">tufter 0.5.0<a class="anchor" aria-label="anchor" href="#tufter-050"></a></h2>
 <ul><li>New vignette, “Working through a real dataset”, using <code>gapminder</code> and <code>palmerpenguins</code>. Both are suggested and guarded.</li>

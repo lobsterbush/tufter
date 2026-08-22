@@ -51,6 +51,20 @@ already has. Treat the result as a comparative instrument: it's reliable
 for judging whether one version of a figure is leaner than another, and
 unreliable as an absolute score.
 
+The redundancy point is worth a concrete case, because the number can
+run the wrong way. Every pixel a data layer draws counts, the interiors
+of filled shapes included, so a design built from large filled areas
+scores high. Continental population as a pie chart measures 0.75; the
+same numbers as a Cleveland dot plot measure 0.16, because dots are
+small and the axis labels that make them readable are furniture. The pie
+is the worse graphic and the ratio prefers it. Tufte would subtract the
+wedge interiors as redundant, since the angle already carries the
+number, but no measurement can decide which ink repeats what. The graded
+criteria in
+[`tufte_audit()`](https://lobsterbush.github.io/tufter/reference/tufte_audit.md)
+do separate the two, six unmet against one, and this is why the audit
+reports the ratio rather than scoring it.
+
 ## Examples
 
 ``` r

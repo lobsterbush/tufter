@@ -75,7 +75,7 @@ about the difference between the two kinds of thing he wrote."><meta name="robot
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -141,10 +141,10 @@ slow part? Defaults to <code>TRUE</code>.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An object of class <code>tufte_audit</code>: a tibble with one row per
   check, whose <code>status</code> is <code>"fail"</code> for a stated criterion that's
-  not met, <code>"pass"</code> for one that's, <code>"report"</code> for a measurement
-  Tufte gives no threshold for, and <code>"skip"</code> for a check that could not
-  run. The number of unmet criteria is attached as the <code>"violations"</code>
-  attribute.</p>
+  not met, <code>"pass"</code> for one that's met, <code>"report"</code> for a
+  measurement Tufte gives no threshold for, and <code>"skip"</code> for a check
+  that couldn't run. The count of unmet criteria, a single integer, is
+  attached as the <code>"violations"</code> attribute.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -200,8 +200,8 @@ same figure.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   Tufte ranks published graphics by this and sets no minimum.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> 1 distinct colour in use. Tufte's advice on colour is qualitative, so this is</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   a count and not a verdict.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> 1 series overlaid in one panel. facet_tufte() would show the same data as</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   small multiples. Tufte gives no number at which to switch.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> One series in one panel, so there is nothing to separate into small</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   multiples.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── Met </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • No full panel border</span>

@@ -29,9 +29,9 @@ tufte_audit(plot, width = 6.5, height = 4, measure = TRUE)
 
 An object of class `tufte_audit`: a tibble with one row per check, whose
 `status` is `"fail"` for a stated criterion that's not met, `"pass"` for
-one that's, `"report"` for a measurement Tufte gives no threshold for,
-and `"skip"` for a check that could not run. The number of unmet
-criteria is attached as the `"violations"` attribute.
+one that's met, `"report"` for a measurement Tufte gives no threshold
+for, and `"skip"` for a check that couldn't run. The count of unmet
+criteria, a single integer, is attached as the `"violations"` attribute.
 
 ## Details
 
@@ -89,8 +89,8 @@ tufte_audit(ggplot(mtcars, aes(wt, mpg)) + geom_point())
 #>   Tufte ranks published graphics by this and sets no minimum.
 #> • 1 distinct colour in use. Tufte's advice on colour is qualitative, so this is
 #>   a count and not a verdict.
-#> • 1 series overlaid in one panel. facet_tufte() would show the same data as
-#>   small multiples. Tufte gives no number at which to switch.
+#> • One series in one panel, so there is nothing to separate into small
+#>   multiples.
 #> 
 #> ── Met 
 #> • No full panel border

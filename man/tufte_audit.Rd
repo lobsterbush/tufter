@@ -18,10 +18,10 @@ slow part? Defaults to \code{TRUE}.}
 \value{
 An object of class \code{tufte_audit}: a tibble with one row per
   check, whose \code{status} is \code{"fail"} for a stated criterion that's
-  not met, \code{"pass"} for one that's, \code{"report"} for a measurement
-  Tufte gives no threshold for, and \code{"skip"} for a check that could not
-  run. The number of unmet criteria is attached as the \code{"violations"}
-  attribute.
+  not met, \code{"pass"} for one that's met, \code{"report"} for a
+  measurement Tufte gives no threshold for, and \code{"skip"} for a check
+  that couldn't run. The count of unmet criteria, a single integer, is
+  attached as the \code{"violations"} attribute.
 }
 \description{
 Reports what a plot does against what Tufte actually wrote, and is careful
