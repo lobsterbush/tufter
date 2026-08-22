@@ -160,9 +160,11 @@ depend only on Suggests, guarded by `requireNamespace()`.
 check.
 
 ### Dependencies
-Imports ggplot2, grid, grDevices, gtable, scales, png, rlang, cli, tibble.
-`png` is an Import because `data_ink_ratio()` is core; `ragg` is a Suggest and
-gets used when it's present for steadier anti-aliasing.
+Imports ggplot2, grid, grDevices, scales, png, rlang, cli, tibble, stats and
+tools. `png` is an Import because `data_ink_ratio()` is core; `ragg` is a
+Suggest and gets used when it's present for steadier anti-aliasing. Keep this
+list matching `DESCRIPTION`: it claimed `gtable`, which nothing uses, and
+omitted `stats` and `tools`, which several functions do.
 
 ### Relationship to ggthemes
 `ggthemes` has its own `theme_tufte()`, range frame and Tufte box plot. Loading
