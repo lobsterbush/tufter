@@ -1,3 +1,24 @@
+# tufter 0.6.0
+
+* `data_ink_ratio()` counts the ink of every geom. It identified data layers by
+  a grob name beginning with "geom", but ggplot2 names only some of them that
+  way: `GeomPath`, `GeomLine`, `GeomStep`, `GeomText` and `GeomSegment` return
+  bare grid grobs called `GRID.polyline`, `GRID.text` and `GRID.segments`.
+  Those were never stripped, so they stayed in the furniture rendering and were
+  subtracted from the data ink. A plain line chart measured a data-ink ratio of
+  exactly zero. The furniture is now named instead, being the grill, the panel
+  border and ggplot2's zeroGrob placeholders, and anything else in the panel is
+  a layer.
+* `geom_col_tufte()` and `geom_bar_tufte()` work out which axis to erase the
+  rules along, so `sides` defaults to `NULL`. Horizontal bars drew no rules at
+  all, whether written as `aes(value, category)`, passed
+  `orientation = "y"`, or flipped by the coord. An explicit `sides` pointing at
+  a scale with no numeric breaks now warns instead of silently drawing nothing.
+* Which axis carries a bar's length is settled in one place, `.bar_axes()`, and
+  the five-number summary behind the quartile frame and its labels in another,
+  `.five_number()`. Three separate answers to the first question and two to the
+  second were five separate bugs.
+
 # tufter 0.5.4
 
 * `geom_col_tufte()` draws its erased rules under `coord_flip()`. It chose the

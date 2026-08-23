@@ -13,7 +13,7 @@ geom_col_tufte(
   stat = "identity",
   position = "stack",
   ...,
-  sides = c("y", "x"),
+  sides = NULL,
   rule_colour = "white",
   rule_linewidth = 0.6,
   minor = FALSE,
@@ -28,7 +28,7 @@ geom_bar_tufte(
   stat = "count",
   position = "stack",
   ...,
-  sides = c("y", "x"),
+  sides = NULL,
   rule_colour = "white",
   rule_linewidth = 0.6,
   minor = FALSE,
@@ -41,8 +41,10 @@ geom_bar_tufte(
 \item{mapping, data, stat, position, na.rm, show.legend, inherit.aes, ...}{Standard
 \code{ggplot2} layer arguments. See \code{\link[ggplot2]{layer}()}.}
 
-\item{sides}{Which axis's breaks to erase through the bars. \code{"y"} (the
-default) suits vertical bars; \code{"x"} suits horizontal ones.}
+\item{sides}{Which axis's breaks to erase through the bars. Defaults to
+\code{NULL}, which works it out from the layer: vertical bars get the
+\code{"y"} breaks, and horizontal ones, however you wrote them, get
+\code{"x"}. Pass \code{"x"} or \code{"y"} to override.}
 
 \item{rule_colour}{Colour of the erased rules. Defaults to \code{"white"},
 which is correct on a white page; set it to your background colour

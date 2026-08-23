@@ -151,6 +151,19 @@ print.tufte_data_ink <- function(x, ...) {
 
 # Remove the data layers from a built gtable, leaving the frame, grid,
 # background, axes, labels and legend behind.
+#
+# This used to drop children whose name began with "geom", on the assumption
+# that every layer is named that way. ggplot2 only names some of them:
+# GeomPath, GeomLine, GeomStep, GeomText and GeomSegment return bare grid
+# grobs called GRID.polyline, GRID.text and GRID.segments. Those were never
+# stripped, so they stayed in the furniture rendering and were subtracted from
+# the data ink. A plain line chart measured a data-ink ratio of zero.
+#
+# The furniture is the short, stable list instead: the grill, which holds the
+# background and the gridlines, the panel border, and the zeroGrob placeholders
+# ggplot2 pads the panel with. Anything else in the panel is a layer. Naming a
+# new furniture element would over-count data, which is a far safer way to be
+# wrong than erasing the data.
 #' @noRd
 .strip_data_grobs <- function(gt) {
   panels <- which(grepl("^panel", gt$layout$name))
@@ -158,7 +171,10 @@ print.tufte_data_ink <- function(x, ...) {
     g <- gt$grobs[[i]]
     if (!inherits(g, "gTree") || is.null(g$children)) next
     nms <- names(g$children)
-    keep <- !grepl("^geom", nms)
+    nms[is.na(nms)] <- ""
+    keep <- grepl("^grill", nms) |
+      grepl("^panel\\.border", nms) |
+      vapply(g$children, inherits, logical(1), "zeroGrob")
     g$children <- g$children[keep]
     if (!is.null(g$childrenOrder)) {
       g$childrenOrder <- g$childrenOrder[g$childrenOrder %in% names(g$children)]
@@ -272,24 +288,6 @@ lie_factor.ggplot <- function(x, ...) {
 
 # Which axis carries a bar's length, in three different senses.
 #
-# The built data follows the layer's own orientation: a horizontal bar keeps
-# its length in xmin/xmax. So does the scale, since a scale is attached to a
-# variable rather than to a side of the panel. The drawn panel follows both the
-# layer orientation and coord_flip(), which swaps the sides at render time
-# without touching either of the other two.
-#' @noRd
-.bar_axes <- function(d, coordinates = NULL) {
-  flipped <- isTRUE(d$flipped_aes[1])
-  coord_flipped <- inherits(coordinates, "CoordFlip")
-  data_axis <- if (flipped) "x" else "y"
-  list(
-    data = data_axis,
-    panel = if (xor(flipped, coord_flipped)) "x" else "y",
-    hi = paste0(data_axis, "max"),
-    lo = paste0(data_axis, "min")
-  )
-}
-
 # Name of a position scale's transformation, or NA if it cannot be determined.
 #' @noRd
 .y_transform_name <- function(built, axis = "y") {

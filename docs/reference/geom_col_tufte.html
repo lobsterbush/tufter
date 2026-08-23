@@ -83,7 +83,7 @@ reads as a ruler laid against the data."><meta name="robots" content="noindex, n
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -134,7 +134,7 @@ reads as a ruler laid against the data.</p>
 <span>  stat <span class="op">=</span> <span class="st">"identity"</span>,</span>
 <span>  position <span class="op">=</span> <span class="st">"stack"</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>  sides <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"y"</span>, <span class="st">"x"</span><span class="op">)</span>,</span>
+<span>  sides <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  rule_colour <span class="op">=</span> <span class="st">"white"</span>,</span>
 <span>  rule_linewidth <span class="op">=</span> <span class="fl">0.6</span>,</span>
 <span>  minor <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -149,7 +149,7 @@ reads as a ruler laid against the data.</p>
 <span>  stat <span class="op">=</span> <span class="st">"count"</span>,</span>
 <span>  position <span class="op">=</span> <span class="st">"stack"</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>  sides <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"y"</span>, <span class="st">"x"</span><span class="op">)</span>,</span>
+<span>  sides <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  rule_colour <span class="op">=</span> <span class="st">"white"</span>,</span>
 <span>  rule_linewidth <span class="op">=</span> <span class="fl">0.6</span>,</span>
 <span>  minor <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -169,8 +169,10 @@ reads as a ruler laid against the data.</p>
 
 
 <dt id="arg-sides">sides<a class="anchor" aria-label="anchor" href="#arg-sides"></a></dt>
-<dd><p>Which axis's breaks to erase through the bars. <code>"y"</code> (the
-default) suits vertical bars; <code>"x"</code> suits horizontal ones.</p></dd>
+<dd><p>Which axis's breaks to erase through the bars. Defaults to
+<code>NULL</code>, which works it out from the layer: vertical bars get the
+<code>"y"</code> breaks, and horizontal ones, however you wrote them, get
+<code>"x"</code>. Pass <code>"x"</code> or <code>"y"</code> to override.</p></dd>
 
 
 <dt id="arg-rule-colour">rule_colour<a class="anchor" aria-label="anchor" href="#arg-rule-colour"></a></dt>

@@ -73,7 +73,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,6 +106,14 @@
       <small>Source: <a href="https://github.com/lobsterbush/tufter/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.6.0" id="tufter-060">tufter 0.6.0<a class="anchor" aria-label="anchor" href="#tufter-060"></a></h2>
+<ul><li>
+<code><a href="../reference/data_ink_ratio.html">data_ink_ratio()</a></code> counts the ink of every geom. It identified data layers by a grob name beginning with “geom”, but ggplot2 names only some of them that way: <code>GeomPath</code>, <code>GeomLine</code>, <code>GeomStep</code>, <code>GeomText</code> and <code>GeomSegment</code> return bare grid grobs called <code>GRID.polyline</code>, <code>GRID.text</code> and <code>GRID.segments</code>. Those were never stripped, so they stayed in the furniture rendering and were subtracted from the data ink. A plain line chart measured a data-ink ratio of exactly zero. The furniture is now named instead, being the grill, the panel border and ggplot2’s zeroGrob placeholders, and anything else in the panel is a layer.</li>
+<li>
+<code><a href="../reference/geom_col_tufte.html">geom_col_tufte()</a></code> and <code><a href="../reference/geom_col_tufte.html">geom_bar_tufte()</a></code> work out which axis to erase the rules along, so <code>sides</code> defaults to <code>NULL</code>. Horizontal bars drew no rules at all, whether written as <code>aes(value, category)</code>, passed <code>orientation = "y"</code>, or flipped by the coord. An explicit <code>sides</code> pointing at a scale with no numeric breaks now warns instead of silently drawing nothing.</li>
+<li>Which axis carries a bar’s length is settled in one place, <code>.bar_axes()</code>, and the five-number summary behind the quartile frame and its labels in another, <code>.five_number()</code>. Three separate answers to the first question and two to the second were five separate bugs.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.4" id="tufter-054">tufter 0.5.4<a class="anchor" aria-label="anchor" href="#tufter-054"></a></h2>
 <ul><li>

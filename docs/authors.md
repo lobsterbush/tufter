@@ -11,13 +11,13 @@ Source:
 [`DESCRIPTION`](https://github.com/lobsterbush/tufter/blob/HEAD/DESCRIPTION)
 
 Crabtree C (2026). *tufter: Implement Edward Tufte's Principles of
-Graphical Design*. R package version 0.5.4,
+Graphical Design*. R package version 0.6.0,
 <https://lobsterbush.github.io/tufter/>.
 
     @Manual{,
       title = {tufter: Implement Edward Tufte's Principles of Graphical Design},
       author = {Charles Crabtree},
       year = {2026},
-      note = {R package version 0.5.4},
+      note = {R package version 0.6.0},
       url = {https://lobsterbush.github.io/tufter/},
     }

@@ -85,6 +85,52 @@ NULL
 #' @noRd
 .fmt <- function(x, digits = 2) formatC(x, format = "f", digits = digits)
 
+#' @noRd
+# Which axis carries a bar's length, in each of the three frames that disagree
+# about it. This is the one place that answers the question; three separate
+# answers to it were three separate bugs.
+#
+#   data   the aesthetic the values are mapped to. ggplot2 records this as
+#          flipped_aes, set when the user writes aes(value, category) or passes
+#          orientation = "y".
+#   panel  the side of the drawn panel the values end up on. coord_flip()
+#          swaps the sides at render time without touching the data or the
+#          scales, so it composes with flipped_aes rather than replacing it.
+#   hi/lo  the built-data columns holding the bar's ends.
+#
+# `data` may be a built-data frame or a bare logical saying whether the layer
+# is flipped, so callers that have only one of the two can still ask.
+.bar_axes <- function(d, coordinates = NULL) {
+  flipped <- if (is.logical(d)) isTRUE(d[1]) else isTRUE(d$flipped_aes[1])
+  coord_flipped <- inherits(coordinates, "CoordFlip")
+  data_axis <- if (flipped) "x" else "y"
+  list(
+    data = data_axis,
+    panel = if (xor(flipped, coord_flipped)) "x" else "y",
+    hi = paste0(data_axis, "max"),
+    lo = paste0(data_axis, "min")
+  )
+}
+
+
+
+# The five-number summary the quartile frame and its axis labels both use.
+# stats::quantile(type = 7) is R's default and what ggplot2's geom_boxplot()
+# uses, so the box plot, the frame and the labels agree. Tukey's hinges, from
+# fivenum(), sit elsewhere for most sample sizes.
+#
+# Fewer than four distinct values is not a summary. The frame draws a plain
+# range there, so this returns the two ends and the labels say nothing the
+# frame does not draw.
+#' @noRd
+.five_number <- function(v) {
+  v <- v[is.finite(v)]
+  if (length(v) == 0) return(numeric(0))
+  if (length(unique(v)) < 4) return(range(v))
+  as.numeric(stats::quantile(v, probs = c(0, 0.25, 0.5, 0.75, 1),
+                             names = FALSE, type = 7))
+}
+
 # Standard Tufte line weight: hairlines, not rules.
 #' @noRd
 .hairline <- 0.3

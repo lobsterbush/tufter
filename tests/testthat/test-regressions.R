@@ -565,3 +565,112 @@ test_that("the quartile frame keeps each variable on its own axis under a flip",
                  tolerance = 2e-3, info = paste("flip =", flip))
   }
 })
+
+test_that("every geom's ink counts as data, whatever ggplot2 names its grob", {
+  # .strip_data_grobs() dropped panel children whose name began with "geom".
+  # ggplot2 names only some layers that way: GeomPath, GeomLine, GeomStep,
+  # GeomText and GeomSegment return bare grid grobs called GRID.polyline,
+  # GRID.text and GRID.segments. Those survived into the furniture rendering
+  # and were subtracted from the data ink, so a plain line chart measured a
+  # data-ink ratio of exactly zero.
+  set.seed(3)
+  d <- data.frame(x = 1:40, y = cumsum(rnorm(40)), g = rep(letters[1:4], 10))
+
+  layers <- list(
+    line    = geom_line(),
+    path    = geom_path(),
+    step    = geom_step(),
+    # real segments: xend = x would draw zero-length ones and no ink at all
+    segment = geom_segment(aes(xend = x + 1, yend = y + 1)),
+    text    = geom_text(aes(label = g)),
+    point   = geom_point()
+  )
+  for (nm in names(layers)) {
+    r <- data_ink_ratio(ggplot(d, aes(x, y)) + layers[[nm]] + theme_tufte(),
+                        width = 4, height = 3, res = 72)
+    expect_gt(r$data_ink, 0)
+    expect_gt(r$ratio, 0.5)   # theme_tufte leaves very little furniture
+  }
+})
+
+test_that("furniture ink does not depend on which layers are drawn", {
+  # The property that would have caught the stripper bug: for one theme and one
+  # set of scales, the ink left after removing the data is a fact about the
+  # theme, not about the layers.
+  set.seed(4)
+  d <- data.frame(x = 1:40, y = cumsum(rnorm(40)))
+  base <- function(...) ggplot(d, aes(x, y)) + ... + theme_tufte() +
+    scale_x_continuous(limits = c(1, 40)) +
+    scale_y_continuous(limits = range(d$y))
+
+  nd <- vapply(list(geom_point(), geom_line(), geom_step(),
+                    geom_text(aes(label = "x"))),
+               function(l) {
+                 p <- ggplot(d, aes(x, y)) + l + theme_tufte() +
+                   scale_x_continuous(limits = c(1, 40)) +
+                   scale_y_continuous(limits = range(d$y))
+                 data_ink_ratio(p, width = 4, height = 3, res = 72)$non_data_ink
+               }, numeric(1))
+  expect_equal(max(nd) - min(nd), 0, tolerance = 1e-6)
+})
+
+test_that("the same bars measure the same however the orientation is written", {
+  # Three separate places used to work out which axis carries a bar's length,
+  # and each got it wrong in its own way. They all go through .bar_axes() now,
+  # so the four ways of writing one chart have to agree.
+  d <- data.frame(g = letters[1:5], v = c(12, 30, 21, 44, 8))
+  forms <- list(
+    vertical      = ggplot(d, aes(g, v)) + geom_col(),
+    horizontal    = ggplot(d, aes(v, g)) + geom_col(),
+    flipped       = ggplot(d, aes(g, v)) + geom_col() + coord_flip(),
+    orientation_y = ggplot(d, aes(v, g)) + geom_col(orientation = "y")
+  )
+  lf <- vapply(forms, lie_factor, numeric(1))
+  expect_equal(diff(range(lf)), 0)
+
+  vi <- vapply(forms, function(p)
+    attr(suppressWarnings(tufte_audit(p, 6.5, 4, measure = FALSE)), "violations"),
+    integer(1))
+  expect_equal(diff(range(vi)), 0L)
+
+  # Data density counts the same entries each way. The density itself may
+  # differ by a percent or so, because category labels and numeric labels take
+  # different room and the measure is per square inch of panel.
+  ent <- vapply(forms, function(p) data_density(p, 6.5, 4)$entries, numeric(1))
+  expect_equal(diff(range(ent)), 0)
+
+  # A truncated axis is caught whichever way the chart is written.
+  trunc <- list(
+    vertical   = ggplot(d, aes(g, v)) + geom_col() + coord_cartesian(ylim = c(5, 50)),
+    horizontal = ggplot(d, aes(v, g)) + geom_col() + coord_cartesian(xlim = c(5, 50))
+  )
+  tl <- vapply(trunc, lie_factor, numeric(1))
+  expect_true(all(tl > 1.05))
+  expect_equal(diff(range(tl)), 0)
+})
+
+test_that("geom_col_tufte erases rules however the bars are oriented", {
+  d <- data.frame(g = letters[1:4], v = c(3, 7, 5, 9))
+  drew <- function(p) {
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off(), add = TRUE)
+    gt <- ggplot2::ggplotGrob(p)
+    pan <- gt$grobs[[which(grepl("^panel", gt$layout$name))[1]]]
+    lay <- pan$children[[which(grepl("geom_col_tufte", names(pan$children)))[1]]]
+    leaves <- character(0)
+    walk <- function(z) {
+      if (inherits(z, "gTree")) { for (ch in z$children) walk(ch) }
+      else leaves <<- c(leaves, class(z)[1])
+    }
+    walk(lay)
+    any(leaves == "segments")
+  }
+  expect_true(drew(ggplot(d, aes(g, v)) + geom_col_tufte() + theme_tufte()))
+  expect_true(drew(ggplot(d, aes(v, g)) + geom_col_tufte() + theme_tufte()))
+  expect_true(drew(ggplot(d, aes(g, v)) + geom_col_tufte() + coord_flip() + theme_tufte()))
+  expect_true(drew(ggplot(d, aes(v, g)) + geom_col_tufte(orientation = "y") + theme_tufte()))
+  # An explicit sides that points at a scale with no numeric breaks says so.
+  expect_warning(
+    drew(ggplot(d, aes(g, v)) + geom_col_tufte(sides = "x") + theme_tufte()),
+    "no rules were erased")
+})

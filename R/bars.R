@@ -12,8 +12,10 @@
 #'
 #' @param mapping,data,stat,position,na.rm,show.legend,inherit.aes,... Standard
 #'   \code{ggplot2} layer arguments. See \code{\link[ggplot2]{layer}()}.
-#' @param sides Which axis's breaks to erase through the bars. \code{"y"} (the
-#'   default) suits vertical bars; \code{"x"} suits horizontal ones.
+#' @param sides Which axis's breaks to erase through the bars. Defaults to
+#'   \code{NULL}, which works it out from the layer: vertical bars get the
+#'   \code{"y"} breaks, and horizontal ones, however you wrote them, get
+#'   \code{"x"}. Pass \code{"x"} or \code{"y"} to override.
 #' @param rule_colour Colour of the erased rules. Defaults to \code{"white"},
 #'   which is correct on a white page; set it to your background colour
 #'   otherwise.
@@ -32,11 +34,11 @@
 #'   geom_col_tufte(fill = "grey70") +
 #'   theme_tufte()
 geom_col_tufte <- function(mapping = NULL, data = NULL, stat = "identity",
-                           position = "stack", ..., sides = c("y", "x"),
+                           position = "stack", ..., sides = NULL,
                            rule_colour = "white", rule_linewidth = 0.6,
                            minor = FALSE, na.rm = FALSE, show.legend = NA,
                            inherit.aes = TRUE) {
-  sides <- match.arg(sides)
+  sides <- .check_sides(sides)
   ggplot2::layer(
     geom = GeomColTufte, mapping = mapping, data = data, stat = stat,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
@@ -50,11 +52,11 @@ geom_col_tufte <- function(mapping = NULL, data = NULL, stat = "identity",
 #' @rdname geom_col_tufte
 #' @export
 geom_bar_tufte <- function(mapping = NULL, data = NULL, stat = "count",
-                           position = "stack", ..., sides = c("y", "x"),
+                           position = "stack", ..., sides = NULL,
                            rule_colour = "white", rule_linewidth = 0.6,
                            minor = FALSE, na.rm = FALSE, show.legend = NA,
                            inherit.aes = TRUE) {
-  sides <- match.arg(sides)
+  sides <- .check_sides(sides)
   ggplot2::layer(
     geom = GeomColTufte, mapping = mapping, data = data, stat = stat,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
@@ -74,30 +76,45 @@ GeomColTufte <- ggplot2::ggproto(
 
   draw_panel = function(self, data, panel_params, coord, lineend = "butt",
                         linejoin = "mitre", width = NULL,
-                        sides = "y", rule_colour = "white",
+                        sides = NULL, rule_colour = "white",
                         rule_linewidth = 0.6, minor = FALSE, na.rm = FALSE) {
     bars <- ggplot2::GeomRect$draw_panel(
       data, panel_params, coord, lineend = lineend, linejoin = linejoin
     )
-    rules <- .erased_rules(panel_params, coord, sides, rule_colour,
+    rules <- .erased_rules(data, panel_params, coord, sides, rule_colour,
                            rule_linewidth, minor)
     .ggname("geom_col_tufte", grid::grobTree(bars, rules))
   }
 )
 
+# `sides` is normally left alone and worked out from the layer. An explicit
+# value still wins, for the case where a reader knows better than the guess.
+#' @noRd
+.check_sides <- function(sides) {
+  if (is.null(sides)) return(NULL)
+  if (!is.character(sides) || length(sides) != 1 || !sides %in% c("x", "y")) {
+    .abort('{.arg sides} must be "x", "y", or NULL to work it out from the layer.')
+  }
+  sides
+}
+
 # White rules at the axis breaks, drawn over the bars.
 #' @noRd
-.erased_rules <- function(panel_params, coord, sides, colour, linewidth,
+.erased_rules <- function(data, panel_params, coord, sides, colour, linewidth,
                           minor) {
-  # `sides` names the data aesthetic the values are on. coord_flip() draws that
-  # aesthetic on the other panel axis, so the breaks come from the other panel
-  # scale and the rules run the other way. Reading panel_params$y under a flip
-  # found the discrete category scale, whose breaks aren't numbers, and the
-  # layer silently drew no rules at all.
-  panel_side <- if (inherits(coord, "CoordFlip")) {
-    if (identical(sides, "y")) "x" else "y"
+  # Two things move the values off the y axis, and they compose: writing
+  # aes(value, category), which ggplot2 records as flipped_aes, and
+  # coord_flip(), which swaps the sides at render time. .bar_axes() is the one
+  # place that resolves both. Deciding from `sides` alone drew no rules at all
+  # for a horizontal bar chart, whichever way it had been written.
+  ax <- .bar_axes(data, coord)
+  data_side <- if (is.null(sides)) ax$data else sides
+  panel_side <- if (is.null(sides)) {
+    ax$panel
+  } else if (identical(data_side, ax$data)) {
+    ax$panel
   } else {
-    sides
+    if (identical(ax$panel, "y")) "x" else "y"
   }
 
   scale <- if (identical(panel_side, "y")) panel_params$y else panel_params$x
@@ -108,9 +125,20 @@ GeomColTufte <- ggplot2::ggproto(
     brk <- c(brk, tryCatch(scale$get_breaks_minor(), error = function(e) NULL))
   }
   brk <- brk[is.finite(brk)]
-  if (length(brk) == 0) return(ggplot2::zeroGrob())
+  if (length(brk) == 0) {
+    # Working it out never lands here, so an empty set means the reader asked
+    # for the breaks of a scale that has none, usually the discrete one. Drawing
+    # nothing and saying nothing is how this went unnoticed the first time.
+    if (!is.null(sides)) {
+      .warn(c(
+        "No breaks on the {.val {panel_side}} axis, so no rules were erased through the bars.",
+        i = "{.code sides = {.val {sides}}} points at a scale with no numeric breaks. Leave {.arg sides} unset to take it from the layer."
+      ))
+    }
+    return(ggplot2::zeroGrob())
+  }
 
-  df <- if (identical(sides, "y")) {
+  df <- if (identical(data_side, "y")) {
     data.frame(x = rep(brk[1], length(brk)), y = brk)
   } else {
     data.frame(x = brk, y = rep(brk[1], length(brk)))

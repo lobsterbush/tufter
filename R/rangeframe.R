@@ -123,8 +123,7 @@ GeomQuartileFrame <- ggplot2::ggproto(
   if (breaks == "range" || length(unique(v)) < 4) {
     return(data.frame(start = min(v), end = max(v)))
   }
-  q <- as.numeric(stats::quantile(v, probs = c(0, 0.25, 0.5, 0.75, 1),
-                                  names = FALSE, type = 7))
+  q <- .five_number(v)
   half <- gap / 2
   starts <- q[1:4]
   ends <- q[2:5]
@@ -214,22 +213,9 @@ quartile_breaks <- function(x = NULL, digits = 3, min_gap = 0) {
     v <- v[is.finite(v)]
     if (length(v) == 0) return(numeric(0))
 
-    # Everything here mirrors .frame_spans(), because the labels have to land
-    # where the frame actually breaks.
-    #
-    # Fewer than four distinct values, which is what you get working from the
-    # scale limits alone, is not a five-number summary. The frame draws a plain
-    # range in that case, so the axis gets the two ends and no interior label
-    # standing for a quartile that was never computed.
-    if (length(unique(v)) < 4) return(unique(signif(range(v), digits)))
-
-    # quantile(type = 7), matching .frame_spans() and ggplot2's own
-    # geom_boxplot(). fivenum() gives Tukey's hinges, which sit elsewhere for
-    # most sample sizes.
-    brk <- unique(signif(
-      as.numeric(stats::quantile(v, probs = c(0, 0.25, 0.5, 0.75, 1),
-                                 names = FALSE, type = 7)),
-      digits))
+    # The same summary the frame breaks at, from the same helper, so the labels
+    # cannot drift away from the gaps they name.
+    brk <- unique(signif(.five_number(v), digits))
     if (min_gap <= 0 || length(brk) < 3) return(brk)
 
     span <- diff(range(brk))

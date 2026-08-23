@@ -16,7 +16,7 @@ geom_col_tufte(
   stat = "identity",
   position = "stack",
   ...,
-  sides = c("y", "x"),
+  sides = NULL,
   rule_colour = "white",
   rule_linewidth = 0.6,
   minor = FALSE,
@@ -31,7 +31,7 @@ geom_bar_tufte(
   stat = "count",
   position = "stack",
   ...,
-  sides = c("y", "x"),
+  sides = NULL,
   rule_colour = "white",
   rule_linewidth = 0.6,
   minor = FALSE,
@@ -50,8 +50,10 @@ geom_bar_tufte(
 
 - sides:
 
-  Which axis's breaks to erase through the bars. `"y"` (the default)
-  suits vertical bars; `"x"` suits horizontal ones.
+  Which axis's breaks to erase through the bars. Defaults to `NULL`,
+  which works it out from the layer: vertical bars get the `"y"` breaks,
+  and horizontal ones, however you wrote them, get `"x"`. Pass `"x"` or
+  `"y"` to override.
 
 - rule_colour:
 
