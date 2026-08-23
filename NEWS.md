@@ -1,3 +1,11 @@
+# tufter 0.5.4
+
+* `geom_col_tufte()` draws its erased rules under `coord_flip()`. It chose the
+  panel scale from `sides` alone, so a flip left it reading the discrete
+  category scale, whose breaks aren't numbers, and the layer drew nothing at
+  all. Paired with `theme_tufte(grid = "none")` that left bars with no rules of
+  any kind to read values against.
+
 # tufter 0.5.3
 
 * The `"accent"` palette always contains its accent. It took the first `n` of a

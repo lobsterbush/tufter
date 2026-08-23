@@ -89,7 +89,18 @@ GeomColTufte <- ggplot2::ggproto(
 #' @noRd
 .erased_rules <- function(panel_params, coord, sides, colour, linewidth,
                           minor) {
-  scale <- if (identical(sides, "y")) panel_params$y else panel_params$x
+  # `sides` names the data aesthetic the values are on. coord_flip() draws that
+  # aesthetic on the other panel axis, so the breaks come from the other panel
+  # scale and the rules run the other way. Reading panel_params$y under a flip
+  # found the discrete category scale, whose breaks aren't numbers, and the
+  # layer silently drew no rules at all.
+  panel_side <- if (inherits(coord, "CoordFlip")) {
+    if (identical(sides, "y")) "x" else "y"
+  } else {
+    sides
+  }
+
+  scale <- if (identical(panel_side, "y")) panel_params$y else panel_params$x
   if (is.null(scale)) return(ggplot2::zeroGrob())
 
   brk <- tryCatch(scale$get_breaks(), error = function(e) NULL)
@@ -107,13 +118,13 @@ GeomColTufte <- ggplot2::ggproto(
   tdf <- tryCatch(coord$transform(df, panel_params), error = function(e) NULL)
   if (is.null(tdf)) return(ggplot2::zeroGrob())
 
-  pos <- if (identical(sides, "y")) tdf$y else tdf$x
+  pos <- if (identical(panel_side, "y")) tdf$y else tdf$x
   keep <- is.finite(pos) & pos >= 0 & pos <= 1
   pos <- pos[keep]
   if (length(pos) == 0) return(ggplot2::zeroGrob())
 
   gp <- grid::gpar(col = colour, lwd = linewidth * .pt, lineend = "butt")
-  if (identical(sides, "y")) {
+  if (identical(panel_side, "y")) {
     grid::segmentsGrob(
       x0 = grid::unit(0, "npc"), x1 = grid::unit(1, "npc"),
       y0 = grid::unit(pos, "npc"), y1 = grid::unit(pos, "npc"), gp = gp

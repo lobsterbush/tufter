@@ -73,7 +73,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,6 +106,11 @@
       <small>Source: <a href="https://github.com/lobsterbush/tufter/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.5.4" id="tufter-054">tufter 0.5.4<a class="anchor" aria-label="anchor" href="#tufter-054"></a></h2>
+<ul><li>
+<code><a href="../reference/geom_col_tufte.html">geom_col_tufte()</a></code> draws its erased rules under <code><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip()</a></code>. It chose the panel scale from <code>sides</code> alone, so a flip left it reading the discrete category scale, whose breaks aren’t numbers, and the layer drew nothing at all. Paired with <code>theme_tufte(grid = "none")</code> that left bars with no rules of any kind to read values against.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.3" id="tufter-053">tufter 0.5.3<a class="anchor" aria-label="anchor" href="#tufter-053"></a></h2>
 <ul><li>The <code>"accent"</code> palette always contains its accent. It took the first <code>n</code> of a fixed vector whose third element was the signal colour, so two series gave two greys and no signal, which is the one thing that palette exists to provide. The signal is now the last level at every <code>n</code>, and the greys fill in ahead of it.</li>

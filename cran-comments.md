@@ -14,6 +14,11 @@ public, or drop the two URLs from `DESCRIPTION`, before submitting.
 The second is local rather than about the package: this machine's HTML Tidy
 predates the version R now asks for, so the HTML manual check is skipped.
 
+A third note appears on this machine intermittently, reporting a `.DS_Store` in
+the check directory. Finder writes those while the check is running. The built
+tarball contains none, and they're git-ignored, so nothing reaches the package
+or the repository.
+
 ## Notes for the reviewer
 
 `data_ink_ratio()` and `check_labels_fit()` render the plot to a temporary PNG

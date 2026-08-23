@@ -483,3 +483,85 @@ test_that("the accent palette always contains its accent", {
   expect_equal(sum(wide == signal), 1L)
   expect_identical(wide[8], signal)
 })
+
+test_that("the erased rules survive coord_flip()", {
+  # .erased_rules() chose the panel scale from `sides` alone. coord_flip()
+  # moves the value scale to the other panel axis, so panel_params$y held the
+  # discrete categories, whose breaks aren't numbers, and the layer drew a
+  # zeroGrob. The bars came out with nothing to read them against.
+  d <- data.frame(g = c("a", "b", "c", "d"), v = c(3, 7, 5, 9))
+
+  rules <- function(p, axis) {
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off(), add = TRUE)
+    gt <- ggplot2::ggplotGrob(p)
+    pan <- gt$grobs[[which(grepl("^panel", gt$layout$name))[1]]]
+    lay <- pan$children[[which(grepl("geom_col_tufte", names(pan$children)))[1]]]
+    out <- numeric(0)
+    walk <- function(z) {
+      if (inherits(z, "gTree")) { for (ch in z$children) walk(ch); return(invisible()) }
+      if (inherits(z, "segments")) {
+        out <<- c(out, as.numeric(if (axis == "y") z$y0 else z$x0))
+      }
+    }
+    walk(lay)
+    sort(unique(round(out, 4)))
+  }
+  breaks_npc <- function(p, axis) {
+    pp <- ggplot_build(p)$layout$panel_params[[1]]
+    sc <- if (axis == "y") pp$y else pp$x
+    b <- sc$get_breaks(); b <- b[is.finite(b)]
+    rng <- if (axis == "y") pp$y.range else pp$x.range
+    v <- (b - rng[1]) / diff(rng)
+    sort(unique(round(v[v >= 0 & v <= 1], 4)))
+  }
+
+  upright <- ggplot(d, aes(g, v)) + geom_col_tufte() + theme_tufte()
+  expect_equal(rules(upright, "y"), breaks_npc(upright, "y"), tolerance = 1e-3)
+
+  flipped <- upright + coord_flip()
+  drawn <- rules(flipped, "x")
+  expect_gt(length(drawn), 0)
+  expect_equal(drawn, breaks_npc(flipped, "x"), tolerance = 1e-3)
+})
+
+test_that("the quartile frame keeps each variable on its own axis under a flip", {
+  # Two deliberately different distributions, so putting one variable's
+  # quartiles on the other's axis would be obvious.
+  set.seed(21)
+  d <- data.frame(x = c(rnorm(40, 10, 1), 25), y = c(1, rnorm(40, 90, 2)))
+  ends <- function(p, axis) {
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off(), add = TRUE)
+    gt <- ggplot2::ggplotGrob(p)
+    pan <- gt$grobs[[which(grepl("^panel", gt$layout$name))[1]]]
+    g <- pan$children[[which(grepl("quartileframe", names(pan$children)))[1]]]
+    out <- numeric(0)
+    walk <- function(z) {
+      if (inherits(z, "gTree")) { for (ch in z$children) walk(ch); return(invisible()) }
+      if (inherits(z, "segments")) {
+        xs <- c(as.numeric(z$x0), as.numeric(z$x1))
+        ys <- c(as.numeric(z$y0), as.numeric(z$y1))
+        if (axis == "x" && diff(range(ys)) < 1e-6) out <<- c(out, xs)
+        if (axis == "y" && diff(range(xs)) < 1e-6) out <<- c(out, ys)
+      }
+    }
+    walk(g)
+    sort(unique(round(out, 4)))
+  }
+  want <- function(v, rng) {
+    sort(unique(round(
+      (stats::quantile(v, c(0, .25, .5, .75, 1), names = FALSE) - rng[1]) /
+        diff(rng), 4)))
+  }
+  for (flip in c(FALSE, TRUE)) {
+    p <- ggplot(d, aes(x, y)) + geom_point() + geom_quartileframe(gap = 0) +
+      theme_tufte()
+    if (flip) p <- p + coord_flip()
+    pp <- ggplot_build(p)$layout$panel_params[[1]]
+    expect_equal(ends(p, "x"), want(if (flip) d$y else d$x, pp$x.range),
+                 tolerance = 2e-3, info = paste("flip =", flip))
+    expect_equal(ends(p, "y"), want(if (flip) d$x else d$y, pp$y.range),
+                 tolerance = 2e-3, info = paste("flip =", flip))
+  }
+})
