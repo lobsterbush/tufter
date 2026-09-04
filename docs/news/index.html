@@ -73,7 +73,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,6 +106,12 @@
       <small>Source: <a href="https://github.com/lobsterbush/tufter/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.6.3" id="tufter-063">tufter 0.6.3<a class="anchor" aria-label="anchor" href="#tufter-063"></a></h2>
+<ul><li>The declared minimum is now <code>ggplot2 (&gt;= 4.0.0)</code>. <code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> calls <code><a href="https://ggplot2.tidyverse.org/reference/complete_theme.html" class="external-link">complete_theme()</a></code>, which ggplot2 introduced in 4.0.0, so the previous declaration of 3.5.0 promised something the package could not do. It has only ever been tested against 4.0.x.</li>
+<li>
+<code>dplyr</code>, <code>jsonlite</code> and <code>vdiffr</code> are no longer suggested. The first two are used only in <code>data-raw/</code> and a site-only article, both excluded from the build, and the third is used nowhere.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.2" id="tufter-062">tufter 0.6.2<a class="anchor" aria-label="anchor" href="#tufter-062"></a></h2>
 <p>Ten more from a third audit. The first is a regression from 0.6.1.</p>

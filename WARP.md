@@ -5,7 +5,7 @@ Guidance for Warp when working in this repository.
 ## Project overview
 
 **Title**: tufter (Tufte's design principles as R code)
-**Status**: Active, v0.6.2, preparing for CRAN
+**Status**: Active, v0.6.3, preparing for CRAN
 **Description**: R package implementing Edward Tufte's principles of graphical
 design as ggplot2 extensions, and as measurements applied to existing figures
 **Authors**: Charles Crabtree, Senior Lecturer, School of Social Sciences,

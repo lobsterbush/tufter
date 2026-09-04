@@ -1,5 +1,18 @@
 # Changelog
 
+## tufter 0.6.3
+
+- The declared minimum is now `ggplot2 (>= 4.0.0)`.
+  [`tufte_audit()`](https://lobsterbush.github.io/tufter/reference/tufte_audit.md)
+  calls
+  [`complete_theme()`](https://ggplot2.tidyverse.org/reference/complete_theme.html),
+  which ggplot2 introduced in 4.0.0, so the previous declaration of
+  3.5.0 promised something the package could not do. It has only ever
+  been tested against 4.0.x.
+- `dplyr`, `jsonlite` and `vdiffr` are no longer suggested. The first
+  two are used only in `data-raw/` and a site-only article, both
+  excluded from the build, and the third is used nowhere.
+
 ## tufter 0.6.2
 
 Ten more from a third audit. The first is a regression from 0.6.1.
