@@ -131,6 +131,19 @@ NULL
                              names = FALSE, type = 7))
 }
 
+# A width or a height has to be a positive finite number of inches. Zero gave
+# an infinite data density and a negative width gave a negative banked height,
+# both without complaint.
+#' @noRd
+.check_size <- function(width, height = NULL) {
+  ok <- function(v) is.numeric(v) && length(v) == 1 && is.finite(v) && v > 0
+  if (!ok(width)) .abort("{.arg width} must be a single positive number of inches.")
+  if (!is.null(height) && !ok(height)) {
+    .abort("{.arg height} must be a single positive number of inches.")
+  }
+  invisible(TRUE)
+}
+
 # Standard Tufte line weight: hairlines, not rules.
 #' @noRd
 .hairline <- 0.3

@@ -15,13 +15,9 @@ file in it's read and any that contains a \code{ggplot} is audited.}
 Pass a vector as long as \code{plots} to give each its own size.}
 
 \item{measure}{Logical. Report the data-ink ratio and the data density?
-  Defaults to \code{TRUE}. Setting it to \code{FALSE} skips only those two,
-  which are ungraded, so the ordering by unmet criteria is the same either
-  way and roughly twice as fast to get.
-Figures are ordered by the number of stated criteria they fail, most first.
-That's a count and not a score: it's comparable across figures because
-every figure is being counted against the same criteria, whereas a
-proportion would divide by a denominator that changes with the plot type.}
+Defaults to \code{TRUE}. Setting it to \code{FALSE} skips only those two,
+which are ungraded, so the ordering by unmet criteria is the same either
+way and roughly twice as fast to get.}
 }
 \value{
 An object of class \code{tufte_audit_batch}: a tibble with one row
@@ -37,8 +33,13 @@ you were looking at.
 }
 \details{
 Give it the plots you built, or a directory of saved ones. It returns a row
-per figure with the score and the checks that failed, and keeps the full
-per-check detail attached so you can drill into any of them.
+per figure with the count of unmet criteria and the checks that failed, and
+keeps the full per-check detail attached so you can drill into any of them.
+
+Figures are ordered by the number of stated criteria they fail, most first.
+That's a count and not a score: it's comparable across figures because
+every figure is being counted against the same criteria, whereas a
+proportion would divide by a denominator that changes with the plot type.
 }
 \examples{
 library(ggplot2)

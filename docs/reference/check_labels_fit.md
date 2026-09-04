@@ -1,4 +1,4 @@
-# Check that every text element fits inside the canvas
+# Check that the labels fit inside the canvas
 
 A figure that has been designed carefully and then saved at the wrong
 size is a figure with a truncated subtitle. This renders the plot at the
@@ -34,6 +34,17 @@ Subtitles and captions are the usual offenders, because `ggplot2` does
 not wrap them: text longer than the device is silently cut at the edge.
 The fix is a hard line break, a wider canvas, or a smaller font, and
 then a second look at the rendered file.
+
+What gets measured is the furniture: the plot title, subtitle and
+caption, the axis titles and labels on all four sides, the legend, and
+the facet strips. Text drawn inside the panel by a layer, from
+[`geom_text()`](https://ggplot2.tidyverse.org/reference/geom_text.html)
+or
+[`geom_text_last()`](https://lobsterbush.github.io/tufter/reference/geom_text_last.md),
+is not measured, because clipping there depends on the panel range and
+the coord's `clip` setting rather than on the canvas. Look at those
+yourself, or give the scale room with
+[`expansion()`](https://ggplot2.tidyverse.org/reference/expansion.html).
 
 ## Examples
 

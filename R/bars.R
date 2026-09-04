@@ -122,7 +122,9 @@ GeomColTufte <- ggplot2::ggproto(
 
   brk <- tryCatch(scale$get_breaks(), error = function(e) NULL)
   if (minor) {
-    brk <- c(brk, tryCatch(scale$get_breaks_minor(), error = function(e) NULL))
+    # get_breaks_minor() includes the majors, so without the union every major
+    # rule was drawn twice, one on top of the other.
+    brk <- union(brk, tryCatch(scale$get_breaks_minor(), error = function(e) NULL))
   }
   brk <- brk[is.finite(brk)]
   if (length(brk) == 0) {

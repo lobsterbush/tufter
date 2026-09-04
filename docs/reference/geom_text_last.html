@@ -81,7 +81,7 @@ geom_text_first() labels at the smallest."><meta name="robots" content="noindex,
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -163,7 +163,9 @@ value, which is where the eye leaves a time series;
 <dl><dt id="arg-mapping-data-position-na-rm-show-legend-inherit-aes-">mapping, data, position, na.rm, show.legend, inherit.aes, ...<a class="anchor" aria-label="anchor" href="#arg-mapping-data-position-na-rm-show-legend-inherit-aes-"></a></dt>
 <dd><p>Standard
 <code>ggplot2</code> layer arguments. See <code><a href="https://ggplot2.tidyverse.org/reference/layer.html" class="external-link">layer()</a></code>. The
-<code>label</code> aesthetic defaults to the grouping variable.</p></dd>
+<code>label</code> aesthetic is required, exactly as
+<code><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text()</a></code> requires it: pass the column holding
+the series name, usually the same one you mapped to <code>colour</code>.</p></dd>
 
 
 <dt id="arg-nudge-x-nudge-y">nudge_x, nudge_y<a class="anchor" aria-label="anchor" href="#arg-nudge-x-nudge-y"></a></dt>

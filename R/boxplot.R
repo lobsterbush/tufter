@@ -46,6 +46,15 @@ geom_tufteboxplot <- function(mapping = NULL, data = NULL, stat = "boxplot",
                               box_linewidth = 1.6, outliers = TRUE,
                               na.rm = FALSE, show.legend = NA,
                               inherit.aes = TRUE) {
+  # ggplot2 checks required_aes before it touches the geom, and a horizontal
+  # box carries no x column at all, so no ggproto method is reached in time to
+  # explain the refusal. The constructor is the only place that can.
+  if (identical(list(...)$orientation, "y")) {
+    .abort(c(
+      "{.fn geom_tufteboxplot} draws vertical boxes only.",
+      i = "Map the category to {.arg x} and the value to {.arg y}, then add {.code coord_flip()} to turn the finished plot on its side."
+    ))
+  }
   type <- match.arg(type)
   ggplot2::layer(
     geom = GeomTufteBoxplot, mapping = mapping, data = data, stat = stat,
@@ -70,7 +79,18 @@ GeomTufteBoxplot <- ggplot2::ggproto(
     shape = 19, size = 1.6, fill = NA, weight = 1
   ),
 
+  # StatBoxplot hands back xlower/xmiddle/xupper for a horizontal box, and this
+  # geom is written around the vertical fields. setup_params runs before
+  # ggplot2's required-aes check, which is the only place early enough to say
+  # something useful; from setup_data the failure was already the unhelpful
+  # "requires the following missing aesthetics: x".
   setup_data = function(data, params) {
+    if (!is.null(data$xmiddle) || isTRUE(data$flipped_aes[1])) {
+      .abort(c(
+        "{.fn geom_tufteboxplot} draws vertical boxes only.",
+        i = "Map the category to {.arg x} and the value to {.arg y}, then add {.code coord_flip()} to turn the finished plot on its side."
+      ))
+    }
     data$width <- data$width %||%
       params$width %||% (ggplot2::resolution(data$x, FALSE) * 0.9)
     data$xmin <- data$x - data$width / 2

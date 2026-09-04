@@ -89,11 +89,23 @@ check_contrast <- function(plot, background = NULL, text_min = 4.5,
     invisible(NULL)
   }
 
-  marks <- unlist(lapply(built$data, function(d) {
-    c(.composite(d$colour, d$alpha, background),
-      .composite(d$fill, d$alpha, background))
-  }))
-  add("data mark", marks, mark_min)
+  # A layer that draws words is text, and text carries the higher minimum. Every
+  # layer used to be a "data mark" at 3:1, so grey text at 4.48:1 passed a check
+  # whose own documentation promises 4.5:1 for anything read as words.
+  geoms <- .layer_geoms(plot)
+  is_text <- geoms %in% c("Text", "Label", "TextLast", "TextFirst", "TextRepel",
+                          "LabelRepel")
+  pick <- function(which) {
+    idx <- which(if (identical(which, "text")) is_text else !is_text)
+    idx <- idx[idx <= length(built$data)]
+    unlist(lapply(idx, function(i) {
+      d <- built$data[[i]]
+      c(.composite(d$colour, d$alpha, background),
+        .composite(d$fill, d$alpha, background))
+    }))
+  }
+  add("data mark", pick("mark"), mark_min)
+  add("data label", pick("text"), text_min)
 
   add("axis text", .el_get(theme$axis.text, "colour"), text_min)
   add("axis title", .el_get(theme$axis.title, "colour"), text_min)

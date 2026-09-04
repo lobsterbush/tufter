@@ -56,6 +56,7 @@ bank_to_45 <- function(plot, width = 6.5,
                        method = c("median_slope", "average_orientation"),
                        weighted = TRUE) {
   .check_gg(plot)
+  .check_size(width)
   method <- match.arg(method)
 
   segs <- .slope_ratios(plot)
@@ -75,7 +76,7 @@ bank_to_45 <- function(plot, width = 6.5,
     if (is.infinite(med)) {
       .abort(c(
         "More than half the segments in this plot are vertical, so no aspect ratio banks them.",
-        i = "Try {.code method = \"average_orientation\"}, which tolerates verticals."
+        i = "{.code method = \"average_orientation\"} tolerates verticals only while they are a minority, so it will refuse this too."
       ))
     }
     1 / med
@@ -118,10 +119,23 @@ print.tufte_banking <- function(x, ...) {
 .slope_ratios <- function(plot) {
   built <- ggplot2::ggplot_build(plot)
   geoms <- .layer_geoms(plot)
-  idx <- which(geoms %in% c("Line", "Path", "Step", "Smooth"))
-  if (length(idx) == 0) return(list(m = numeric(0), len = numeric(0)))
+  # Step charts are excluded. GeomStep turns each pair of points into a
+  # horizontal and a vertical segment inside draw_panel(), so differencing the
+  # built points measures a diagonal that is never drawn, and every segment
+  # that is drawn sits at 0 or 90 degrees, which no aspect ratio banks.
+  idx <- which(geoms %in% c("Line", "Path", "Smooth"))
+  if (length(idx) == 0) {
+    if (any(geoms == "Step")) {
+      .abort(c(
+        "A step chart has no sloped segments to bank.",
+        i = "Every segment it draws is horizontal or vertical, whatever the panel shape."
+      ))
+    }
+    return(list(m = numeric(0), len = numeric(0)))
+  }
 
   pps <- built$layout$panel_params
+  coord <- built$layout$coord
   m <- numeric(0)
   len <- numeric(0)
 
@@ -142,6 +156,15 @@ print.tufte_banking <- function(x, ...) {
       if (!is.finite(rx) || !is.finite(ry) || rx <= 0 || ry <= 0) next
 
       dp <- d[panels == pn, , drop = FALSE]
+      # Slopes have to be measured as drawn. coord_flip() puts the data's y on
+      # the panel's x, so dividing the built columns by x.range and y.range
+      # measured neither the data slopes nor the drawn ones. The coord already
+      # knows how to map a row to the panel, so let it.
+      tp <- tryCatch(coord$transform(dp, pp), error = function(e) NULL)
+      if (!is.null(tp) && !is.null(tp$x) && !is.null(tp$y)) {
+        dp$x <- tp$x * rx + rng$x[1]
+        dp$y <- tp$y * ry + rng$y[1]
+      }
       key <- dp$group %||% rep(1L, nrow(dp))
       for (part in split(dp, key, drop = TRUE)) {
         # Take the rows in the order they are drawn. Sorting by x would be
@@ -194,7 +217,14 @@ print.tufte_banking <- function(x, ...) {
   }
   lo <- -20
   hi <- 20
-  if (gap(lo) > 0) return(exp(lo))
-  if (gap(hi) < 0) return(exp(hi))
+  # Outside the bracket there is no aspect ratio that banks these segments, and
+  # returning the bound handed back exp(20), a height of three billion inches,
+  # as though it were an answer. The median method aborts on the same data.
+  if (gap(lo) > 0 || gap(hi) < 0) {
+    .abort(c(
+      "No aspect ratio brings the mean orientation of these segments to 45 degrees.",
+      i = "Most of them are flat or vertical, so the mean cannot reach the target however the panel is shaped."
+    ))
+  }
   exp(stats::uniroot(gap, lower = lo, upper = hi, tol = 1e-9)$root)
 }

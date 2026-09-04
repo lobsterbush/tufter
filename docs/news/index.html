@@ -73,7 +73,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,6 +106,60 @@
       <small>Source: <a href="https://github.com/lobsterbush/tufter/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.6.1" id="tufter-061">tufter 0.6.1<a class="anchor" aria-label="anchor" href="#tufter-061"></a></h2>
+<p>Twenty-one fixes from two independent audits, one by a Claude subagent and one by Codex. Codex could not run R in its sandbox, so its findings were static traces; every one was confirmed by hand before being fixed.</p>
+<div class="section level3">
+<h3 id="measurement-0-6-1">Measurement<a class="anchor" aria-label="anchor" href="#measurement-0-6-1"></a></h3>
+<ul><li>
+<code><a href="../reference/check_contrast.html">check_contrast()</a></code> holds text layers to the 4.5:1 text minimum. Every layer was a “data mark” at 3:1, so grey label text at 4.48:1 passed a check whose own documentation promises 4.5:1 for words.</li>
+<li>
+<code><a href="../reference/data_density.html">data_density()</a></code> counts the variables actually drawn. Plot and layer mappings were pooled, so a layer overriding an aesthetic added a column rather than replacing one, and <code>inherit.aes = FALSE</code> was ignored. A plot showing two variables reported three. A graphic with no mapped variable was also rounded up to one, inventing a data matrix for a figure that carries none.</li>
+<li>
+<code><a href="../reference/bank_to_45.html">bank_to_45()</a></code> measures the slopes as drawn. It divided the built columns by the panel ranges without going through the coord, so under <code><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip()</a></code> it measured neither the data slopes nor the drawn ones.</li>
+<li>
+<code><a href="../reference/bank_to_45.html">bank_to_45()</a></code> refuses a step chart. <code>GeomStep</code> builds its stairs inside <code>draw_panel()</code>, so differencing the built points banked a diagonal it never draws, while every segment it does draw sits at 0 or 90 degrees.</li>
+<li>
+<code><a href="../reference/lie_factor.html">lie_factor()</a></code> measures a rectangle only when it really is a bar. <code>GeomRect</code> counted as a bar, so a background band or an interval rectangle was given the panel floor for a baseline and a fabricated distortion figure.</li>
+<li>
+<code><a href="../reference/data_density.html">data_density()</a></code>, <code><a href="../reference/data_ink_ratio.html">data_ink_ratio()</a></code>, <code><a href="../reference/check_labels_fit.html">check_labels_fit()</a></code> and <code><a href="../reference/bank_to_45.html">bank_to_45()</a></code> reject any width or height other than a positive finite number. Zero gave an infinite density and a negative width a negative banked height, silently.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="drawing-0-6-1">Drawing<a class="anchor" aria-label="anchor" href="#drawing-0-6-1"></a></h3>
+<ul><li>Cleveland leader lines follow the coord. The dots delegate to <code>GeomPoint</code> and flipped, while the leaders read the untransformed orientation and stayed horizontal, at right angles to the dots they belong to.</li>
+<li>
+<code><a href="../reference/geom_tufteboxplot.html">geom_tufteboxplot()</a></code> says why it won’t draw sideways instead of failing with ggplot2’s “requires the following missing aesthetics”.</li>
+<li>
+<code><a href="../reference/slopegraph.html">slopegraph()</a></code> warns when given more than two periods, since the labels sit outside the panel on either side and a middle period has nowhere to put its numbers.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="documentation-that-disagreed-with-the-code-0-6-1">Documentation that disagreed with the code<a class="anchor" aria-label="anchor" href="#documentation-that-disagreed-with-the-code-0-6-1"></a></h3>
+<ul><li>
+<code><a href="../reference/check_labels_fit.html">check_labels_fit()</a></code> measures axis labels and strips on all four sides, not only the bottom, the left and the top. Its title no longer claims to check every text element: text a layer draws inside the panel goes unmeasured, and the help now says so.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="earlier-in-this-release-0-6-1">Earlier in this release<a class="anchor" aria-label="anchor" href="#earlier-in-this-release-0-6-1"></a></h3>
+<ul><li>
+<code><a href="../reference/geom_rangeframe.html">geom_quartileframe()</a></code> breaks where the axis labels sit on any scale. It took quantiles of the scale-transformed values while <code><a href="../reference/quartile_breaks.html">quartile_breaks()</a></code> took them of the raw data, and type-7 quantiles survive an affine transform but not a log or a square root. On a log10 axis the label read 5050 and the frame broke at 1000. The summary is computed in data space and sent through the coord, which also puts it on the right side under <code><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip()</a></code>.</li>
+<li>
+<code><a href="../reference/audit_figures.html">audit_figures()</a></code> keeps its per-figure detail when a figure fails. Assigning <code>NULL</code> into a list element deleted it rather than storing it, shifting every later name, so the documented drill-in returned <code>NULL</code> for every figure after the first failure.</li>
+<li>
+<code><a href="https://ggplot2.tidyverse.org/reference/coord_radial.html" class="external-link">coord_radial()</a></code> pie charts are caught. The check tested only for <code>CoordPolar</code>, and <code><a href="https://ggplot2.tidyverse.org/reference/coord_radial.html" class="external-link">coord_radial()</a></code> doesn’t inherit from it.</li>
+<li>A variable mapped to both position and colour is caught on either axis. Only <code>x</code> was consulted, so horizontal bar charts passed.</li>
+<li>A white panel counts as white however the colour was spelled. The check compared strings, so <code>grey100</code>, <code>gray100</code>, <code>#fff</code> and the eight-digit <code>#FFFFFFFF</code> all read as coloured panels. ggplot2 4.0 returns eight-digit hex from <code><a href="https://ggplot2.tidyverse.org/reference/complete_theme.html" class="external-link">complete_theme()</a></code>, so that spelling is the common one, and the false fail inflated the violation count.</li>
+<li>
+<code>bank_to_45(method = "average_orientation")</code> refuses when no aspect ratio reaches 45 degrees. It returned the bracket bound instead: a panel three billion inches tall for a mostly flat series, or an aspect ratio of two billionths for a mostly vertical one, both silently. The suggestion to use this method when the median one refuses has been corrected, since the two fail at the same threshold.</li>
+<li>A continuous legend of any aesthetic is no longer told to label its series. Only colour and fill were exempt, so a continuous <code>size</code> key was advised to use <code><a href="../reference/geom_text_last.html">geom_text_last()</a></code> on series it doesn’t have.</li>
+<li>
+<code><a href="../reference/data_density.html">data_density()</a></code> handles a plot with no layers. <code>ggplot()$data</code> is a waiver rather than <code>NULL</code>, so the fallback never fired and the result object came back malformed.</li>
+<li>
+<code><a href="../reference/check_labels_fit.html">check_labels_fit()</a></code> is invisible when everything fits, as documented.</li>
+<li>
+<code>geom_col_tufte(minor = TRUE)</code> draws each rule once. <code>get_breaks_minor()</code> includes the majors, so every major rule was drawn twice.</li>
+<li>
+<code><a href="../reference/geom_text_last.html">geom_text_last()</a></code> documents <code>label</code> as required, which it always was. Its argument documentation claimed a default that never existed. A paragraph of <code><a href="../reference/audit_figures.html">audit_figures()</a></code> documentation was stranded inside a parameter description, and its opening line called the count a score.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.0" id="tufter-060">tufter 0.6.0<a class="anchor" aria-label="anchor" href="#tufter-060"></a></h2>
 <ul><li>

@@ -40,7 +40,9 @@ geom_text_first(
 \arguments{
 \item{mapping, data, position, na.rm, show.legend, inherit.aes, ...}{Standard
 \code{ggplot2} layer arguments. See \code{\link[ggplot2]{layer}()}. The
-\code{label} aesthetic defaults to the grouping variable.}
+\code{label} aesthetic is required, exactly as
+\code{\link[ggplot2]{geom_text}()} requires it: pass the column holding
+the series name, usually the same one you mapped to \code{colour}.}
 
 \item{nudge_x, nudge_y}{Offsets applied to the label position, in data units.}
 

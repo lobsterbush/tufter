@@ -55,13 +55,22 @@ test_that("average_orientation puts the mean orientation at 45 degrees", {
   expect_equal(mean(atan(b$aspect * segs$m)), pi / 4, tolerance = 1e-4)
 })
 
-test_that("banking reads paths, steps and smooths as well as lines", {
+test_that("banking reads paths and smooths as well as lines", {
   d <- data.frame(t = 1:60, v = cumsum(rnorm(60)))
-  for (layer in list(geom_path(), geom_step(),
+  for (layer in list(geom_path(),
                      geom_smooth(se = FALSE, formula = y ~ x, method = "loess"))) {
     p <- ggplot(d, aes(t, v)) + layer
     expect_s3_class(suppressWarnings(bank_to_45(p)), "tufte_banking")
   }
+})
+
+test_that("banking refuses a step chart rather than banking a line it never draws", {
+  # GeomStep turns each pair of points into a horizontal and a vertical segment
+  # inside draw_panel(). Differencing the built points measured the diagonal
+  # between observations, which is not drawn, while every segment that is drawn
+  # sits at 0 or 90 degrees and no aspect ratio banks those.
+  d <- data.frame(t = 1:60, v = cumsum(rnorm(60)))
+  expect_error(bank_to_45(ggplot(d, aes(t, v)) + geom_step()), "step chart")
 })
 
 test_that("banking refuses a plot with no slopes", {

@@ -1,5 +1,125 @@
 # Changelog
 
+## tufter 0.6.1
+
+Twenty-one fixes from two independent audits, one by a Claude subagent
+and one by Codex. Codex could not run R in its sandbox, so its findings
+were static traces; every one was confirmed by hand before being fixed.
+
+### Measurement
+
+- [`check_contrast()`](https://lobsterbush.github.io/tufter/reference/check_contrast.md)
+  holds text layers to the 4.5:1 text minimum. Every layer was a “data
+  mark” at 3:1, so grey label text at 4.48:1 passed a check whose own
+  documentation promises 4.5:1 for words.
+- [`data_density()`](https://lobsterbush.github.io/tufter/reference/data_density.md)
+  counts the variables actually drawn. Plot and layer mappings were
+  pooled, so a layer overriding an aesthetic added a column rather than
+  replacing one, and `inherit.aes = FALSE` was ignored. A plot showing
+  two variables reported three. A graphic with no mapped variable was
+  also rounded up to one, inventing a data matrix for a figure that
+  carries none.
+- [`bank_to_45()`](https://lobsterbush.github.io/tufter/reference/bank_to_45.md)
+  measures the slopes as drawn. It divided the built columns by the
+  panel ranges without going through the coord, so under
+  [`coord_flip()`](https://ggplot2.tidyverse.org/reference/coord_flip.html)
+  it measured neither the data slopes nor the drawn ones.
+- [`bank_to_45()`](https://lobsterbush.github.io/tufter/reference/bank_to_45.md)
+  refuses a step chart. `GeomStep` builds its stairs inside
+  `draw_panel()`, so differencing the built points banked a diagonal it
+  never draws, while every segment it does draw sits at 0 or 90 degrees.
+- [`lie_factor()`](https://lobsterbush.github.io/tufter/reference/lie_factor.md)
+  measures a rectangle only when it really is a bar. `GeomRect` counted
+  as a bar, so a background band or an interval rectangle was given the
+  panel floor for a baseline and a fabricated distortion figure.
+- [`data_density()`](https://lobsterbush.github.io/tufter/reference/data_density.md),
+  [`data_ink_ratio()`](https://lobsterbush.github.io/tufter/reference/data_ink_ratio.md),
+  [`check_labels_fit()`](https://lobsterbush.github.io/tufter/reference/check_labels_fit.md)
+  and
+  [`bank_to_45()`](https://lobsterbush.github.io/tufter/reference/bank_to_45.md)
+  reject any width or height other than a positive finite number. Zero
+  gave an infinite density and a negative width a negative banked
+  height, silently.
+
+### Drawing
+
+- Cleveland leader lines follow the coord. The dots delegate to
+  `GeomPoint` and flipped, while the leaders read the untransformed
+  orientation and stayed horizontal, at right angles to the dots they
+  belong to.
+- [`geom_tufteboxplot()`](https://lobsterbush.github.io/tufter/reference/geom_tufteboxplot.md)
+  says why it won’t draw sideways instead of failing with ggplot2’s
+  “requires the following missing aesthetics”.
+- [`slopegraph()`](https://lobsterbush.github.io/tufter/reference/slopegraph.md)
+  warns when given more than two periods, since the labels sit outside
+  the panel on either side and a middle period has nowhere to put its
+  numbers.
+
+### Documentation that disagreed with the code
+
+- [`check_labels_fit()`](https://lobsterbush.github.io/tufter/reference/check_labels_fit.md)
+  measures axis labels and strips on all four sides, not only the
+  bottom, the left and the top. Its title no longer claims to check
+  every text element: text a layer draws inside the panel goes
+  unmeasured, and the help now says so.
+
+### Earlier in this release
+
+- [`geom_quartileframe()`](https://lobsterbush.github.io/tufter/reference/geom_rangeframe.md)
+  breaks where the axis labels sit on any scale. It took quantiles of
+  the scale-transformed values while
+  [`quartile_breaks()`](https://lobsterbush.github.io/tufter/reference/quartile_breaks.md)
+  took them of the raw data, and type-7 quantiles survive an affine
+  transform but not a log or a square root. On a log10 axis the label
+  read 5050 and the frame broke at 1000. The summary is computed in data
+  space and sent through the coord, which also puts it on the right side
+  under
+  [`coord_flip()`](https://ggplot2.tidyverse.org/reference/coord_flip.html).
+- [`audit_figures()`](https://lobsterbush.github.io/tufter/reference/audit_figures.md)
+  keeps its per-figure detail when a figure fails. Assigning `NULL` into
+  a list element deleted it rather than storing it, shifting every later
+  name, so the documented drill-in returned `NULL` for every figure
+  after the first failure.
+- [`coord_radial()`](https://ggplot2.tidyverse.org/reference/coord_radial.html)
+  pie charts are caught. The check tested only for `CoordPolar`, and
+  [`coord_radial()`](https://ggplot2.tidyverse.org/reference/coord_radial.html)
+  doesn’t inherit from it.
+- A variable mapped to both position and colour is caught on either
+  axis. Only `x` was consulted, so horizontal bar charts passed.
+- A white panel counts as white however the colour was spelled. The
+  check compared strings, so `grey100`, `gray100`, `#fff` and the
+  eight-digit `#FFFFFFFF` all read as coloured panels. ggplot2 4.0
+  returns eight-digit hex from
+  [`complete_theme()`](https://ggplot2.tidyverse.org/reference/complete_theme.html),
+  so that spelling is the common one, and the false fail inflated the
+  violation count.
+- `bank_to_45(method = "average_orientation")` refuses when no aspect
+  ratio reaches 45 degrees. It returned the bracket bound instead: a
+  panel three billion inches tall for a mostly flat series, or an aspect
+  ratio of two billionths for a mostly vertical one, both silently. The
+  suggestion to use this method when the median one refuses has been
+  corrected, since the two fail at the same threshold.
+- A continuous legend of any aesthetic is no longer told to label its
+  series. Only colour and fill were exempt, so a continuous `size` key
+  was advised to use
+  [`geom_text_last()`](https://lobsterbush.github.io/tufter/reference/geom_text_last.md)
+  on series it doesn’t have.
+- [`data_density()`](https://lobsterbush.github.io/tufter/reference/data_density.md)
+  handles a plot with no layers. `ggplot()$data` is a waiver rather than
+  `NULL`, so the fallback never fired and the result object came back
+  malformed.
+- [`check_labels_fit()`](https://lobsterbush.github.io/tufter/reference/check_labels_fit.md)
+  is invisible when everything fits, as documented.
+- `geom_col_tufte(minor = TRUE)` draws each rule once.
+  `get_breaks_minor()` includes the majors, so every major rule was
+  drawn twice.
+- [`geom_text_last()`](https://lobsterbush.github.io/tufter/reference/geom_text_last.md)
+  documents `label` as required, which it always was. Its argument
+  documentation claimed a default that never existed. A paragraph of
+  [`audit_figures()`](https://lobsterbush.github.io/tufter/reference/audit_figures.md)
+  documentation was stranded inside a parameter description, and its
+  opening line called the count a score.
+
 ## tufter 0.6.0
 
 - [`data_ink_ratio()`](https://lobsterbush.github.io/tufter/reference/data_ink_ratio.md)

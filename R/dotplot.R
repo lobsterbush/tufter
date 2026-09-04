@@ -87,7 +87,16 @@ GeomClevelandDot <- ggplot2::ggproto(
       )
       # The leader is drawn in panel coordinates so that "axis" means the panel
       # edge, wherever the scale happens to start.
-      grobs$leader <- if (identical(orientation, "y")) {
+      #
+      # coord_flip() swaps the sides after the layer was set up, so the points,
+      # which delegate to GeomPoint, moved while the leaders kept their old
+      # direction and ran off at right angles to their own dots.
+      drawn <- if (inherits(coord, "CoordFlip")) {
+        if (identical(orientation, "y")) "x" else "y"
+      } else {
+        orientation
+      }
+      grobs$leader <- if (identical(drawn, "y")) {
         grid::segmentsGrob(
           x0 = grid::unit(0, "npc"),
           x1 = if (identical(leader, "full")) grid::unit(1, "npc")

@@ -79,7 +79,7 @@ you were looking at."><meta name="robots" content="noindex, nofollow, noarchive,
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -142,13 +142,9 @@ Pass a vector as long as <code>plots</code> to give each its own size.</p></dd>
 
 <dt id="arg-measure">measure<a class="anchor" aria-label="anchor" href="#arg-measure"></a></dt>
 <dd><p>Logical. Report the data-ink ratio and the data density?
-  Defaults to <code>TRUE</code>. Setting it to <code>FALSE</code> skips only those two,
-  which are ungraded, so the ordering by unmet criteria is the same either
-  way and roughly twice as fast to get.
-Figures are ordered by the number of stated criteria they fail, most first.
-That's a count and not a score: it's comparable across figures because
-every figure is being counted against the same criteria, whereas a
-proportion would divide by a denominator that changes with the plot type.</p></dd>
+Defaults to <code>TRUE</code>. Setting it to <code>FALSE</code> skips only those two,
+which are ungraded, so the ordering by unmet criteria is the same either
+way and roughly twice as fast to get.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -161,8 +157,12 @@ proportion would divide by a denominator that changes with the plot type.</p></d
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Give it the plots you built, or a directory of saved ones. It returns a row
-per figure with the score and the checks that failed, and keeps the full
-per-check detail attached so you can drill into any of them.</p>
+per figure with the count of unmet criteria and the checks that failed, and
+keeps the full per-check detail attached so you can drill into any of them.</p>
+<p>Figures are ordered by the number of stated criteria they fail, most first.
+That's a count and not a score: it's comparable across figures because
+every figure is being counted against the same criteria, whereas a
+proportion would divide by a denominator that changes with the plot type.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

@@ -47,6 +47,7 @@
 data_ink_ratio <- function(plot, width = 6.5, height = 4, res = 150,
                            background = "white") {
   .check_gg(plot)
+  .check_size(width, height)
   gt <- .grob_of(plot)
 
   total <- .measure_ink(gt, width, height, res, background)
@@ -249,7 +250,11 @@ lie_factor.ggplot <- function(x, ...) {
   if (is.null(built)) return(NA_real_)
 
   geoms <- .layer_geoms(x)
-  bar_layers <- which(geoms %in% c("Bar", "Col", "ColTufte", "Rect"))
+  # GeomRect is not a bar. A background band or an interval rectangle has its
+  # own ymin, and treating the panel floor as its baseline manufactured a
+  # distortion figure for a figure containing no bars at all. Bars and columns
+  # are the geoms whose length is meant to be read from a zero baseline.
+  bar_layers <- which(geoms %in% c("Bar", "Col", "ColTufte"))
   if (length(bar_layers) == 0) return(1)
 
   ranges <- built$layout$panel_params
@@ -337,13 +342,15 @@ lie_factor.default <- function(x, ...) {
 #' data_density(ggplot(mtcars, aes(wt, mpg)) + geom_point())
 data_density <- function(plot, width = 6.5, height = 4, panel_only = TRUE) {
   .check_gg(plot)
+  .check_size(width, height)
   built <- ggplot2::ggplot_build(plot)
 
   rows <- .distinct_rows(plot, built)
-  vars <- unique(unlist(lapply(.all_mappings(plot), .mapped_base_vars)))
-  vars <- vars[!is.na(vars) & nzchar(vars)]
-  n_vars <- max(length(vars), 1L)
-  entries <- rows * n_vars
+  vars <- .drawn_vars(plot)
+  # No mapped variable means nothing varies with the data, so there are no
+  # entries to count. Rounding that up to one invented a data matrix for a
+  # graphic that carries none.
+  entries <- rows * length(vars)
 
   area <- width * height
   if (panel_only) {
@@ -356,7 +363,7 @@ data_density <- function(plot, width = 6.5, height = 4, panel_only = TRUE) {
       density = entries / area,
       entries = entries,
       rows = rows,
-      variables = n_vars,
+      variables = length(vars),
       variable_names = vars,
       area = area
     ),
@@ -371,11 +378,35 @@ data_density <- function(plot, width = 6.5, height = 4, panel_only = TRUE) {
 # thirty-two observations are still thirty-two numbers, not ninety-six. Layers
 # are therefore grouped by the data they read, and each group contributes the
 # largest number of marks any one of its layers draws. A layer carrying its own
+# The variables a figure actually draws. A layer aesthetic overrides the
+# plot-level one of the same name rather than adding to it, and a layer with
+# inherit.aes = FALSE takes none of them, so pooling every mapping counted
+# columns that are never shown.
+#' @noRd
+.drawn_vars <- function(plot) {
+  base <- plot$mapping %||% ggplot2::aes()
+  per_layer <- lapply(plot$layers, function(l) {
+    own <- l$mapping %||% ggplot2::aes()
+    m <- if (isFALSE(l$inherit.aes)) own else utils::modifyList(as.list(base), as.list(own))
+    unique(unlist(lapply(m, .mapped_base_vars)))
+  })
+  vars <- if (length(per_layer)) unique(unlist(per_layer)) else
+    unique(unlist(lapply(base, .mapped_base_vars)))
+  vars <- vars[!is.na(vars) & nzchar(vars)]
+  vars
+}
+
 # data, such as an annotation, counts separately, as it should.
 #' @noRd
 .distinct_rows <- function(plot, built) {
   n <- length(plot$layers)
-  if (n == 0) return(nrow(plot$data %||% data.frame()))
+  # ggplot()$data is a waiver rather than NULL, so %||% never fired and
+  # nrow(waiver()) returned NULL, giving back a malformed result object.
+  if (n == 0) {
+    d <- plot$data
+    if (is.null(d) || inherits(d, "waiver")) return(0L)
+    return(nrow(d))
+  }
 
   sources <- lapply(plot$layers, function(l) {
     if (is.null(l$data) || inherits(l$data, "waiver")) plot$data else l$data

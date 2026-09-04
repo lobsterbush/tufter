@@ -6,8 +6,13 @@
 #' you were looking at.
 #'
 #' Give it the plots you built, or a directory of saved ones. It returns a row
-#' per figure with the score and the checks that failed, and keeps the full
-#' per-check detail attached so you can drill into any of them.
+#' per figure with the count of unmet criteria and the checks that failed, and
+#' keeps the full per-check detail attached so you can drill into any of them.
+#'
+#' Figures are ordered by the number of stated criteria they fail, most first.
+#' That's a count and not a score: it's comparable across figures because
+#' every figure is being counted against the same criteria, whereas a
+#' proportion would divide by a denominator that changes with the plot type.
 #'
 #' @param plots One of: a named list of \code{ggplot} objects; a single
 #'   \code{ggplot}; or a path to a directory, in which case every \code{.rds}
@@ -18,11 +23,6 @@
 #'   Defaults to \code{TRUE}. Setting it to \code{FALSE} skips only those two,
 #'   which are ungraded, so the ordering by unmet criteria is the same either
 #'   way and roughly twice as fast to get.
-#' Figures are ordered by the number of stated criteria they fail, most first.
-#' That's a count and not a score: it's comparable across figures because
-#' every figure is being counted against the same criteria, whereas a
-#' proportion would divide by a denominator that changes with the plot type.
-#'
 #' @return An object of class \code{tufte_audit_batch}: a tibble with one row
 #'   per figure, giving \code{figure}, \code{violations}, \code{met} and
 #'   \code{failing}, a comma-separated list of the criteria not met. The full
@@ -57,7 +57,10 @@ audit_figures <- function(plots, width = 6.5, height = 4, measure = TRUE) {
       error = function(e) e
     )
     if (inherits(a, "error")) {
-      audits[[i]] <- NULL
+      # `audits[[i]] <- NULL` deletes the element from the list rather than
+      # storing NULL in it, which shifted every later name by one and left the
+      # documented drill-in returning NULL for every figure after a failure.
+      audits[i] <- list(NULL)
       rows[[i]] <- data.frame(
         figure = names(plots)[i], violations = NA_integer_, met = NA_integer_,
         failing = paste("couldn't be audited:", conditionMessage(a)),

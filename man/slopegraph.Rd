@@ -63,6 +63,10 @@ redundant, so it's removed. The table and the graphic become the same
 object.
 }
 \details{
+Two periods, then. The labels sit outside the panel on either side, so a
+third period has nowhere to put its numbers: the lines run through it and
+only the first and last are labelled, with a warning saying so.
+
 The design fails quietly when many units share a value, because the labels
 collide. \code{slopegraph()} nudges colliding labels apart by default; if
 your data are dense, reduce \code{label_size} or plot fewer units.

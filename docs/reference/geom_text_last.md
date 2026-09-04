@@ -46,7 +46,10 @@ geom_text_first(
 
   Standard `ggplot2` layer arguments. See
   [`layer()`](https://ggplot2.tidyverse.org/reference/layer.html). The
-  `label` aesthetic defaults to the grouping variable.
+  `label` aesthetic is required, exactly as
+  [`geom_text()`](https://ggplot2.tidyverse.org/reference/geom_text.html)
+  requires it: pass the column holding the series name, usually the same
+  one you mapped to `colour`.
 
 - nudge_x, nudge_y:
 

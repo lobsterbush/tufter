@@ -2,7 +2,7 @@
 % Please edit documentation in R/fit.R
 \name{check_labels_fit}
 \alias{check_labels_fit}
-\title{Check that every text element fits inside the canvas}
+\title{Check that the labels fit inside the canvas}
 \usage{
 check_labels_fit(plot, width = 6.5, height = 4)
 }
@@ -27,6 +27,15 @@ Subtitles and captions are the usual offenders, because \code{ggplot2} does
 not wrap them: text longer than the device is silently cut at the edge. The
 fix is a hard line break, a wider canvas, or a smaller font, and then a
 second look at the rendered file.
+
+What gets measured is the furniture: the plot title, subtitle and caption,
+the axis titles and labels on all four sides, the legend, and the facet
+strips. Text drawn inside the panel by a layer, from
+\code{\link[ggplot2]{geom_text}()} or \code{\link{geom_text_last}()}, is
+not measured, because clipping there depends on the panel range and the
+coord's \code{clip} setting rather than on the canvas. Look at those
+yourself, or give the scale room with
+\code{\link[ggplot2]{expansion}()}.
 }
 \examples{
 library(ggplot2)

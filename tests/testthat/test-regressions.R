@@ -115,13 +115,33 @@ test_that("banking is unchanged by reversing the order of a closed path", {
   expect_equal(fwd, rev, tolerance = 1e-6)
 })
 
-test_that("a mostly vertical path is refused rather than silently mangled", {
-  d <- data.frame(x = rep(0, 20), y = seq_len(20))
-  p <- ggplot(d, aes(x, y)) + geom_path()
-  expect_error(bank_to_45(p), "vertical")
-  # The orientation method tolerates verticals and should still answer.
-  expect_s3_class(bank_to_45(p, method = "average_orientation"),
-                  "tufte_banking")
+test_that("a path that cannot be banked says so instead of inventing a number", {
+  # Verticals contribute pi/2 to the mean orientation whatever the panel does,
+  # so the mean can only be brought to pi/4 when fewer than half the segments
+  # are vertical. The median method refuses at exactly the same threshold. The
+  # two methods therefore fail together on a mostly vertical path, and the old
+  # message suggesting the second as a way round the first was wrong.
+  mostly_vertical <- ggplot(data.frame(x = rep(0, 20), y = seq_len(20)),
+                            aes(x, y)) + geom_path()
+  expect_error(bank_to_45(mostly_vertical), "vertical")
+  expect_error(bank_to_45(mostly_vertical, method = "average_orientation"),
+               "No aspect ratio")
+
+  # The mirror case: nearly everything flat. This used to return exp(20), a
+  # panel three billion inches tall, with no warning at all.
+  flat <- ggplot(data.frame(x = seq_len(21), y = c(rep(5, 20), 6)),
+                 aes(x, y)) + geom_line()
+  expect_error(bank_to_45(flat, method = "average_orientation", weighted = FALSE),
+               "No aspect ratio")
+
+  # A minority of verticals is fine, and that is what the orientation method is
+  # actually for: the median is finite, and both methods answer.
+  set.seed(5)
+  mixed <- data.frame(x = c(0, 0, cumsum(runif(18, 0.5, 2))),
+                      y = c(1, 2, 2 + cumsum(runif(18, 0.5, 2))))
+  pm <- ggplot(mixed, aes(x, y)) + geom_path()
+  expect_s3_class(bank_to_45(pm), "tufte_banking")
+  expect_s3_class(bank_to_45(pm, method = "average_orientation"), "tufte_banking")
 })
 
 test_that("a continuous colour scale is one code, not many hues", {
@@ -673,4 +693,272 @@ test_that("geom_col_tufte erases rules however the bars are oriented", {
   expect_warning(
     drew(ggplot(d, aes(g, v)) + geom_col_tufte(sides = "x") + theme_tufte()),
     "no rules were erased")
+})
+
+# ---- from the independent audit --------------------------------------------
+
+test_that("the quartile frame breaks where the labels sit, on any scale", {
+  # .frame_spans() took quantiles of the scale-transformed values while
+  # quartile_breaks() took them of the raw data. Type-7 quantiles survive an
+  # affine transform but not a log or a square root, so on a log10 axis the
+  # label read 5050 and the frame broke at 1000.
+  y <- c(1, 10, 100, 1e4, 1e5, 1e6)
+  d <- data.frame(x = seq_along(y), y = y)
+  labels <- quartile_breaks(y)(range(y))
+
+  for (sc in list(NULL, scale_y_log10(), scale_y_sqrt())) {
+    p <- ggplot(d, aes(x, y)) + geom_point() + geom_quartileframe(sides = "l")
+    if (!is.null(sc)) p <- p + sc
+    b <- ggplot_build(p)
+    pp <- b$layout$panel_params[[1]]
+    tr <- tryCatch(pp$y$scale$get_transformation(), error = function(e) NULL)
+    q <- .data_space_quantiles(b$data[[2]]$y, pp$y)
+    back <- if (is.null(tr) || identical(tr$name, "identity")) q else tr$inverse(q)
+    expect_equal(as.numeric(signif(back, 6)), as.numeric(labels),
+                 tolerance = 1e-4)
+  }
+})
+
+test_that("audit_figures keeps its per-figure detail when a figure fails", {
+  # audits[[i]] <- NULL deleted the element instead of storing NULL, shifting
+  # every later name, so the documented drill-in returned NULL for every figure
+  # after the first failure.
+  figs <- list(broken = ggplot(mtcars, aes(nosuchcol, mpg)) + geom_point(),
+               ok = ggplot(mtcars, aes(wt, mpg)) + geom_point() + theme_tufte())
+  b <- suppressWarnings(audit_figures(figs, measure = FALSE))
+  expect_equal(names(attr(b, "audits")), names(figs))
+  expect_s3_class(attr(b, "audits")[["ok"]], "tufte_audit")
+  expect_null(attr(b, "audits")[["broken"]])
+})
+
+test_that("coord_radial() pies are caught, not only coord_polar() ones", {
+  d <- data.frame(g = c("a", "b", "c"), v = c(3, 4, 5))
+  status <- function(p) {
+    a <- suppressWarnings(tufte_audit(p, measure = FALSE))
+    a$status[a$check == "No pie chart"]
+  }
+  expect_equal(status(ggplot(d, aes(x = "", y = v, fill = g)) + geom_col() +
+                        coord_polar(theta = "y")), "fail")
+  expect_equal(status(ggplot(d, aes(x = "", y = v, fill = g)) + geom_col() +
+                        coord_radial(theta = "y")), "fail")
+  expect_equal(status(ggplot(d, aes(g, v)) + geom_col() + theme_tufte()), "pass")
+})
+
+test_that("a variable encoded twice is caught on either position aesthetic", {
+  d <- data.frame(g = c("a", "b", "c"), v = c(3, 4, 5))
+  status <- function(p) {
+    a <- suppressWarnings(tufte_audit(p, measure = FALSE))
+    a$status[a$check == "No variable encoded twice"]
+  }
+  expect_equal(status(ggplot(d, aes(g, v, fill = g)) + geom_col()), "fail")
+  expect_equal(status(ggplot(d, aes(v, g, fill = g)) + geom_col()), "fail")
+  expect_equal(status(ggplot(d, aes(g, v)) + geom_col() + theme_tufte()), "pass")
+})
+
+test_that("a white panel is white however the colour was spelled", {
+  # The check compared the strings themselves, so grey100, gray100, #fff and
+  # the eight-digit #FFFFFFFF all counted as coloured panels. ggplot2 4.0's
+  # complete_theme() returns eight-digit hex, so that spelling is the common
+  # one, and a false fail inflates the violation count.
+  status <- function(f) {
+    p <- ggplot(mtcars, aes(wt, mpg)) + geom_point() + theme_bw() +
+      theme(panel.background = element_rect(fill = f))
+    a <- suppressWarnings(tufte_audit(p, measure = FALSE))
+    a$status[a$check == "Panel carries no background fill"]
+  }
+  for (f in c("white", "grey100", "gray100", "#FFFFFF", "#ffffff",
+              "#FFFFFFFF", "#fff", "transparent")) {
+    expect_equal(status(f), "pass", info = f)
+  }
+  # A real fill is still a real fill.
+  for (f in c("grey92", "#EBEBEBFF", "lightblue")) {
+    expect_equal(status(f), "fail", info = f)
+  }
+})
+
+test_that("a continuous legend of any aesthetic is not told to label its series", {
+  status <- function(p) {
+    a <- suppressWarnings(tufte_audit(p, measure = FALSE))
+    a$status[a$check == "No legend to decode"]
+  }
+  # Continuous keys are ramps, not lists of names, so there is nothing to
+  # label in place. This used to hold for colour and fill only.
+  for (a in c("size", "alpha", "colour")) {
+    p <- ggplot(mtcars, aes(wt, mpg)) +
+      do.call(geom_point, stats::setNames(list(ggplot2::aes(hp)[[1]]), a))
+    expect_false(identical(status(ggplot(mtcars,
+      aes(wt, mpg, size = hp)) + geom_point()), "fail"))
+  }
+  # A discrete key still is a list of names.
+  expect_equal(status(ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
+                        geom_point()), "fail")
+})
+
+test_that("data_density() handles a plot with no layers", {
+  # ggplot()$data is a waiver, not NULL, so %||% never fired and nrow(waiver())
+  # returned NULL, giving back a malformed object that print() could not read.
+  r <- suppressWarnings(data_density(ggplot()))
+  expect_type(r$rows, "integer")
+  expect_equal(r$rows, 0L)
+  expect_true(is.finite(r$entries))
+})
+
+test_that("check_labels_fit() is invisible when everything fits", {
+  p <- ggplot(mtcars, aes(wt, mpg)) + geom_point() + theme_tufte()
+  expect_false(withVisible(check_labels_fit(p))$visible)
+  wordy <- p + labs(subtitle = strrep("a subtitle that will not fit ", 8))
+  expect_true(withVisible(suppressWarnings(check_labels_fit(wordy)))$visible)
+})
+
+test_that("geom_col_tufte(minor = TRUE) draws each rule once", {
+  d <- data.frame(g = letters[1:4], v = c(3, 7, 5, 9))
+  count <- function(minor) {
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off(), add = TRUE)
+    gt <- ggplot2::ggplotGrob(ggplot(d, aes(g, v)) +
+                                geom_col_tufte(minor = minor) + theme_tufte())
+    pan <- gt$grobs[[which(grepl("^panel", gt$layout$name))[1]]]
+    lay <- pan$children[[which(grepl("geom_col_tufte",
+                                     names(pan$children)))[1]]]
+    seg <- Filter(function(z) inherits(z, "segments"), lay$children)
+    if (!length(seg)) 0L else length(unique(round(as.numeric(seg[[1]]$y0), 6)))
+  }
+  # get_breaks_minor() includes the majors, so every major used to be drawn
+  # twice, one exactly on top of the other.
+  expect_equal(count(FALSE), length(unique(round(seq(0, 7.5, by = 2.5), 6))))
+  expect_gt(count(TRUE), count(FALSE))
+})
+
+# ---- from the Codex audit ---------------------------------------------------
+
+test_that("text layers are held to the text contrast minimum", {
+  # Every layer was classified as a data mark at 3:1, so grey text at 4.48:1
+  # passed a check whose documentation promises 4.5:1 for words.
+  p <- ggplot(data.frame(x = 1, y = 1, label = "t"), aes(x, y, label = label)) +
+    geom_text(colour = "#777777") + theme_void()
+  cc <- suppressWarnings(check_contrast(p))
+  row <- cc[cc$colour == "#777777", ]
+  expect_equal(row$role[1], "data label")
+  expect_equal(row$threshold[1], 4.5)
+  expect_false(row$passes[1])
+
+  # A point of the same colour is still a mark, at 3:1.
+  pp <- ggplot(data.frame(x = 1, y = 1), aes(x, y)) +
+    geom_point(colour = "#777777") + theme_void()
+  cm <- suppressWarnings(check_contrast(pp))
+  expect_equal(cm$threshold[cm$colour == "#777777"][1], 3)
+})
+
+test_that("data_density counts the variables actually drawn", {
+  # .all_mappings() pooled plot and layer mappings, so a layer that overrides
+  # an aesthetic added a column instead of replacing one, and inherit.aes =
+  # FALSE was ignored entirely.
+  d <- data.frame(x = 1:10, y = 11:20, z = 21:30)
+  ent <- function(p) data_density(p, 6.5, 4)$entries
+  expect_equal(ent(ggplot(d, aes(x, y)) + geom_point()), 20)
+  expect_equal(ent(ggplot(d, aes(x, y)) + geom_point(aes(y = z))), 20)
+  expect_equal(ent(ggplot(d, aes(x, y, colour = z)) + geom_point()), 30)
+  expect_equal(ent(ggplot(d, aes(x, y)) +
+                     geom_point(aes(x = z, y = z), inherit.aes = FALSE)), 10)
+})
+
+test_that("banking measures the slopes as drawn", {
+  # .slope_ratios() divided the built columns by x.range and y.range without
+  # going through the coord, so under coord_flip() it measured neither the data
+  # slopes nor the drawn ones.
+  drawn_aspect <- function(p) {
+    b <- ggplot_build(p)
+    pp <- b$layout$panel_params[[1]]
+    td <- b$layout$coord$transform(b$data[[1]], pp)
+    m <- abs(diff(td$y) / diff(td$x))
+    1 / stats::median(m[is.finite(m)])
+  }
+  for (n in c(3, 4, 5)) {
+    set.seed(n)
+    d <- data.frame(x = seq_len(n + 1), y = cumsum(c(0, runif(n, .5, 3))))
+    for (flip in c(FALSE, TRUE)) {
+      p <- ggplot(d, aes(x, y)) + geom_line()
+      if (flip) p <- p + coord_flip()
+      expect_equal(bank_to_45(p)$aspect, drawn_aspect(p), tolerance = 1e-6,
+                   info = paste("n =", n, "flip =", flip))
+    }
+  }
+})
+
+test_that("lie_factor leaves rectangles that are not bars alone", {
+  # GeomRect was classified as a bar, so a background band or an interval
+  # rectangle got the panel floor for a baseline and a fabricated distortion.
+  d <- data.frame(xmin = c(1, 3), xmax = c(2, 4),
+                  ymin = c(100, 100), ymax = c(105, 110))
+  p <- ggplot(d) +
+    geom_rect(aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax)) +
+    coord_cartesian(ylim = c(95, 115))
+  expect_equal(lie_factor(p), 1)
+
+  # Bars are still measured.
+  b <- data.frame(g = c("a", "b"), v = c(100, 110))
+  expect_gt(lie_factor(ggplot(b, aes(g, v)) + geom_col() +
+                         coord_cartesian(ylim = c(95, 115))), 1.05)
+})
+
+test_that("Cleveland leader lines follow the coord", {
+  # The points delegate to GeomPoint and flipped; the leaders read the
+  # untransformed orientation and stayed horizontal, at right angles to the
+  # dots they belong to.
+  direction <- function(p) {
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off(), add = TRUE)
+    gt <- ggplot2::ggplotGrob(p)
+    pan <- gt$grobs[[which(grepl("^panel", gt$layout$name))[1]]]
+    lay <- pan$children[[which(grepl("geom_cleveland_dot",
+                                     names(pan$children)))[1]]]
+    s <- Filter(function(z) inherits(z, "segments"), lay$children)[[1]]
+    if (all(abs(as.numeric(s$y0) - as.numeric(s$y1)) < 1e-9)) "horizontal" else "vertical"
+  }
+  d <- data.frame(category = letters[1:3], value = 1:3)
+  expect_equal(direction(ggplot(d, aes(value, category)) +
+                           geom_cleveland_dot() + theme_tufte()), "horizontal")
+  expect_equal(direction(ggplot(d, aes(value, category)) +
+                           geom_cleveland_dot() + coord_flip() + theme_tufte()),
+               "vertical")
+})
+
+test_that("sizes have to be sizes", {
+  p <- ggplot(mtcars, aes(wt, mpg)) + geom_point()
+  expect_error(data_density(p, width = 0), "positive")
+  expect_error(data_density(p, width = 6.5, height = -1), "positive")
+  expect_error(data_ink_ratio(p, width = NA), "positive")
+  expect_error(check_labels_fit(p, width = Inf), "positive")
+  expect_error(bank_to_45(ggplot(data.frame(x = 1:3, y = 1:3), aes(x, y)) +
+                            geom_line(), width = -1), "positive")
+})
+
+test_that("geom_tufteboxplot says why it will not draw sideways", {
+  expect_error(geom_tufteboxplot(orientation = "y"), "coord_flip")
+  # The supported route still works.
+  expect_s3_class(ggplot_build(ggplot(mtcars, aes(factor(cyl), mpg)) +
+                                 geom_tufteboxplot() + coord_flip()),
+                  "ggplot_built")
+})
+
+test_that("a slopegraph with more than two periods says what it labels", {
+  d <- expand.grid(unit = c("A", "B"), period = 1:3)
+  d$value <- seq_len(nrow(d))
+  expect_warning(slopegraph(d, period, value, unit), "first and last")
+  d2 <- expand.grid(unit = c("A", "B"), period = 1:2)
+  d2$value <- seq_len(nrow(d2))
+  expect_silent(slopegraph(d2, period, value, unit))
+})
+
+test_that("check_labels_fit measures axes and strips on every side", {
+  p <- ggplot(mtcars, aes(wt, mpg)) + geom_point() +
+    facet_wrap(~cyl, strip.position = "right") +
+    scale_x_continuous(position = "top") +
+    scale_y_continuous(position = "right") +
+    theme_tufte()
+  out <- suppressWarnings(check_labels_fit(p, 5, 4))
+  for (e in c("strip label (side)", "x axis labels (top)",
+              "y axis labels (right)")) {
+    expect_true(e %in% out$element, info = e)
+  }
 })

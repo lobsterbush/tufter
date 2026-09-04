@@ -1,4 +1,4 @@
-#' Check that every text element fits inside the canvas
+#' Check that the labels fit inside the canvas
 #'
 #' A figure that has been designed carefully and then saved at the wrong size
 #' is a figure with a truncated subtitle. This renders the plot at the size you
@@ -9,6 +9,15 @@
 #' not wrap them: text longer than the device is silently cut at the edge. The
 #' fix is a hard line break, a wider canvas, or a smaller font, and then a
 #' second look at the rendered file.
+#'
+#' What gets measured is the furniture: the plot title, subtitle and caption,
+#' the axis titles and labels on all four sides, the legend, and the facet
+#' strips. Text drawn inside the panel by a layer, from
+#' \code{\link[ggplot2]{geom_text}()} or \code{\link{geom_text_last}()}, is
+#' not measured, because clipping there depends on the panel range and the
+#' coord's \code{clip} setting rather than on the canvas. Look at those
+#' yourself, or give the scale room with
+#' \code{\link[ggplot2]{expansion}()}.
 #'
 #' @param plot A \code{ggplot} object.
 #' @param width,height Intended size in inches. Defaults to 6.5 by 4.
@@ -24,6 +33,7 @@
 #' check_labels_fit(p, width = 6.5, height = 4)
 check_labels_fit <- function(plot, width = 6.5, height = 4) {
   .check_gg(plot)
+  .check_size(width, height)
   gt <- .grob_of(plot)
 
   f <- tempfile(fileext = ".png")
@@ -96,7 +106,16 @@ check_labels_fit <- function(plot, width = 6.5, height = 4) {
   add("y axis labels (stacked)",
       .max_extent(gt, "^axis-l", "sum", "height"), panel_h)
   add("legend", .max_extent(gt, "^guide-box", "max", "width"), width)
+  # Axes and strips can sit on any side. Only the bottom axis, the left axis
+  # and the top strip used to be measured, so a plot with its axis on the right
+  # or its strips down the side was reported as fitting whatever it did.
   add("strip label", .max_extent(gt, "^strip-t", "max", "width"), panel_w)
+  add("x axis labels (top)",
+      .max_extent(gt, "^axis-t", "sum", "width"), panel_w)
+  add("y axis labels (right)",
+      .max_extent(gt, "^axis-r", "sum", "height"), panel_h)
+  add("strip label (side)",
+      .max_extent(gt, "^strip-r", "max", "width", unrotate = TRUE), panel_w)
 
   if (length(rows) == 0) {
     return(tibble::tibble(
@@ -117,8 +136,11 @@ check_labels_fit <- function(plot, width = 6.5, height = 4) {
       ),
       i = "Hard-wrap the text, widen the canvas, or reduce the font size."
     ))
+    return(out)
   }
-  out
+  # Documented as invisible when there is nothing to report, so that a check
+  # inside a pipeline stays quiet.
+  invisible(out)
 }
 
 #' @noRd

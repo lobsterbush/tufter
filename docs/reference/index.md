@@ -89,7 +89,7 @@ well as admired.
 - [`contrast_ratio()`](https://lobsterbush.github.io/tufter/reference/contrast_ratio.md)
   : WCAG contrast ratio between two colours
 - [`check_labels_fit()`](https://lobsterbush.github.io/tufter/reference/check_labels_fit.md)
-  : Check that every text element fits inside the canvas
+  : Check that the labels fit inside the canvas
 
 ### Auditing
 

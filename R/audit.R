@@ -183,14 +183,29 @@ print.tufte_audit <- function(x, ...) {
   if (is.na(hit)) NA_character_ else p$source[hit]
 }
 
+# Is a fill invisible against the page? Comparing the strings themselves
+# counted "grey100", "gray100", "#fff" and "#FFFFFFFF" as coloured panels,
+# though every one of them is pure white. ggplot2 4.0's complete_theme() hands
+# back eight-digit hex, so the eight-digit form is the common case, and a false
+# fail here inflates the one count the audit says is meaningful.
+#' @noRd
+.is_blank_fill <- function(fill) {
+  if (length(fill) != 1 || is.na(fill)) return(TRUE)
+  if (identical(fill, "transparent")) return(TRUE)
+  rgba <- tryCatch(grDevices::col2rgb(fill, alpha = TRUE)[, 1],
+                   error = function(e) NULL)
+  if (is.null(rgba)) return(FALSE)
+  if (rgba[["alpha"]] == 0) return(TRUE)
+  all(rgba[c("red", "green", "blue")] == 255)
+}
+
 # ---- criteria Tufte states -------------------------------------------------
 
 #' @noRd
 .check_panel_background <- function(ctx) {
   bg <- ctx$theme$panel.background
   fill <- .el_get(bg, "fill")
-  opaque <- !is.null(fill) && !identical(fill, NA) &&
-    !fill %in% c("white", "transparent", "#FFFFFF", "#ffffff")
+  opaque <- !is.null(fill) && !identical(fill, NA) && !.is_blank_fill(fill)
   .row(
     "Erase non-data ink",
     "Panel carries no background fill",
@@ -241,7 +256,10 @@ print.tufte_audit <- function(x, ...) {
 
 #' @noRd
 .check_pie <- function(ctx) {
-  polar <- inherits(ctx$plot$coordinates, "CoordPolar")
+  # coord_radial() is ggplot2's current spelling and does not inherit from
+  # CoordPolar, so testing only the old class let the pies most people now
+  # draw pass the check.
+  polar <- inherits(ctx$plot$coordinates, c("CoordPolar", "CoordRadial"))
   bars <- any(ctx$geoms %in% c("Bar", "Col", "ColTufte"))
   if (polar && bars) {
     return(.row(
@@ -374,12 +392,22 @@ print.tufte_audit <- function(x, ...) {
 }
 
 #' @noRd
+# Is every key in this figure a ramp rather than a list of names? The advice
+# attached to a failure here is to label the series in place, which only makes
+# sense when there are series. It used to look at colour and fill alone, so a
+# continuous size, alpha or linewidth legend was told to use geom_text_last()
+# on series it does not have.
 .has_continuous_colour <- function(built) {
   scales <- tryCatch(built$plot$scales$scales, error = function(e) NULL)
   if (is.null(scales)) return(FALSE)
-  any(vapply(scales, function(s) {
+  keyed <- c("colour", "color", "fill", "size", "alpha", "linewidth", "shape",
+             "linetype")
+  relevant <- Filter(function(s) {
     aes <- tryCatch(s$aesthetics, error = function(e) character(0))
-    if (!any(c("colour", "color", "fill") %in% aes)) return(FALSE)
+    any(keyed %in% aes)
+  }, scales)
+  if (!length(relevant)) return(FALSE)
+  all(vapply(relevant, function(s) {
     isFALSE(tryCatch(s$is_discrete(), error = function(e) NA))
   }, logical(1)))
 }
@@ -390,7 +418,10 @@ print.tufte_audit <- function(x, ...) {
   by_aes <- function(which) {
     unique(unlist(lapply(maps[names(maps) %in% which], .mapped_base_vars)))
   }
-  shared <- intersect(by_aes("x"), by_aes(c("fill", "colour", "color")))
+  # Position is x or y. Looking only at x let a horizontal bar chart map one
+  # variable to both the category axis and the fill and still pass, which is
+  # the same flipped-orientation blind spot .bar_axes() was written to close.
+  shared <- intersect(by_aes(c("x", "y")), by_aes(c("fill", "colour", "color")))
   if (length(shared)) {
     return(.row(
       "Erase redundant data-ink",

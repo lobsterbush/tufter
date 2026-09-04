@@ -94,14 +94,61 @@ GeomQuartileFrame <- ggplot2::ggproto(
 
   draw_panel = function(data, panel_params, coord, sides = "bl", gap = 0.01,
                         na.rm = FALSE) {
+    # A quartile is a fact about the data, so it has to be computed there. The
+    # values reaching draw_panel are already in the scale's transformed space,
+    # and type-7 quantiles survive an affine transform but not a log or a
+    # square root, so taking them here broke the frame on any non-linear scale
+    # while quartile_breaks() went on labelling the data-space quartiles. On a
+    # log10 axis the label said 5050 and the frame broke at 1000.
     d <- coord$transform(data, panel_params)
     gp <- .frame_gpar(data)
+    # Send the quantiles through the coord as well, rather than rescaling them
+    # by hand. coord_flip() draws the data's x on the panel's y, and a
+    # hand-rolled rescale against x.range put the marks on the wrong axis.
     .ggname(
       "geom_quartileframe",
-      .frame_grobs(d, sides, gp, breaks = "quartile", gap = gap)
+      .frame_grobs(d, sides, gp, breaks = "quartile", gap = gap,
+                   quantiles = .transformed_quantiles(data, panel_params, coord))
     )
   }
 )
+
+# The five-number summary of each axis, in npc, having gone through the coord
+# so that a flip lands it on the side it is actually drawn on.
+#' @noRd
+.transformed_quantiles <- function(data, panel_params, coord) {
+  qx <- .data_space_quantiles(data$x, panel_params$x)
+  qy <- .data_space_quantiles(data$y, panel_params$y)
+  if (is.null(qx) && is.null(qy)) return(NULL)
+  n <- max(length(qx), length(qy))
+  df <- data.frame(
+    x = if (is.null(qx)) rep(panel_params$x.range[1], n) else qx,
+    y = if (is.null(qy)) rep(panel_params$y.range[1], n) else qy
+  )
+  tq <- tryCatch(coord$transform(df, panel_params), error = function(e) NULL)
+  if (is.null(tq)) return(NULL)
+  # After the coord, tq$x is whatever is drawn horizontally, which is what the
+  # horizontal spans need, flip or no flip.
+  list(x = if (all(is.finite(tq$x))) tq$x else NULL,
+       y = if (all(is.finite(tq$y))) tq$y else NULL)
+}
+
+# The five-number summary of the untransformed data, returned in the scale's
+# transformed space so it can be rescaled to npc alongside everything else.
+# With no transformation this is exactly what taking the quantiles later gave.
+#' @noRd
+.data_space_quantiles <- function(v, view_scale) {
+  if (is.null(v)) return(NULL)
+  v <- v[is.finite(v)]
+  if (length(v) == 0 || length(unique(v)) < 4) return(NULL)
+  tr <- tryCatch(view_scale$scale$get_transformation(), error = function(e) NULL)
+  if (is.null(tr) || identical(tr$name, "identity")) return(.five_number(v))
+  raw <- tryCatch(tr$inverse(v), error = function(e) NULL)
+  if (is.null(raw) || !all(is.finite(raw))) return(.five_number(v))
+  q <- tryCatch(tr$transform(.five_number(raw)), error = function(e) NULL)
+  if (is.null(q) || !all(is.finite(q))) return(.five_number(v))
+  q
+}
 
 # Build the graphical parameters shared by both frames.
 #' @noRd
@@ -116,14 +163,15 @@ GeomQuartileFrame <- ggplot2::ggproto(
 
 # Segment endpoints along one axis, in npc, given transformed values.
 #' @noRd
-.frame_spans <- function(v, breaks = c("range", "quartile"), gap = 0.01) {
+.frame_spans <- function(v, breaks = c("range", "quartile"), gap = 0.01,
+                         q = NULL) {
   breaks <- match.arg(breaks)
   v <- v[is.finite(v)]
   if (length(v) == 0) return(NULL)
-  if (breaks == "range" || length(unique(v)) < 4) {
+  if (breaks == "range" || (is.null(q) && length(unique(v)) < 4)) {
     return(data.frame(start = min(v), end = max(v)))
   }
-  q <- .five_number(v)
+  if (is.null(q)) q <- .five_number(v)
   half <- gap / 2
   starts <- q[1:4]
   ends <- q[2:5]
@@ -135,7 +183,8 @@ GeomQuartileFrame <- ggplot2::ggproto(
 }
 
 #' @noRd
-.frame_grobs <- function(d, sides, gp, breaks = "range", gap = 0.01) {
+.frame_grobs <- function(d, sides, gp, breaks = "range", gap = 0.01,
+                        quantiles = NULL) {
   grobs <- list()
 
   add <- function(spans, horizontal, at) {
@@ -156,12 +205,12 @@ GeomQuartileFrame <- ggplot2::ggproto(
   }
 
   if (!is.null(d$x)) {
-    sx <- .frame_spans(d$x, breaks, gap)
+    sx <- .frame_spans(d$x, breaks, gap, q = quantiles$x)
     if (grepl("b", sides, fixed = TRUE)) add(sx, TRUE, 0)
     if (grepl("t", sides, fixed = TRUE)) add(sx, TRUE, 1)
   }
   if (!is.null(d$y)) {
-    sy <- .frame_spans(d$y, breaks, gap)
+    sy <- .frame_spans(d$y, breaks, gap, q = quantiles$y)
     if (grepl("l", sides, fixed = TRUE)) add(sy, FALSE, 0)
     if (grepl("r", sides, fixed = TRUE)) add(sy, FALSE, 1)
   }

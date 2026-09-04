@@ -7,6 +7,10 @@
 #' redundant, so it's removed. The table and the graphic become the same
 #' object.
 #'
+#' Two periods, then. The labels sit outside the panel on either side, so a
+#' third period has nowhere to put its numbers: the lines run through it and
+#' only the first and last are labelled, with a warning saying so.
+#'
 #' The design fails quietly when many units share a value, because the labels
 #' collide. \code{slopegraph()} nudges colliding labels apart by default; if
 #' your data are dense, reduce \code{label_size} or plot fewer units.
@@ -61,6 +65,15 @@ slopegraph <- function(data, x, y, group, label_size = 2.8,
   if (nrow(d) == 0) .abort("No complete rows to plot.")
   if (nlevels(droplevels(d$x)) < 2) {
     .abort("{.arg x} needs at least two periods for a slopegraph.")
+  }
+  if (nlevels(d$x) > 2) {
+    # The labels sit outside the panel, to the left of the first period and to
+    # the right of the last, so a middle period has no side to be labelled on.
+    # The lines are still drawn through every period.
+    .warn(c(
+      "{nlevels(d$x)} periods given, and only the first and last are labelled.",
+      i = "The lines pass through every period. Tufte's form prints every number, which this layout can only do for two."
+    ))
   }
   d$x <- droplevels(d$x)
   d$xn <- as.integer(d$x)
