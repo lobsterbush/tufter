@@ -52,25 +52,19 @@ background, since that's what the reader sees.
 library(ggplot2)
 p <- ggplot(mtcars, aes(wt, mpg)) + geom_point() + theme_tufte()
 check_contrast(p)
-#> # A tibble: 5 × 5
-#>   role       colour    ratio threshold passes
-#>   <chr>      <chr>     <dbl>     <dbl> <lgl> 
-#> 1 caption    grey40     5.74       4.5 TRUE  
-#> 2 subtitle   grey30     8.45       4.5 TRUE  
-#> 3 axis text  grey20    12.6        4.5 TRUE  
-#> 4 strip text #1A1A1AFF 17.4        4.5 TRUE  
-#> 5 data mark  black     21          3   TRUE  
+#> # A tibble: 2 × 5
+#>   role      colour ratio threshold passes
+#>   <chr>     <chr>  <dbl>     <dbl> <lgl> 
+#> 1 axis text grey20  12.6       4.5 TRUE  
+#> 2 data mark black   21         3   TRUE  
 
 # A figure drawn too faintly to read.
 check_contrast(
   ggplot(mtcars, aes(wt, mpg)) + geom_point(colour = "grey85") + theme_tufte()
 )
-#> # A tibble: 5 × 5
-#>   role       colour    ratio threshold passes
-#>   <chr>      <chr>     <dbl>     <dbl> <lgl> 
-#> 1 data mark  grey85     1.41       3   FALSE 
-#> 2 caption    grey40     5.74       4.5 TRUE  
-#> 3 subtitle   grey30     8.45       4.5 TRUE  
-#> 4 axis text  grey20    12.6        4.5 TRUE  
-#> 5 strip text #1A1A1AFF 17.4        4.5 TRUE  
+#> # A tibble: 2 × 5
+#>   role      colour ratio threshold passes
+#>   <chr>     <chr>  <dbl>     <dbl> <lgl> 
+#> 1 data mark grey85  1.41       3   FALSE 
+#> 2 axis text grey20 12.6        4.5 TRUE  
 ```

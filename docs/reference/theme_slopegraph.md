@@ -14,12 +14,11 @@ theme_slopegraph(base_size = 11, base_family = "")
 
 - base_size:
 
-  Base font size in points. Defaults to 12.
+  Base font size in points. Defaults to 11.
 
 - base_family:
 
-  Base font family. Defaults to `""` (the device default). `"serif"` is
-  closer to Tufte's own books.
+  Base font family. Defaults to the device default.
 
 ## Value
 

@@ -264,14 +264,11 @@ check_contrast(
     geom_point(colour = "grey80", size = 0.8) +
     theme_tufte()
 )
-#> # A tibble: 5 × 5
-#>   role       colour    ratio threshold passes
-#>   <chr>      <chr>     <dbl>     <dbl> <lgl> 
-#> 1 data mark  grey80     1.61       3   FALSE 
-#> 2 caption    grey40     5.74       4.5 TRUE  
-#> 3 subtitle   grey30     8.45       4.5 TRUE  
-#> 4 axis text  grey20    12.6        4.5 TRUE  
-#> 5 strip text #1A1A1AFF 17.4        4.5 TRUE
+#> # A tibble: 2 × 5
+#>   role      colour ratio threshold passes
+#>   <chr>     <chr>  <dbl>     <dbl> <lgl> 
+#> 1 data mark grey80  1.61       3   FALSE 
+#> 2 axis text grey20 12.6        4.5 TRUE
 ```
 
 Grey 80 on white is elegant, and for a good number of readers it’s

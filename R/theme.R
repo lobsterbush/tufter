@@ -103,7 +103,8 @@ theme_tufte <- function(base_size = 12,
 #' Removes everything. A sparkline is a word-sized graphic meant to sit inside
 #' running text, so it has no axes, no labels, no frame, and almost no margin.
 #'
-#' @inheritParams theme_tufte
+#' @param base_size Base font size in points. Defaults to 9.
+#' @param base_family Base font family. Defaults to the device default.
 #' @return A \code{ggplot2} theme object.
 #' @export
 #' @examples
@@ -128,7 +129,8 @@ theme_sparkline <- function(base_size = 9, base_family = "") {
 #' line, so the y axis is redundant and is removed. Only the category labels at
 #' the top survive.
 #'
-#' @inheritParams theme_tufte
+#' @param base_size Base font size in points. Defaults to 11.
+#' @param base_family Base font family. Defaults to the device default.
 #' @return A \code{ggplot2} theme object.
 #' @export
 #' @examples

@@ -38,6 +38,7 @@ geom_rangeframe <- function(mapping = NULL, data = NULL, stat = "identity",
                             position = "identity", ..., sides = "bl",
                             na.rm = FALSE, show.legend = NA,
                             inherit.aes = TRUE) {
+  sides <- .check_frame_sides(sides)
   ggplot2::layer(
     geom = GeomRangeFrame, mapping = mapping, data = data, stat = stat,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
@@ -73,6 +74,8 @@ geom_quartileframe <- function(mapping = NULL, data = NULL, stat = "identity",
                                position = "identity", ..., sides = "bl",
                                gap = 0.01, na.rm = FALSE, show.legend = NA,
                                inherit.aes = TRUE) {
+  sides <- .check_frame_sides(sides)
+  gap <- .check_gap(gap)
   ggplot2::layer(
     geom = GeomQuartileFrame, mapping = mapping, data = data, stat = stat,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
@@ -127,10 +130,19 @@ GeomQuartileFrame <- ggplot2::ggproto(
   )
   tq <- tryCatch(coord$transform(df, panel_params), error = function(e) NULL)
   if (is.null(tq)) return(NULL)
-  # After the coord, tq$x is whatever is drawn horizontally, which is what the
-  # horizontal spans need, flip or no flip.
-  list(x = if (all(is.finite(tq$x))) tq$x else NULL,
-       y = if (all(is.finite(tq$y))) tq$y else NULL)
+
+  # The padding matters. An axis with too few distinct values gets a column of
+  # a constant so the other axis can still go through the coord, and that
+  # column comes back finite. Returning it as though it were a summary made
+  # .frame_spans() skip its plain-range branch, invert all four segments, and
+  # hand grid a zero-row segmentsGrob, which is an error. Only an axis that
+  # really had a summary gets one back, and the coord decides which side that
+  # lands on.
+  flipped <- inherits(coord, "CoordFlip")
+  had <- list(x = !is.null(qx), y = !is.null(qy))
+  drawn <- if (flipped) list(x = had$y, y = had$x) else had
+  list(x = if (drawn$x && all(is.finite(tq$x))) tq$x else NULL,
+       y = if (drawn$y && all(is.finite(tq$y))) tq$y else NULL)
 }
 
 # The five-number summary of the untransformed data, returned in the scale's
@@ -188,7 +200,9 @@ GeomQuartileFrame <- ggplot2::ggproto(
   grobs <- list()
 
   add <- function(spans, horizontal, at) {
-    if (is.null(spans)) return(invisible(NULL))
+    # Zero rows reach grid::unit() as a zero-length vector, which is an error
+    # rather than an empty drawing.
+    if (is.null(spans) || nrow(spans) == 0) return(invisible(NULL))
     g <- if (horizontal) {
       grid::segmentsGrob(
         x0 = grid::unit(spans$start, "npc"), x1 = grid::unit(spans$end, "npc"),

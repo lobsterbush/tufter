@@ -1,3 +1,39 @@
+# tufter 0.6.2
+
+Ten more from a third audit. The first is a regression from 0.6.1.
+
+* `geom_quartileframe()` no longer errors when an axis has fewer than four
+  distinct values, which is any discrete axis and most integer ones. The 0.6.1
+  fix that moved the summary into data space padded the degenerate axis with a
+  constant and passed it on as though it were a real summary, so every segment
+  inverted and grid was handed a zero-length unit.
+* `sides` and `gap` are checked. `"BL"` and `"LB"`, the natural typos for
+  `"bl"`, matched nothing and the layer drew nothing without a word; a `gap`
+  wide enough to swallow every segment did the same, and a negative one
+  widened the segments instead of breaking them.
+* `check_contrast()` measures only text the figure draws. A styled subtitle
+  colour on a plot with no subtitle was measured, failed, and counted as a
+  violation. A fully transparent panel fill is no longer read as an opaque
+  background, which had every mark on the plot failing against black.
+* `tufte_audit()` checks its own `width` and `height`. The individual measures
+  reject a bad size, but the audit caught their errors, so an impossible canvas
+  silently dropped four checks, one of them graded, and under-reported the
+  violation count.
+* A minor grid asked for on one axis only, in `panel.grid.minor.x` or `.y`, is
+  found. Only the parent element was read.
+* `geom_text_last()` and `geom_text_first()` accept a vector `nudge_x` or
+  `nudge_y`, as `geom_text()` does. `||` on a vector is an error.
+* `sparkline()` labels the rightmost point rather than the last row. On
+  unsorted input the line's right-hand end and the printed final value were
+  different observations, and `sparklines()` disagreed with it on identical
+  data.
+* `slopegraph()` counts the periods present. An unused factor level counted as
+  a period and warned about labelling that was complete.
+* `audit_figures()` keeps the names it was given. One unnamed element replaced
+  every supplied name, breaking the documented drill-in.
+* `theme_sparkline()` and `theme_slopegraph()` document their own base font
+  sizes, 9 and 11, rather than inheriting `theme_tufte()`'s 12.
+
 # tufter 0.6.1
 
 Twenty-one fixes from two independent audits, one by a Claude subagent and one

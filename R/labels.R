@@ -65,7 +65,9 @@ geom_text_first <- function(mapping = NULL, data = NULL, position = "identity",
 .layer_extreme <- function(which, mapping, data, position, nudge_x, nudge_y,
                            hjust, vjust, geom, na.rm, show.legend,
                            inherit.aes, ...) {
-  if (nudge_x != 0 || nudge_y != 0) {
+  # ggplot2 accepts a vector nudge, and `||` on one is an error rather than a
+  # comparison.
+  if (any(nudge_x != 0) || any(nudge_y != 0)) {
     if (!identical(position, "identity")) {
       .abort("Supply either {.arg position} or {.arg nudge_x}/{.arg nudge_y}, not both.")
     }

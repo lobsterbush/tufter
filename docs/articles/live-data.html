@@ -93,7 +93,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -516,15 +516,13 @@ projector. <code><a href="../reference/check_contrast.html">check_contrast()</a>
 first, so it measures what the reader actually sees.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/check_contrast.html">check_contrast</a></span><span class="op">(</span><span class="va">quake_figure</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 5</span></span></span>
-<span><span class="co">#&gt;   role       colour    ratio threshold passes</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> data mark  #D8D8D8    1.43       3   FALSE </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> caption    grey40     5.74       4.5 TRUE  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> subtitle   grey30     8.45       4.5 TRUE  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> axis text  grey20    12.6        4.5 TRUE  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> strip text #1A1A1AFF 17.4        4.5 TRUE  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> data mark  black     21          3   TRUE</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 5</span></span></span>
+<span><span class="co">#&gt;   role      colour  ratio threshold passes</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> data mark #D8D8D8  1.43       3   FALSE </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> caption   grey40   5.74       4.5 TRUE  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> axis text grey20  12.6        4.5 TRUE  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> data mark black   21          3   TRUE</span></span></code></pre></div>
 <p>Black at 15 percent opacity composites to <code>#D8D8D8</code>, which
 comes out at 1.4 against white and sits well below the minimum of 3. In
 a scatterplot I think that’s a defensible trade, since the shape of the

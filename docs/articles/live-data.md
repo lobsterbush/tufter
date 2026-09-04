@@ -401,15 +401,13 @@ actually sees.
 
 ``` r
 check_contrast(quake_figure)
-#> # A tibble: 6 × 5
-#>   role       colour    ratio threshold passes
-#>   <chr>      <chr>     <dbl>     <dbl> <lgl> 
-#> 1 data mark  #D8D8D8    1.43       3   FALSE 
-#> 2 caption    grey40     5.74       4.5 TRUE  
-#> 3 subtitle   grey30     8.45       4.5 TRUE  
-#> 4 axis text  grey20    12.6        4.5 TRUE  
-#> 5 strip text #1A1A1AFF 17.4        4.5 TRUE  
-#> 6 data mark  black     21          3   TRUE
+#> # A tibble: 4 × 5
+#>   role      colour  ratio threshold passes
+#>   <chr>     <chr>   <dbl>     <dbl> <lgl> 
+#> 1 data mark #D8D8D8  1.43       3   FALSE 
+#> 2 caption   grey40   5.74       4.5 TRUE  
+#> 3 axis text grey20  12.6        4.5 TRUE  
+#> 4 data mark black   21          3   TRUE
 ```
 
 Black at 15 percent opacity composites to `#D8D8D8`, which comes out at

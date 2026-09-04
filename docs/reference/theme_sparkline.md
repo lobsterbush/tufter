@@ -14,12 +14,11 @@ theme_sparkline(base_size = 9, base_family = "")
 
 - base_size:
 
-  Base font size in points. Defaults to 12.
+  Base font size in points. Defaults to 9.
 
 - base_family:
 
-  Base font family. Defaults to `""` (the device default). `"serif"` is
-  closer to Tufte's own books.
+  Base font family. Defaults to the device default.
 
 ## Value
 

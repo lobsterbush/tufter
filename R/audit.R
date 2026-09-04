@@ -42,6 +42,11 @@
 #' tufte_audit(ggplot(mtcars, aes(wt, mpg)) + geom_point())
 tufte_audit <- function(plot, width = 6.5, height = 4, measure = TRUE) {
   .check_gg(plot)
+  # Every individual measure rejects a size that is not a size. The audit wraps
+  # them in tryCatch, so without this an impossible canvas silently dropped the
+  # four rendering checks, one of them a graded criterion, and the violation
+  # count came back lower than the truth.
+  .check_size(width, height)
 
   built <- tryCatch(ggplot2::ggplot_build(plot), error = function(e) NULL)
   if (is.null(built)) .abort("This plot cannot be built, so it cannot be audited.")
@@ -220,8 +225,13 @@ print.tufte_audit <- function(x, ...) {
 
 #' @noRd
 .check_gridlines <- function(ctx) {
-  minor <- ctx$theme$panel.grid.minor
-  if (!.is_blank(minor)) {
+  # A grid asked for on one axis only lives in the .x or .y element, exactly as
+  # check_contrast() already noted for the major grid. Reading only the parent
+  # let panel.grid.minor.x through.
+  minors <- list(ctx$theme$panel.grid.minor,
+                 ctx$theme$panel.grid.minor.x,
+                 ctx$theme$panel.grid.minor.y)
+  if (any(!vapply(minors, .is_blank, logical(1)))) {
     return(.row(
       "Erase non-data ink",
       "No minor gridlines", "fail",

@@ -7,10 +7,9 @@
 theme_sparkline(base_size = 9, base_family = "")
 }
 \arguments{
-\item{base_size}{Base font size in points. Defaults to 12.}
+\item{base_size}{Base font size in points. Defaults to 9.}
 
-\item{base_family}{Base font family. Defaults to \code{""} (the device
-default). \code{"serif"} is closer to Tufte's own books.}
+\item{base_family}{Base font family. Defaults to the device default.}
 }
 \value{
 A \code{ggplot2} theme object.

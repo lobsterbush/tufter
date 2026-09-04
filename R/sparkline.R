@@ -73,7 +73,11 @@ sparkline <- function(values, index = seq_along(values),
     )
   }
 
-  lastd <- d[nrow(d), , drop = FALSE]
+  # The rightmost point, not the last row. geom_line() draws sorted by x, so on
+  # unsorted input the line's right-hand end and the labelled "final value"
+  # were different observations. sparklines() already sorts and got this right,
+  # so the two functions disagreed on identical data.
+  lastd <- d[which.max(d$x), , drop = FALSE]
   if (last_point) {
     p <- p + ggplot2::geom_point(data = lastd, colour = colour, size = 0.8)
   }

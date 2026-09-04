@@ -66,6 +66,9 @@ slopegraph <- function(data, x, y, group, label_size = 2.8,
   if (nlevels(droplevels(d$x)) < 2) {
     .abort("{.arg x} needs at least two periods for a slopegraph.")
   }
+  # droplevels() first. A factor carrying an unused level counted it as a
+  # period and warned about labelling that was in fact complete.
+  d$x <- droplevels(d$x)
   if (nlevels(d$x) > 2) {
     # The labels sit outside the panel, to the left of the first period and to
     # the right of the last, so a middle period has no side to be labelled on.
@@ -75,7 +78,6 @@ slopegraph <- function(data, x, y, group, label_size = 2.8,
       i = "The lines pass through every period. Tufte's form prints every number, which this layout can only do for two."
     ))
   }
-  d$x <- droplevels(d$x)
   d$xn <- as.integer(d$x)
 
   # One unit can only have one value per period. More than one is ambiguous

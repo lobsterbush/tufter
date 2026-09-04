@@ -73,7 +73,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,6 +106,29 @@
       <small>Source: <a href="https://github.com/lobsterbush/tufter/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.6.2" id="tufter-062">tufter 0.6.2<a class="anchor" aria-label="anchor" href="#tufter-062"></a></h2>
+<p>Ten more from a third audit. The first is a regression from 0.6.1.</p>
+<ul><li>
+<code><a href="../reference/geom_rangeframe.html">geom_quartileframe()</a></code> no longer errors when an axis has fewer than four distinct values, which is any discrete axis and most integer ones. The 0.6.1 fix that moved the summary into data space padded the degenerate axis with a constant and passed it on as though it were a real summary, so every segment inverted and grid was handed a zero-length unit.</li>
+<li>
+<code>sides</code> and <code>gap</code> are checked. <code>"BL"</code> and <code>"LB"</code>, the natural typos for <code>"bl"</code>, matched nothing and the layer drew nothing without a word; a <code>gap</code> wide enough to swallow every segment did the same, and a negative one widened the segments instead of breaking them.</li>
+<li>
+<code><a href="../reference/check_contrast.html">check_contrast()</a></code> measures only text the figure draws. A styled subtitle colour on a plot with no subtitle was measured, failed, and counted as a violation. A fully transparent panel fill is no longer read as an opaque background, which had every mark on the plot failing against black.</li>
+<li>
+<code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> checks its own <code>width</code> and <code>height</code>. The individual measures reject a bad size, but the audit caught their errors, so an impossible canvas silently dropped four checks, one of them graded, and under-reported the violation count.</li>
+<li>A minor grid asked for on one axis only, in <code>panel.grid.minor.x</code> or <code>.y</code>, is found. Only the parent element was read.</li>
+<li>
+<code><a href="../reference/geom_text_last.html">geom_text_last()</a></code> and <code><a href="../reference/geom_text_last.html">geom_text_first()</a></code> accept a vector <code>nudge_x</code> or <code>nudge_y</code>, as <code><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text()</a></code> does. <code>||</code> on a vector is an error.</li>
+<li>
+<code><a href="../reference/sparkline.html">sparkline()</a></code> labels the rightmost point rather than the last row. On unsorted input the line’s right-hand end and the printed final value were different observations, and <code><a href="../reference/sparklines.html">sparklines()</a></code> disagreed with it on identical data.</li>
+<li>
+<code><a href="../reference/slopegraph.html">slopegraph()</a></code> counts the periods present. An unused factor level counted as a period and warned about labelling that was complete.</li>
+<li>
+<code><a href="../reference/audit_figures.html">audit_figures()</a></code> keeps the names it was given. One unnamed element replaced every supplied name, breaking the documented drill-in.</li>
+<li>
+<code><a href="../reference/theme_sparkline.html">theme_sparkline()</a></code> and <code><a href="../reference/theme_slopegraph.html">theme_slopegraph()</a></code> document their own base font sizes, 9 and 11, rather than inheriting <code><a href="../reference/theme_tufte.html">theme_tufte()</a></code>’s 12.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.1" id="tufter-061">tufter 0.6.1<a class="anchor" aria-label="anchor" href="#tufter-061"></a></h2>
 <p>Twenty-one fixes from two independent audits, one by a Claude subagent and one by Codex. Codex could not run R in its sandbox, so its findings were static traces; every one was confirmed by hand before being fixed.</p>

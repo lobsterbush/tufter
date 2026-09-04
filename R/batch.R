@@ -157,8 +157,11 @@ print.tufte_audit_batch <- function(x, ...) {
   if (any(bad)) {
     .abort("Element{?s} {which(bad)} of {.arg plots} {?is/are} not {?a/} ggplot{?s}.")
   }
-  if (is.null(names(plots)) || any(!nzchar(names(plots)))) {
-    names(plots) <- paste0("figure ", seq_along(plots))
-  }
+  # Fill the gaps rather than replacing the lot. One unnamed element used to
+  # throw away every name the caller had given, breaking the documented
+  # drill-in by name.
+  nms <- names(plots) %||% rep("", length(plots))
+  nms[is.na(nms) | !nzchar(nms)] <- paste0("figure ", which(is.na(nms) | !nzchar(nms)))
+  names(plots) <- make.unique(nms, sep = " ")
   plots
 }

@@ -107,12 +107,26 @@ check_contrast <- function(plot, background = NULL, text_min = 4.5,
   add("data mark", pick("mark"), mark_min)
   add("data label", pick("text"), text_min)
 
+  # Only text the figure actually draws. The theme carries a colour for every
+  # element whether or not the plot uses it, so a styled subtitle colour on a
+  # plot with no subtitle was measured, failed, and counted as a violation.
+  labs <- plot$labels %||% list()
+  drawn <- function(nm) {
+    v <- labs[[nm]]
+    !is.null(v) && !inherits(v, "waiver") && any(nzchar(as.character(v)))
+  }
   add("axis text", .el_get(theme$axis.text, "colour"), text_min)
   add("axis title", .el_get(theme$axis.title, "colour"), text_min)
-  add("title", .el_get(theme$plot.title, "colour"), text_min)
-  add("subtitle", .el_get(theme$plot.subtitle, "colour"), text_min)
-  add("caption", .el_get(theme$plot.caption, "colour"), text_min)
-  add("strip text", .el_get(theme$strip.text, "colour"), text_min)
+  if (drawn("title")) add("title", .el_get(theme$plot.title, "colour"), text_min)
+  if (drawn("subtitle")) {
+    add("subtitle", .el_get(theme$plot.subtitle, "colour"), text_min)
+  }
+  if (drawn("caption")) {
+    add("caption", .el_get(theme$plot.caption, "colour"), text_min)
+  }
+  if (!inherits(plot$facet, "FacetNull")) {
+    add("strip text", .el_get(theme$strip.text, "colour"), text_min)
+  }
   # A grid asked for on one axis only lives in the .x or .y element, so all
   # three have to be looked at.
   add("gridline", c(
@@ -140,9 +154,10 @@ check_contrast <- function(plot, background = NULL, text_min = 4.5,
 .plot_background <- function(theme) {
   fill <- .el_get(theme$panel.background, "fill") %||%
     .el_get(theme$plot.background, "fill")
-  if (is.null(fill) || is.na(fill) || identical(fill, "transparent")) {
-    return("white")
-  }
+  # .is_blank_fill() also catches an alpha of zero and the other spellings of
+  # white. Without it a fill of "#00000000", which draws nothing at all, was
+  # measured as opaque black and every mark on the plot failed against it.
+  if (is.null(fill) || .is_blank_fill(fill)) return("white")
   fill
 }
 

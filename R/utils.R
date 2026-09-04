@@ -144,6 +144,39 @@ NULL
   invisible(TRUE)
 }
 
+# Which panel edges a frame or rug draws on. The drawing code matches with
+# grepl(fixed = TRUE), so "BL" and "LB", the natural typos for "bl", matched
+# nothing and the layer drew nothing without a word. geom_col_tufte() already
+# refuses a bad `sides`; the frame and rug geoms did not.
+#' @noRd
+.check_frame_sides <- function(sides) {
+  if (!is.character(sides) || length(sides) != 1 || is.na(sides)) {
+    .abort('{.arg sides} must be a single string made of "t", "r", "b" and "l".')
+  }
+  chars <- strsplit(sides, "")[[1]]
+  bad <- setdiff(chars, c("t", "r", "b", "l"))
+  if (!nzchar(sides) || length(bad)) {
+    .abort(c(
+      '{.arg sides} must be a single string made of "t", "r", "b" and "l", such as {.val bl}.',
+      i = if (length(bad)) 'Got {.val {sides}}; {.val {bad}} {?is/are} not {?a side/sides}. The letters are lower case.'
+          else 'Got an empty string, so nothing would be drawn.'
+    ))
+  }
+  sides
+}
+
+# A gap opened at each interior quartile, as a fraction of the axis. Wide enough
+# and every segment inverts, leaving nothing to draw and a zero-length unit for
+# grid, which is an error rather than an empty frame.
+#' @noRd
+.check_gap <- function(gap) {
+  if (!is.numeric(gap) || length(gap) != 1 || !is.finite(gap) ||
+      gap < 0 || gap >= 1) {
+    .abort("{.arg gap} must be a single number from 0 up to but not including 1, as a fraction of the axis.")
+  }
+  gap
+}
+
 # Standard Tufte line weight: hairlines, not rules.
 #' @noRd
 .hairline <- 0.3

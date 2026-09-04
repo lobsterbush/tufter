@@ -7,10 +7,9 @@
 theme_slopegraph(base_size = 11, base_family = "")
 }
 \arguments{
-\item{base_size}{Base font size in points. Defaults to 12.}
+\item{base_size}{Base font size in points. Defaults to 11.}
 
-\item{base_family}{Base font family. Defaults to \code{""} (the device
-default). \code{"serif"} is closer to Tufte's own books.}
+\item{base_family}{Base font family. Defaults to the device default.}
 }
 \value{
 A \code{ggplot2} theme object.

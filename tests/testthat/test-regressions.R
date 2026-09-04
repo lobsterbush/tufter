@@ -962,3 +962,127 @@ test_that("check_labels_fit measures axes and strips on every side", {
     expect_true(e %in% out$element, info = e)
   }
 })
+
+# ---- from the third audit ---------------------------------------------------
+
+test_that("the quartile frame survives an axis with too few distinct values", {
+  # Introduced by the fix that moved the summary into data space:
+  # .transformed_quantiles() padded the degenerate axis with a constant and
+  # returned it as though it were a real summary, so .frame_spans() skipped its
+  # plain-range branch, every segment inverted, and a zero-row segmentsGrob
+  # reached grid::unit(), which errors.
+  builds <- function(p) {
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off(), add = TRUE)
+    !inherits(try(ggplot2::ggplotGrob(p), silent = TRUE), "try-error")
+  }
+  base <- function(a) ggplot(mtcars, a) + geom_point() + geom_quartileframe()
+  expect_true(builds(base(aes(factor(cyl), mpg))))
+  expect_true(builds(base(aes(cyl, mpg))))
+  expect_true(builds(base(aes(wt, mpg))))
+  expect_true(builds(base(aes(factor(cyl), mpg)) + coord_flip()))
+  expect_true(builds(base(aes(wt, factor(cyl)))))
+})
+
+test_that("frame geoms refuse a sides string they cannot draw", {
+  # grepl(fixed = TRUE) matched nothing for "BL" or "LB", the natural typos for
+  # "bl", and the layer drew nothing without a word.
+  for (bad in c("LB", "BL", "", "xy", "top")) {
+    expect_error(geom_rangeframe(sides = bad), "sides", info = bad)
+    expect_error(geom_dotdash(sides = bad), "sides", info = bad)
+    expect_error(geom_quartileframe(sides = bad), "sides", info = bad)
+  }
+  for (good in c("bl", "tr", "b", "trbl")) {
+    expect_s3_class(geom_rangeframe(sides = good), "Layer")
+  }
+  # A gap wide enough to swallow every segment left nothing to draw and a
+  # zero-length unit for grid.
+  for (bad in c(5, -0.5, 1, NA, "x", c(0.1, 0.2))) {
+    expect_error(geom_quartileframe(gap = bad), "gap")
+  }
+  expect_s3_class(geom_quartileframe(gap = 0.02), "Layer")
+})
+
+test_that("check_contrast only measures text the figure draws", {
+  # The theme carries a colour for every element whether the plot uses it or
+  # not, so a styled subtitle colour on a plot with no subtitle was measured,
+  # failed, and counted against the violation total.
+  styled <- function(p) p + theme_tufte() +
+    theme(plot.subtitle = element_text(colour = "grey72"),
+          plot.caption = element_text(colour = "grey72"),
+          strip.text = element_text(colour = "grey72"))
+  bare <- styled(ggplot(mtcars, aes(wt, mpg)) + geom_point())
+  cc <- suppressWarnings(check_contrast(bare))
+  expect_false(any(cc$role %in% c("subtitle", "caption", "strip text")))
+
+  # Give it a real subtitle and it is measured again.
+  with_sub <- bare + labs(subtitle = "a real subtitle")
+  expect_true("subtitle" %in% suppressWarnings(check_contrast(with_sub))$role)
+
+  # A fully transparent fill draws nothing, so it is not the background.
+  clear <- ggplot(mtcars, aes(wt, mpg)) + geom_point() + theme_tufte() +
+    theme(panel.background = element_rect(fill = "#00000000", colour = NA))
+  expect_true(suppressWarnings(check_contrast(clear))$passes[1])
+})
+
+test_that("tufte_audit refuses a canvas that is not a canvas", {
+  # Every individual measure rejects a bad size, but the audit wrapped them in
+  # tryCatch, so an impossible canvas dropped four checks including a graded
+  # criterion and reported a lower violation count than the truth.
+  p <- ggplot(mtcars, aes(wt, mpg)) + geom_point()
+  for (w in list(0, -1, NA, "6.5", c(1, 2), Inf)) {
+    expect_error(tufte_audit(p, width = w), "positive")
+  }
+  expect_error(tufte_audit(p, height = 0), "positive")
+})
+
+test_that("a minor grid on one axis only is still a minor grid", {
+  status <- function(p) {
+    a <- suppressWarnings(tufte_audit(p, measure = FALSE))
+    a$status[a$check == "No minor gridlines"]
+  }
+  base <- ggplot(mtcars, aes(wt, mpg)) + geom_point() + theme_tufte()
+  expect_equal(status(base), "pass")
+  expect_equal(status(base + theme(panel.grid.minor.x = element_line(colour = "grey80"))), "fail")
+  expect_equal(status(base + theme(panel.grid.minor.y = element_line(colour = "grey80"))), "fail")
+  expect_equal(status(base + theme(panel.grid.minor = element_line(colour = "grey80"))), "fail")
+})
+
+test_that("direct labels take a vector nudge, as geom_text does", {
+  # `||` on a vector is an error rather than a comparison.
+  expect_s3_class(geom_text_last(aes(label = "a"), nudge_x = c(1, 2, 3)), "Layer")
+  expect_s3_class(geom_text_first(aes(label = "a"), nudge_y = c(0, 1)), "Layer")
+  expect_s3_class(geom_text_last(aes(label = "a"), nudge_x = 1), "Layer")
+})
+
+test_that("sparkline labels the rightmost point, not the last row", {
+  # geom_line() draws sorted by x, so on unsorted input the line's right-hand
+  # end and the labelled final value were different observations. sparklines()
+  # sorts and always agreed; the two disagreed on identical data.
+  b <- ggplot_build(sparkline(c(3, 1, 2), index = c(3, 1, 2)))
+  expect_equal(b$data[[length(b$data)]]$x[1], 3)
+  b2 <- ggplot_build(sparkline(c(3, 1, 2)))
+  expect_equal(b2$data[[length(b2$data)]]$x[1], 3)
+})
+
+test_that("slopegraph counts the periods that are present", {
+  # An unused factor level counted as a period and warned about labelling that
+  # was in fact complete.
+  d <- data.frame(country = rep(c("Sweden", "Japan"), each = 2),
+                  year = factor(rep(c("1970", "2020"), 2),
+                                levels = c("1970", "1995", "2020")),
+                  value = c(30.1, 41.2, 20.7, 32.9))
+  expect_silent(slopegraph(d, year, value, country))
+  d3 <- expand.grid(unit = c("A", "B"), period = 1:3)
+  d3$value <- seq_len(nrow(d3))
+  expect_warning(slopegraph(d3, period, value, unit), "first and last")
+})
+
+test_that("audit_figures keeps the names it was given", {
+  # One unnamed element used to replace every name the caller supplied,
+  # breaking the documented drill-in.
+  p <- ggplot(mtcars, aes(wt, mpg)) + geom_point()
+  r <- suppressWarnings(audit_figures(list(scatter = p, p), measure = FALSE))
+  expect_equal(r$figure, c("scatter", "figure 2"))
+  expect_s3_class(attr(r, "audits")[["scatter"]], "tufte_audit")
+})

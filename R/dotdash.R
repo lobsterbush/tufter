@@ -26,6 +26,7 @@ geom_dotdash <- function(mapping = NULL, data = NULL, stat = "identity",
                          position = "identity", ..., sides = "bl",
                          tick_length = grid::unit(0.02, "npc"),
                          na.rm = FALSE, show.legend = NA, inherit.aes = TRUE) {
+  sides <- .check_frame_sides(sides)
   ggplot2::layer(
     geom = GeomDotDash, mapping = mapping, data = data, stat = stat,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
