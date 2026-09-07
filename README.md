@@ -1,4 +1,6 @@
-# tufter
+# tufter <a href="https://lobsterbush.github.io/tufter/"><img src="man/figures/logo.png" align="right" width="140" alt="tufter hex sticker" /></a>
+
+[Package documentation](https://lobsterbush.github.io/tufter/) · [Function reference](https://lobsterbush.github.io/tufter/reference/index.html)
 
 <div class="package-kicker">R tools · Charles Crabtree</div>
 

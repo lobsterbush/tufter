@@ -76,3 +76,8 @@ footer p { margin-bottom: .5rem; }
 /* Console output can contain cli's inline ANSI-grey styles. Keep the text
    readable at the small sizes used in examples on both desktop and mobile. */
 .r-out.co, .r-out.co span { color: var(--muted) !important; }
+
+/* Keep the package sticker clear of the introductory copy. */
+.template-home .page-header, .template-home .page-header h1 { display: flow-root; }
+.template-home .page-header img.logo { display: block; float: right; width: 140px; height: 140px; margin: 0 0 0 1rem; object-fit: contain; }
+@media (max-width: 480px) { .template-home .page-header img.logo { width: 100px; height: 100px; } }
