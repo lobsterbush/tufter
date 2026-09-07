@@ -81,7 +81,7 @@ R tools · Charles Crabtree
 <p class="package-lead">
 Make figures easier to read.
 </p>
-<p>I built <code>tufter</code> to help draw and review statistical graphics in R. It brings Tufte-inspired plotting tools and measurements into <code>ggplot2</code>, so you can try a change and examine what it does.</p>
+<p>I built <code>tufter</code> to try Tufte’s ideas in my own R figures. It adds plotting tools to <code>ggplot2</code> and measures specific features of the result, so I can compare a draft with a revised version.</p>
 <p>You can add a range frame, label a series directly, or compare two versions of a figure’s data-ink ratio. I use these as aids to judgement. A figure still needs to answer a useful question, and no function here can decide that for you.</p>
 <div class="float">
 <img src="reference/figures/README-before-after.png" alt="Two scatterplots of penguin measurements. The second removes the panel background and grid and adds a quartile frame. Its estimated data-ink ratio rises from 0.22 to 0.78."><div class="figcaption">Two scatterplots of penguin measurements. The second removes the panel background and grid and adds a quartile frame. Its estimated data-ink ratio rises from 0.22 to 0.78.</div>
@@ -237,7 +237,7 @@ Make figures easier to read.
 <!-- readme-short:start -->
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">tufter</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://lobsterbush.github.io/tufter/">tufter</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">palmerpenguins</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">peng</span> <span class="op">&lt;-</span> <span class="va">penguins</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/stats/complete.cases.html" class="external-link">complete.cases</a></span><span class="op">(</span><span class="va">penguins</span><span class="op">)</span>, <span class="op">]</span></span>

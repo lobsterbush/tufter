@@ -5,7 +5,7 @@ estimate their data-ink ratio, lie factor and data density.
 
 ## Details
 
-I built the package to make these ideas easier to try and examine. The
+I built the package to try these ideas in my own figures. The
 measurements can help you compare drafts, but they can't tell you
 whether a figure supports your argument.
 

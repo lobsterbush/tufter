@@ -1,12 +1,16 @@
 # tufter
 
+[Package documentation](https://lobsterbush.github.io/tufter/) ·
+[Function
+reference](https://lobsterbush.github.io/tufter/reference/index.html)
+
 R tools · Charles Crabtree
 
 Make figures easier to read.
 
-I built `tufter` to help draw and review statistical graphics in R. It
-brings Tufte-inspired plotting tools and measurements into `ggplot2`, so
-you can try a change and examine what it does.
+I built `tufter` to try Tufte’s ideas in my own R figures. It adds
+plotting tools to `ggplot2` and measures specific features of the
+result, so I can compare a draft with a revised version.
 
 You can add a range frame, label a series directly, or compare two
 versions of a figure’s data-ink ratio. I use these as aids to judgement.

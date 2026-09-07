@@ -377,6 +377,7 @@ p[!p$audited, c("principle", "implemented_by")]
 #> 11 Content counts most of all   NA
 ```
 
-Whether a figure supports a causal claim or presents a useful comparison
-still requires judgement. I use the audit to catch specific problems
-while reviewing those larger questions myself.
+I use the audit while reviewing a figure, then read the figure alongside
+the argument. The checks can catch a truncated label or a distorted bar
+length. They can’t decide whether the research design supports a causal
+claim.

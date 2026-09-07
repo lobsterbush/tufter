@@ -483,6 +483,6 @@ p[!p$audited, c("principle", "source", "implemented_by")]
 #> 11 Content counts most of all   Beautiful Evidence ch. 6      NA
 ```
 
-A useful comparison, a credible causal claim, and a clear substantive
-message still require judgement. The package can help with specific
-parts of reviewing a figure; those larger questions remain with us.
+I still need to ask whether the figure answers the research question and
+whether the design supports my interpretation. The measurements help me
+inspect the drawing; they don’t answer those questions.
