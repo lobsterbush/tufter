@@ -15,9 +15,8 @@ theme_slopegraph(base_size = 11, base_family = "")
 A \code{ggplot2} theme object.
 }
 \description{
-A slopegraph carries its scale in the printed values at each end of every
-line, so the y axis is redundant and is removed. Only the category labels at
-the top survive.
+Keep category labels at the top and remove the y axis. Slopegraphs print
+values at the ends of their lines, so readers can read the values directly.
 }
 \examples{
 library(ggplot2)

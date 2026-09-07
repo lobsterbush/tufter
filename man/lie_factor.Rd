@@ -33,18 +33,15 @@ A numeric lie factor, or \code{NA} when there's nothing to compare.
   \code{NA} when no supported comparison is available.
 }
 \description{
-Tufte's measure of graphical integrity: the size of the effect shown in the
-graphic divided by the size of the effect in the data. A truthful graphic
-has a lie factor of one. Tufte treats anything outside roughly 0.95 to 1.05
-as distortion.
+The lie factor divides the proportional change shown in a graphic by the
+proportional change in the data. A value of one means those changes agree.
+Tufte treats values outside roughly 0.95 to 1.05 as distortion.
 }
 \details{
-Two ways in. Given two numeric vectors, the first the underlying values and
-the second the sizes actually drawn, \code{lie_factor()} compares the
-proportional change in each. Given a \code{ggplot} containing bars or
-columns, it computes the distortion introduced by a baseline that doesn't
-start at zero, which is by far the most common way a real figure lies: a bar
-whose length no longer is the quantity it stands for.
+Supply two numeric vectors to compare data values with the sizes drawn.
+Or supply a \code{ggplot} with bars to measure the effect of a non-zero
+baseline. The plot method is limited to supported bar comparisons; a result
+of one isn't a general assessment of the figure's accuracy.
 }
 \examples{
 # Tufte's fuel-economy example: an 18 percent change drawn as 783 percent.

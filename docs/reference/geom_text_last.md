@@ -1,10 +1,9 @@
 # Label series directly instead of with a legend
 
-A legend makes the reader look away from the data, hold a colour in
-memory, look back, and match. Tufte's rule is to integrate word and
-image: put the name on the line. `geom_text_last()` labels each group at
-its largest x value, which is where the eye leaves a time series;
-`geom_text_first()` labels at the smallest.
+Put a series name beside its line so readers can identify it without
+looking up a legend. This follows Tufte's advice to bring text and
+graphics together. `geom_text_last()` labels each group at its largest x
+value; `geom_text_first()` labels it at the smallest.
 
 ## Usage
 
@@ -69,10 +68,10 @@ A `ggplot2` layer.
 
 ## Details
 
-Both add horizontal space to the right or left of the panel by clipping
-off, so pair them with `coord_cartesian(clip = "off")` and a plot
-margin, or widen the x scale with
-[`expansion()`](https://ggplot2.tidyverse.org/reference/expansion.html).
+Leave room for the labels. You can widen the x scale with
+[`expansion()`](https://ggplot2.tidyverse.org/reference/expansion.html),
+or use `coord_cartesian(clip = "off")` with a suitable plot margin.
+These layers don't move overlapping labels apart.
 
 ## Examples
 

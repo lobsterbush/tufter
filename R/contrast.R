@@ -1,10 +1,9 @@
 #' WCAG contrast ratio between two colours
 #'
-#' The ratio of the relative luminances of two colours, as defined by the Web
-#' Content Accessibility Guidelines. It runs from 1, for two identical colours,
-#' to 21, for black on white. The guidelines ask for at least 4.5 for body text
-#' and at least 3 for large text and for graphical objects such as the marks and
-#' rules on a chart.
+#' Compare the relative luminance of two colours using the Web Content
+#' Accessibility Guidelines. The ratio ranges from 1 for identical colours to
+#' 21 for black against white. The guidelines specify at least 4.5 for body
+#' text and 3 for large text and graphical objects.
 #'
 #' @param colour,background Colours, in any form \code{\link[grDevices]{col2rgb}}
 #'   accepts. Vectors are recycled against each other.
@@ -39,25 +38,18 @@ contrast_ratio <- function(colour, background = "white") {
   as.numeric(0.2126 * lin[1, ] + 0.7152 * lin[2, ] + 0.0722 * lin[3, ])
 }
 
-#' Check that a plot's ink is dark enough to see
+#' Check contrast in a plot
 #'
-#' The strongest objection to maximising the data-ink ratio is that it's a
-#' licence to draw in hairlines and pale greys, and that the result is elegant
-#' and unreadable. This is the check that keeps the rest of the package honest:
-#' it takes every colour the plot actually draws with, along with the text
-#' colours the theme sets, and measures each against the background.
+#' Pale colours can make a figure hard to read. This function checks data-mark
+#' colours and rendered theme text against the plot's background. That includes
+#' axis labels and legend text with their own style settings.
 #'
-#' The thresholds are the WCAG 2.1 ones: 4.5 to 1 for text, and 3 to 1 for
-#' graphical objects, which is what data marks and rules are. These are minima
-#' for people with moderately low vision rather than targets, and a figure
-#' that clears them can still be hard work in a badly lit lecture theatre.
+#' The default thresholds follow WCAG 2.1: 4.5 to 1 for text and 3 to 1 for
+#' marks. Transparent colours are composited onto the background before checking.
 #'
-#' Colours drawn with transparency are measured as if composited onto the
-#' background, since that's what the reader sees. Theme text is read from
-#' the rendered grobs, including axis-specific styles and legend labels.
-#' This is a colour screening tool, not a complete accessibility assessment:
-#' it does not resolve overlapping marks, text on filled labels, or contrasting
-#' legend and strip backgrounds.
+#' There are limits. The check doesn't resolve overlapping marks, text on filled
+#' labels, or separate legend and strip backgrounds. I'd also inspect the figure
+#' where it'll be used, particularly if it's going on a projector.
 #'
 #' @param plot A \code{ggplot} object.
 #' @param background The colour to measure against. By default this is taken

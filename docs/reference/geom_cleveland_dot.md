@@ -1,10 +1,8 @@
 # The Cleveland dot plot
 
-When the audit tells you that a bar chart's baseline isn't zero, it's
-offering you two ways out: start at zero, or stop using bars. This is
-the second. A dot encodes its value by position rather than by length,
-so it can be read on a scale that doesn't include zero without lying
-about proportions, and it uses a fraction of the ink a bar does.
+A dot plot is useful when you want to compare values in a narrow range.
+Dots show position on a scale, so the axis can exclude zero without
+changing what the length of a mark represents.
 
 ## Usage
 
@@ -36,8 +34,8 @@ geom_cleveland_dot(
 - orientation:
 
   Which axis holds the categories. `"y"`, the default, puts categories
-  down the left and values across, which is what you want whenever the
-  category names are words. `"x"` is the transpose.
+  down the left and values across. This leaves room for category names.
+  `"x"` transposes the layout.
 
 - leader:
 
@@ -47,7 +45,8 @@ geom_cleveland_dot(
 
 - leader_colour, leader_linetype, leader_linewidth:
 
-  Appearance of the leader line. It should be quiet enough to read past.
+  Appearance of the leader line. Keep it light enough to distinguish
+  from the dots.
 
 ## Value
 
@@ -55,14 +54,12 @@ A `ggplot2` layer.
 
 ## Details
 
-Cleveland's version adds a light leader line running from the axis to
-the dot, which lets the eye track a long way along a row without
-drifting into the neighbouring one. That line isn't data-ink, and it
-earns its place only because the alternative is a misread row.
+Cleveland's leader lines help readers follow each row to its value. You
+can extend them across the panel or turn them off.
 
-Sort the categories before plotting. An alphabetical dot plot wastes the
-main advantage of the form, which is that rank is visible at a glance;
-use [`stats::reorder()`](https://rdrr.io/r/stats/reorder.factor.html) or
+If rank is the comparison you want, sort the categories by value before
+plotting. Use
+[`stats::reorder()`](https://rdrr.io/r/stats/reorder.factor.html) or
 [`forcats::fct_reorder()`](https://forcats.tidyverse.org/reference/fct_reorder.html).
 
 ## Examples

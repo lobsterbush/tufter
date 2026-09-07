@@ -1,9 +1,8 @@
 # Lie factor
 
-Tufte's measure of graphical integrity: the size of the effect shown in
-the graphic divided by the size of the effect in the data. A truthful
-graphic has a lie factor of one. Tufte treats anything outside roughly
-0.95 to 1.05 as distortion.
+The lie factor divides the proportional change shown in a graphic by the
+proportional change in the data. A value of one means those changes
+agree. Tufte treats values outside roughly 0.95 to 1.05 as distortion.
 
 ## Usage
 
@@ -47,12 +46,10 @@ supported comparison is available.
 
 ## Details
 
-Two ways in. Given two numeric vectors, the first the underlying values
-and the second the sizes actually drawn, `lie_factor()` compares the
-proportional change in each. Given a `ggplot` containing bars or
-columns, it computes the distortion introduced by a baseline that
-doesn't start at zero, which is by far the most common way a real figure
-lies: a bar whose length no longer is the quantity it stands for.
+Supply two numeric vectors to compare data values with the sizes drawn.
+Or supply a `ggplot` with bars to measure the effect of a non-zero
+baseline. The plot method is limited to supported bar comparisons; a
+result of one isn't a general assessment of the figure's accuracy.
 
 ## Examples
 

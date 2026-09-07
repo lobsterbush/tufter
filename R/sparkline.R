@@ -1,14 +1,12 @@
 #' Sparklines
 #'
-#' A sparkline is a word-sized graphic: a time series drawn small enough to sit
-#' inside a sentence, a table cell, or a margin, where the reader meets it in
-#' the same glance as the text around it. Tufte introduced them in
-#' \emph{Beautiful Evidence} as the extreme case of data-ink maximisation, with
-#' resolution traded for context.
+#' Draw a time series small enough to place in a sentence, table cell, or
+#' margin. Tufte describes these word-sized graphics in
+#' \emph{Beautiful Evidence}.
 #'
-#' The conventional furniture is a grey band showing the normal range, dots at
-#' the minimum and maximum, and the final value printed at the right-hand end.
-#' Everything else, including both axes, is gone.
+#' The default grey band marks the interquartile range. Dots identify the
+#' minimum and maximum, and a label gives the final value. There are no axes,
+#' so make sure the surrounding text supplies the context readers need.
 #'
 #' @param values Numeric vector of values, in order.
 #' @param index Optional numeric vector of positions. Defaults to
@@ -96,14 +94,11 @@ sparkline <- function(values, index = seq_along(values),
 
 #' Many sparklines at once
 #'
-#' Draws one sparkline per series, stacked, with the series name to the left
-#' and the final value to the right. This is the form Tufte uses for tables of
-#' indicators, where the reader wants shape and level together.
+#' Stack one sparkline per series, with its name on the left and final value
+#' on the right. Each series has its own vertical scale.
 #'
-#' Each series keeps its own vertical scale, because a sparkline reports the
-#' shape of one series rather than inviting comparison of levels across
-#' series. If you do want levels compared, use \code{\link{facet_tufte}()},
-#' which fixes the scales.
+#' This is useful for comparing patterns over time. To compare levels across
+#' series on a shared scale, use \code{\link{facet_tufte}()}.
 #'
 #' @param data A data frame.
 #' @param x,y,group Bare column names for position, value and series.
@@ -192,9 +187,8 @@ sparklines <- function(data, x, y, group, band = c(0.25, 0.75),
 
 #' A sparkline as a grob
 #'
-#' Returns a \code{grid} grob so that a sparkline can be placed inside another
-#' graphic, a table cell, or an \pkg{rmarkdown} inline chunk, which is where
-#' Tufte intended them to live.
+#' Return a \code{grid} grob that you can place in another graphic, a table
+#' cell, or an \pkg{rmarkdown} inline chunk.
 #'
 #' @inheritParams sparkline
 #' @param ... Passed to \code{\link{sparkline}()}.

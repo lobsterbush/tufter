@@ -17,10 +17,9 @@ label_source(source, note = NULL, prefix = "Source:")
 A \code{ggplot2} labs object, to be added to a plot.
 }
 \description{
-Tufte's documentation principle: a graphic should say where its numbers came
-from, on the graphic, so that the claim can be checked without hunting for
-the surrounding text. This is a thin wrapper on \code{labs(caption = ...)}
-that formats the note consistently.
+Name the data source on the figure so readers can check where the numbers
+came from. This follows Tufte's documentation principle and wraps
+\code{labs(caption = ...)} with consistent formatting.
 }
 \examples{
 library(ggplot2)

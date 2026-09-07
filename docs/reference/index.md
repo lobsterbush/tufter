@@ -2,13 +2,12 @@
 
 ## Drawing
 
-The graphical forms Tufte designed or advocated, as ggplot2 layers,
-themes, scales and plot constructors.
+Choose a plotting tool for the comparison you want to make.
 
 ### Themes
 
 - [`theme_tufte()`](https://lobsterbush.github.io/tufter/reference/theme_tufte.md)
-  : A maximum data-ink theme
+  : A minimal theme for statistical graphics
 - [`theme_sparkline()`](https://lobsterbush.github.io/tufter/reference/theme_sparkline.md)
   : A theme for sparklines
 - [`theme_slopegraph()`](https://lobsterbush.github.io/tufter/reference/theme_slopegraph.md)
@@ -16,8 +15,7 @@ themes, scales and plot constructors.
 
 ### Frames and margins
 
-Replacements for the panel border, which is the same box whatever the
-numbers are.
+Show the observed range or distribution along the axes.
 
 - [`geom_rangeframe()`](https://lobsterbush.github.io/tufter/reference/geom_rangeframe.md)
   [`geom_quartileframe()`](https://lobsterbush.github.io/tufter/reference/geom_rangeframe.md)
@@ -52,8 +50,7 @@ numbers are.
 
 ### Colour and labelling
 
-Colour as a code rather than decoration, and words on the data rather
-than in a legend.
+Choose colours and place labels so readers can identify the series.
 
 - [`tufte_pal()`](https://lobsterbush.github.io/tufter/reference/tufte_pal.md)
   [`tufte_colours()`](https://lobsterbush.github.io/tufter/reference/tufte_pal.md)
@@ -73,8 +70,7 @@ than in a legend.
 
 ## Measuring
 
-The quantities Tufte defined, so a finished figure can be examined as
-well as admired.
+Estimate specific features of a figure and compare them across drafts.
 
 - [`data_ink_ratio()`](https://lobsterbush.github.io/tufter/reference/data_ink_ratio.md)
   : Data-ink ratio
@@ -85,7 +81,7 @@ well as admired.
 - [`bank_to_45()`](https://lobsterbush.github.io/tufter/reference/bank_to_45.md)
   : Bank the aspect ratio to 45 degrees
 - [`check_contrast()`](https://lobsterbush.github.io/tufter/reference/check_contrast.md)
-  : Check that a plot's ink is dark enough to see
+  : Check contrast in a plot
 - [`contrast_ratio()`](https://lobsterbush.github.io/tufter/reference/contrast_ratio.md)
   : WCAG contrast ratio between two colours
 - [`check_labels_fit()`](https://lobsterbush.github.io/tufter/reference/check_labels_fit.md)
@@ -103,7 +99,7 @@ well as admired.
 - [`tufte_principles()`](https://lobsterbush.github.io/tufter/reference/tufte_principles.md)
   : Tufte's principles, and what implements them
 - [`save_tufte()`](https://lobsterbush.github.io/tufter/reference/save_tufte.md)
-  : Save a figure, and check it before you do
+  : Save a figure after checking its labels
 - [`tufter`](https://lobsterbush.github.io/tufter/reference/tufter-package.md)
   [`tufter-package`](https://lobsterbush.github.io/tufter/reference/tufter-package.md)
-  : tufter: Implement Edward Tufte's Principles of Graphical Design
+  : tufter: Implement Edward Tufte's principles of graphical design

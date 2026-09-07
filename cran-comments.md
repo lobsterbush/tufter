@@ -1,7 +1,7 @@
 ## Test environment
 
 * Local macOS 26.4 (aarch64), R 4.5.2, ggplot2 4.0.3
-* Built source archive: `tufter_0.6.4.tar.gz`
+* Built source archive: `tufter_0.6.4.tar.gz`, rebuilt after the prose rewrite
 * `R CMD check --as-cran` completed on 2026-09-07
 
 ## R CMD check results
@@ -18,7 +18,7 @@ The repository is public and the package URLs pass URL checks.
 This is a release candidate, not a record of completed cross-platform checks.
 Run the archive on current R release and R-devel, including Windows, and
 update this file with those actual results before uploading to CRAN.
-No CRAN upload or external check-service request has been made.
+I haven't uploaded the package to CRAN or requested external service checks.
 
 ## Notes for the reviewer
 

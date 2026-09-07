@@ -15,9 +15,8 @@ sparkline_grob(values, ...)
 A \code{grid} grob.
 }
 \description{
-Returns a \code{grid} grob so that a sparkline can be placed inside another
-graphic, a table cell, or an \pkg{rmarkdown} inline chunk, which is where
-Tufte intended them to live.
+Return a \code{grid} grob that you can place in another graphic, a table
+cell, or an \pkg{rmarkdown} inline chunk.
 }
 \examples{
 set.seed(1)

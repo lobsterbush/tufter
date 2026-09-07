@@ -1,8 +1,8 @@
 # A theme for slopegraphs
 
-A slopegraph carries its scale in the printed values at each end of
-every line, so the y axis is redundant and is removed. Only the category
-labels at the top survive.
+Keep category labels at the top and remove the y axis. Slopegraphs print
+values at the ends of their lines, so readers can read the values
+directly.
 
 ## Usage
 

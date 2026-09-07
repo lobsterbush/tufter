@@ -45,21 +45,18 @@ to \code{TRUE}. Tufte would keep them: they're data.}
 A \code{ggplot2} layer.
 }
 \description{
-The box in a box plot is a container for four numbers that a line and a dot
-can hold on their own. Tufte's redesign erases the box, the cross-bar and
-the whisker caps, leaving between a third and a fifth of the original ink.
+This implements Tufte's box plot without the enclosing box or whisker caps.
+Choose the version that makes the distribution easiest to read at your
+figure's final size.
 }
 \details{
-Three variants are offered, in increasing order of how much they keep:
 \describe{
-  \item{\code{"point"}}{The default, and the sparest. Two whisker lines with
-    a gap between them, and a dot at the median. The interquartile range is
-    the gap.}
-  \item{\code{"line"}}{A thin whisker line across the full range, a thicker
-    line over the interquartile range, and a white break at the median.}
-  \item{\code{"offset"}}{A thin whisker line, with the interquartile range
-    drawn as a parallel line offset to one side. Use when the whiskers are
-    short and an in-line box would be unreadable.}
+  \item{\code{"point"}}{The default. Two whisker lines leave a gap for the
+    interquartile range, with a dot at the median.}
+  \item{\code{"line"}}{A thin whisker line spans the range, a thicker segment
+    marks the interquartile range, and a white break marks the median.}
+  \item{\code{"offset"}}{The interquartile segment sits beside the whisker
+    line. This can help when the whiskers are short.}
 }
 }
 \examples{

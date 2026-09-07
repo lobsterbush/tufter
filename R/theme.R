@@ -1,20 +1,15 @@
-#' A maximum data-ink theme
+#' A minimal theme for statistical graphics
 #'
-#' Strips every element of the plot that doesn't itself carry data: the panel
-#' background, the grid, the panel border, and the legend frame. This is the
-#' theme half of Tufte's instruction to maximise the share of ink that varies
-#' with the data, and to erase the rest.
+#' Remove the panel background, grid, panel border and legend frame. The theme
+#' follows Tufte's advice to reduce ink that doesn't represent data.
 #'
-#' The default has no axis lines at all, on the assumption that you'll add a
-#' \code{\link{geom_rangeframe}()} or \code{\link{geom_quartileframe}()}, which
-#' carries information the panel border doesn't. Set \code{axis_lines = TRUE}
-#' if you want conventional full-length axes instead.
+#' There are no axis lines by default. Add \code{\link{geom_rangeframe}()} or
+#' \code{\link{geom_quartileframe}()}, or set \code{axis_lines = TRUE} for
+#' ordinary axes.
 #'
-#' A faint grid is sometimes the honest choice: when readers must recover
-#' values from the plot rather than compare shapes. Tufte's own bar charts keep
-#' gridlines but erase them where they cross the bars, which is what
-#' \code{\link{geom_col_tufte}()} does. \code{grid = "y"} or \code{"x"} gives
-#' you a hairline grid on one axis only.
+#' I'd keep a grid when it helps readers estimate values. Use \code{grid = "y"}
+#' or \code{"x"} for a light grid on one axis. For Tufte's bar design, with
+#' rules erased through the bars, use \code{\link{geom_col_tufte}()}.
 #'
 #' @param base_size Base font size in points. Defaults to 12.
 #' @param base_family Base font family. Defaults to \code{""} (the device
@@ -22,7 +17,7 @@
 #' @param ticks Logical. Draw axis tick marks? Defaults to \code{TRUE}; ticks
 #'   are data-ink in the weak sense that they locate values.
 #' @param axis_lines Logical. Draw conventional axis lines? Defaults to
-#'   \code{FALSE}, since \code{geom_rangeframe()} is the better choice.
+#'   \code{FALSE}. Add a range frame if you'd like axes tied to the data.
 #' @param grid One of \code{"none"} (the default), \code{"x"}, \code{"y"} or
 #'   \code{"both"}. Draws a hairline grid where you ask for one.
 #' @return A \code{ggplot2} theme object.
@@ -100,8 +95,8 @@ theme_tufte <- function(base_size = 12,
 
 #' A theme for sparklines
 #'
-#' Removes everything. A sparkline is a word-sized graphic meant to sit inside
-#' running text, so it has no axes, no labels, no frame, and almost no margin.
+#' Remove axes, labels and the frame, and leave a small margin. This gives a
+#' sparkline room to sit beside the text that explains it.
 #'
 #' @param base_size Base font size in points. Defaults to 9.
 #' @param base_family Base font family. Defaults to the device default.
@@ -125,9 +120,8 @@ theme_sparkline <- function(base_size = 9, base_family = "") {
 
 #' A theme for slopegraphs
 #'
-#' A slopegraph carries its scale in the printed values at each end of every
-#' line, so the y axis is redundant and is removed. Only the category labels at
-#' the top survive.
+#' Keep category labels at the top and remove the y axis. Slopegraphs print
+#' values at the ends of their lines, so readers can read the values directly.
 #'
 #' @param base_size Base font size in points. Defaults to 11.
 #' @param base_family Base font family. Defaults to the device default.

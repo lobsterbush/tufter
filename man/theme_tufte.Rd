@@ -2,7 +2,7 @@
 % Please edit documentation in R/theme.R
 \name{theme_tufte}
 \alias{theme_tufte}
-\title{A maximum data-ink theme}
+\title{A minimal theme for statistical graphics}
 \usage{
 theme_tufte(
   base_size = 12,
@@ -22,7 +22,7 @@ default). \code{"serif"} is closer to Tufte's own books.}
 are data-ink in the weak sense that they locate values.}
 
 \item{axis_lines}{Logical. Draw conventional axis lines? Defaults to
-\code{FALSE}, since \code{geom_rangeframe()} is the better choice.}
+\code{FALSE}. Add a range frame if you'd like axes tied to the data.}
 
 \item{grid}{One of \code{"none"} (the default), \code{"x"}, \code{"y"} or
 \code{"both"}. Draws a hairline grid where you ask for one.}
@@ -31,22 +31,17 @@ are data-ink in the weak sense that they locate values.}
 A \code{ggplot2} theme object.
 }
 \description{
-Strips every element of the plot that doesn't itself carry data: the panel
-background, the grid, the panel border, and the legend frame. This is the
-theme half of Tufte's instruction to maximise the share of ink that varies
-with the data, and to erase the rest.
+Remove the panel background, grid, panel border and legend frame. The theme
+follows Tufte's advice to reduce ink that doesn't represent data.
 }
 \details{
-The default has no axis lines at all, on the assumption that you'll add a
-\code{\link{geom_rangeframe}()} or \code{\link{geom_quartileframe}()}, which
-carries information the panel border doesn't. Set \code{axis_lines = TRUE}
-if you want conventional full-length axes instead.
+There are no axis lines by default. Add \code{\link{geom_rangeframe}()} or
+\code{\link{geom_quartileframe}()}, or set \code{axis_lines = TRUE} for
+ordinary axes.
 
-A faint grid is sometimes the honest choice: when readers must recover
-values from the plot rather than compare shapes. Tufte's own bar charts keep
-gridlines but erase them where they cross the bars, which is what
-\code{\link{geom_col_tufte}()} does. \code{grid = "y"} or \code{"x"} gives
-you a hairline grid on one axis only.
+I'd keep a grid when it helps readers estimate values. Use \code{grid = "y"}
+or \code{"x"} for a light grid on one axis. For Tufte's bar design, with
+rules erased through the bars, use \code{\link{geom_col_tufte}()}.
 }
 \examples{
 library(ggplot2)

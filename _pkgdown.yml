@@ -18,8 +18,8 @@ template:
 home:
   title: Tufte's design principles as R code
   description: >
-    Edward Tufte's principles of graphical design, as working ggplot2 code and
-    as measurements you can apply to a figure you have already drawn.
+    Tools for drawing and reviewing statistical graphics in ggplot2,
+    based on Edward Tufte's ideas. By Charles Crabtree.
 
 navbar:
   structure:
@@ -61,8 +61,7 @@ footer:
 reference:
 - title: Drawing
   desc: >
-    The graphical forms Tufte designed or advocated, as ggplot2 layers, themes,
-    scales and plot constructors.
+    Choose a plotting tool for the comparison you want to make.
 - subtitle: Themes
   contents:
   - theme_tufte
@@ -70,8 +69,7 @@ reference:
   - theme_slopegraph
 - subtitle: Frames and margins
   desc: >
-    Replacements for the panel border, which is the same box whatever the
-    numbers are.
+    Show the observed range or distribution along the axes.
   contents:
   - geom_rangeframe
   - quartile_breaks
@@ -90,8 +88,7 @@ reference:
   - sparkline_grob
 - subtitle: Colour and labelling
   desc: >
-    Colour as a code rather than decoration, and words on the data rather than
-    in a legend.
+    Choose colours and place labels so readers can identify the series.
   contents:
   - tufte_pal
   - scale_colour_tufte
@@ -100,8 +97,7 @@ reference:
 
 - title: Measuring
   desc: >
-    The quantities Tufte defined, so a finished figure can be examined as well
-    as admired.
+    Estimate specific features of a figure and compare them across drafts.
   contents:
   - data_ink_ratio
   - lie_factor

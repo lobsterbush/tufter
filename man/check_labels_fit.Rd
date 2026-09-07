@@ -17,25 +17,20 @@ A tibble with one row per element checked: what it needs, what it
   elements fit.
 }
 \description{
-A figure that has been designed carefully and then saved at the wrong size
-is a figure with a truncated subtitle. This renders the plot at the size you
-intend to print it and measures the text elements against the space
-available, so that clipping is caught before the figure reaches a page.
+A subtitle that fits in a preview can still be cut off in the saved figure.
+This function measures text at the width and height you plan to use.
 }
 \details{
-Subtitles and captions are the usual offenders, because \code{ggplot2} does
-not wrap them: text longer than the device is silently cut at the edge. The
-fix is a hard line break, a wider canvas, or a smaller font, and then a
-second look at the rendered file.
+It checks the title, subtitle, caption, axis titles and tick labels on all
+four sides, legend, and facet strips. If something doesn't fit, try a line
+break, a wider figure, or a smaller font, then inspect the saved file.
 
-What gets measured is the furniture: the plot title, subtitle and caption,
-the axis titles and labels on all four sides, the legend, and the facet
-strips. Text drawn inside the panel by a layer, from
-\code{\link[ggplot2]{geom_text}()} or \code{\link{geom_text_last}()}, is
-not measured, because clipping there depends on the panel range and the
-coord's \code{clip} setting rather than on the canvas. Look at those
-yourself, or give the scale room with
-\code{\link[ggplot2]{expansion}()}.
+Text inside the panel, including labels from
+\code{\link[ggplot2]{geom_text}()} and \code{\link{geom_text_last}()}, isn't
+measured. Its clipping depends on the panel range and coordinate settings.
+Check those labels yourself and add room with
+\code{\link[ggplot2]{expansion}()} where needed. This check can't certify
+that every label is readable or free of overlap.
 }
 \examples{
 library(ggplot2)

@@ -5,16 +5,16 @@
 **Date:** 7 September 2026  
 **Status:** Release candidate; local checks pass, current R and Windows checks pending
 
-The package and documentation have been audited and revised. The source archive
+I've revised the package and documentation following the audit. The source archive
 passes local CRAN-style checks with **0 errors, 0 warnings, and 1 expected new
-submission note**. It has not been submitted to CRAN. Repository visibility and
+submission note**. I haven't submitted it to CRAN. Repository visibility and
 public documentation were authorized by the maintainer.
 
 ## Issues fixed
 
 | Area | Finding and resulting behavior |
 | --- | --- |
-| Strict export | A failed label check could still allow a strict save. Strict saves now stop when the check cannot run; ordinary saves warn. |
+| Strict export | A failed label check could still allow a strict save. Strict saves now stop when the check can't run; ordinary saves warn. |
 | Export dimensions | `units` or `scale` passed through to `ggsave()` could change the size after it was checked. These overrides are rejected, and dimensions are validated. |
 | Contrast | Encoded transparency, transparent panel backgrounds, and rounded thresholds could produce incorrect passes. Colours are composited against the resolved background and thresholds use unrounded values. |
 | Theme text | Axis and legend overrides could escape contrast checks. Checks now inspect rendered text grobs, including titles, captions, strips, axes, and legends. |
@@ -32,7 +32,8 @@ public documentation were authorized by the maintainer.
 
 ## Validation evidence
 
-The checked archive is `.dev/release-0.6.4/tufter_0.6.4.tar.gz`. Its included R
+The checked archive after the prose rewrite is
+`.dev/voice-rewrite/release/tufter_0.6.4.tar.gz`. Its included R
 sources, manuals, tests, and vignettes match the release working tree. It includes
 the provenance declaration and excludes development artifacts, site output,
 private project notes, and `.DS_Store` files. The archive's SHA-256 digest is
@@ -49,18 +50,22 @@ stored beside it.
 | Static documentation links and anchors | 65 HTML files checked; no broken local targets |
 | Browser layouts | Home, reference index, label-fit reference, and real-data article checked at 1440, 768, 390, and 320 px; no horizontal overflow or failed images |
 | Browser interactions | Mobile navigation and pasted search worked; no JavaScript page errors |
-| Automated accessibility | The same four pages at 1440 and 390 px: no detected WCAG A/AA violations; colour-contrast checks on some code output remain marked incomplete by axe |
+| Automated accessibility | The same four pages at 1440 and 390 px: no detected WCAG A/AA violations; some colour-contrast checks remain marked incomplete by axe |
 | Figure inspection | All 65 generated PNGs inspected against white backgrounds; corrected figures reinspected for text clipping and overlaps |
 
-Accessibility coverage is sampled. Automated results do not certify every page
+Accessibility coverage is sampled. Automated results don't certify every page
 or replace keyboard and screen-reader review. Browser logs, screenshots,
 accessibility results, URL results, and the package check directory are retained
-locally under `.dev/release-0.6.4/`.
+locally under `.dev/release-0.6.4/`. Checks repeated after the prose rewrite
+are in `.dev/voice-rewrite/`, with the current archive and CRAN-style check
+in its `release/` directory. All 672 expectations passed again. Executable
+examples and figure PNGs are unchanged; local links and browser interactions
+passed after rebuilding the pages.
 
 The four empirical references discussed in the package were checked read-only
 against Crossref metadata. Matching records were found for Cleveland, McGill and
 McGill (1988), Gillan and Richman (1994), Inbar, Tractinsky and Meyer (2007), and
-Bateman and colleagues (2010). This verifies metadata, not every interpretation
+Bateman and colleagues (2010). These matches establish the metadata. I haven't verified every interpretation
 of those papers. The Tufte books are identified by ISBN and were not counted as
 DOI candidates. No citation or bibliography entry was changed.
 
@@ -71,19 +76,19 @@ DOI candidates. No citation or bibliography entry was changed.
    and R-devel, including Windows, then record the actual results in
    `cran-comments.md`. No results from those environments are implied here.
 2. **Inspect final exports.** `check_labels_fit()` measures plot furniture; it
-   does not certify text placed inside panels or detect every overlap. Font and
+   doesn't certify text placed inside panels or detect every overlap. Font and
    graphics-device differences can change the saved result. Inspect each final
    exported figure at its intended dimensions.
-3. **Treat contrast checks as a screen.** The checker does not resolve all
+3. **Treat contrast checks as a screen.** The checker doesn't resolve all
    overlapping marks or custom filled label, legend, and strip backgrounds.
-   Passing it does not establish overall accessibility or colour-blind safety.
+   Passing it doesn't establish overall accessibility or colour-blind safety.
 4. **Interpret measurements within their scope.** Data density estimates pooled
    rows and the union of mapped variables; it can fall back to canvas area when
-   panel area cannot be estimated. Data-ink ratios depend on rendering and layer
+   panel area can't be estimated. Data-ink ratios depend on rendering and layer
    identification. Lie factor is limited to supported Cartesian comparisons;
-   unsupported cases return unavailable results. A plot without bars does not
+   unsupported cases return unavailable results. A plot without bars doesn't
    acquire a general guarantee of graphical integrity from a baseline check.
-5. **Review claims and sources editorially.** Audit checks cannot establish data
+5. **Review claims and sources editorially.** Audit checks can't establish data
    accuracy, whether a caption names the correct source, or whether a graphic
    supports its substantive claim. The package supplies measurements and
    specific checks, not a universal quality score.
@@ -111,7 +116,8 @@ HTTP server and Chrome through Playwright; these tools are development-only.
 | --- | --- |
 | AI – Human (editor) | 🤖✏️👤 · [The Latent Review provenance standard](https://thelatentreview.com/provenance/) |
 
-The original implementation was primarily generated with Claude. Codex assisted
-with this audit, code fixes, release preparation, and website redesign. Charles
-Crabtree is the human editor and maintainer with editorial responsibility. This
-declaration appears in the README, website footer, and installed provenance file.
+I'm Charles Crabtree, the human editor and maintainer. Claude generated most
+of the original implementation. Codex assisted with this audit, the fixes,
+release preparation and website redesign, including the prose rewrite. I
+retain editorial responsibility. The declaration appears in the README,
+website footer and installed provenance file.

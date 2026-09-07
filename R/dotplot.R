@@ -1,30 +1,25 @@
 #' The Cleveland dot plot
 #'
-#' When the audit tells you that a bar chart's baseline isn't zero, it's
-#' offering you two ways out: start at zero, or stop using bars. This is the
-#' second. A dot encodes its value by position rather than by length, so it can
-#' be read on a scale that doesn't include zero without lying about
-#' proportions, and it uses a fraction of the ink a bar does.
+#' A dot plot is useful when you want to compare values in a narrow range.
+#' Dots show position on a scale, so the axis can exclude zero without changing
+#' what the length of a mark represents.
 #'
-#' Cleveland's version adds a light leader line running from the axis to the
-#' dot, which lets the eye track a long way along a row without drifting into
-#' the neighbouring one. That line isn't data-ink, and it earns its place only
-#' because the alternative is a misread row.
+#' Cleveland's leader lines help readers follow each row to its value. You can
+#' extend them across the panel or turn them off.
 #'
-#' Sort the categories before plotting. An alphabetical dot plot wastes the main
-#' advantage of the form, which is that rank is visible at a glance; use
-#' \code{stats::reorder()} or \code{forcats::fct_reorder()}.
+#' If rank is the comparison you want, sort the categories by value before
+#' plotting. Use \code{stats::reorder()} or \code{forcats::fct_reorder()}.
 #'
 #' @param mapping,data,stat,position,na.rm,show.legend,inherit.aes,... Standard
 #'   \code{ggplot2} layer arguments. See \code{\link[ggplot2]{layer}()}.
 #' @param orientation Which axis holds the categories. \code{"y"}, the default,
-#'   puts categories down the left and values across, which is what you want
-#'   whenever the category names are words. \code{"x"} is the transpose.
+#'   puts categories down the left and values across. This leaves room for
+#'   category names. \code{"x"} transposes the layout.
 #' @param leader One of \code{"axis"} (the default), which draws the leader from
 #'   the axis to the dot, \code{"full"}, which runs it the whole width of the
 #'   panel, or \code{"none"}.
 #' @param leader_colour,leader_linetype,leader_linewidth Appearance of the
-#'   leader line. It should be quiet enough to read past.
+#'   leader line. Keep it light enough to distinguish from the dots.
 #' @return A \code{ggplot2} layer.
 #' @export
 #' @examples

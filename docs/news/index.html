@@ -43,9 +43,10 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.4" id="tufter-064">tufter 0.6.4<a class="anchor" aria-label="anchor" href="#tufter-064"></a></h2>
+<p>I’ve rewritten the site and package help in my voice, including the audit messages. The documentation now explains each tool’s use and limits more directly. References and example calculations are unchanged.</p>
 <ul><li>Count columns addressed through <code>.data$x</code> or <code>.data[["x"]]</code> correctly; exclude tidy evaluation pronouns and <code>.env</code> constants from data density.</li>
 <li>Preserve quartile-frame segments on reversed axes.</li>
-<li>Make failed clipping checks visible and stop strict saves when a check cannot run. Reject unit and scale overrides that would change the checked size.</li>
+<li>Make failed clipping checks visible and stop strict saves when a check can’t run. Reject unit and scale overrides that would change the checked size.</li>
 <li>Composite embedded colour transparency and evaluate contrast thresholds before rounding. Resolve transparent panels over their plot background, and inspect drawn axis and legend text, including element-specific overrides.</li>
 <li>Check truncated bar baselines across facets, negative values, and reversed axes. Limit numeric lie factors to supported Cartesian comparisons.</li>
 <li>Include failed measurements as skipped audit checks; report incomplete batch audits and reject ambiguous dimension recycling.</li>
@@ -54,233 +55,153 @@
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.3" id="tufter-063">tufter 0.6.3<a class="anchor" aria-label="anchor" href="#tufter-063"></a></h2>
-<ul><li>The declared minimum is now <code>ggplot2 (&gt;= 4.0.0)</code>. <code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> calls <code><a href="https://ggplot2.tidyverse.org/reference/complete_theme.html" class="external-link">complete_theme()</a></code>, which ggplot2 introduced in 4.0.0, so the previous declaration of 3.5.0 promised something the package could not do. It has only ever been tested against 4.0.x.</li>
-<li>
-<code>dplyr</code>, <code>jsonlite</code> and <code>vdiffr</code> are no longer suggested. The first two are used only in <code>data-raw/</code> and a site-only article, both excluded from the build, and the third is used nowhere.</li>
+<ul><li>The minimum ggplot2 version is now 4.0.0, which introduced the <code><a href="https://ggplot2.tidyverse.org/reference/complete_theme.html" class="external-link">complete_theme()</a></code> function used by the audit. Testing has used 4.0.x.</li>
+<li>Removed unused suggested packages: <code>dplyr</code>, <code>jsonlite</code> and <code>vdiffr</code>. Data-collection scripts and site-only articles are excluded from the build.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.2" id="tufter-062">tufter 0.6.2<a class="anchor" aria-label="anchor" href="#tufter-062"></a></h2>
-<p>Ten more from a third audit. The first is a regression from 0.6.1.</p>
-<ul><li>
-<code><a href="../reference/geom_rangeframe.html">geom_quartileframe()</a></code> no longer errors when an axis has fewer than four distinct values, which is any discrete axis and most integer ones. The 0.6.1 fix that moved the summary into data space padded the degenerate axis with a constant and passed it on as though it were a real summary, so every segment inverted and grid was handed a zero-length unit.</li>
+<p>This release fixes ten issues, including a regression in 0.6.1.</p>
+<ul><li>Quartile frames work with fewer than four distinct axis values, including discrete axes. These cases use a plain range frame.</li>
 <li>
-<code>sides</code> and <code>gap</code> are checked. <code>"BL"</code> and <code>"LB"</code>, the natural typos for <code>"bl"</code>, matched nothing and the layer drew nothing without a word; a <code>gap</code> wide enough to swallow every segment did the same, and a negative one widened the segments instead of breaking them.</li>
+<code>sides</code> and <code>gap</code> are validated so invalid settings don’t silently remove the frame.</li>
+<li>Contrast checks only measure text that’s drawn and handle fully transparent panel fills.</li>
 <li>
-<code><a href="../reference/check_contrast.html">check_contrast()</a></code> measures only text the figure draws. A styled subtitle colour on a plot with no subtitle was measured, failed, and counted as a violation. A fully transparent panel fill is no longer read as an opaque background, which had every mark on the plot failing against black.</li>
+<code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> validates its dimensions before running individual checks.</li>
+<li>Minor grids set on just one axis are detected.</li>
+<li>Direct labels accept vector values for <code>nudge_x</code> and <code>nudge_y</code>.</li>
 <li>
-<code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> checks its own <code>width</code> and <code>height</code>. The individual measures reject a bad size, but the audit caught their errors, so an impossible canvas silently dropped four checks, one of them graded, and under-reported the violation count.</li>
-<li>A minor grid asked for on one axis only, in <code>panel.grid.minor.x</code> or <code>.y</code>, is found. Only the parent element was read.</li>
+<code><a href="../reference/sparkline.html">sparkline()</a></code> labels the rightmost point when rows are unsorted.</li>
 <li>
-<code><a href="../reference/geom_text_last.html">geom_text_last()</a></code> and <code><a href="../reference/geom_text_last.html">geom_text_first()</a></code> accept a vector <code>nudge_x</code> or <code>nudge_y</code>, as <code><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text()</a></code> does. <code>||</code> on a vector is an error.</li>
+<code><a href="../reference/slopegraph.html">slopegraph()</a></code> counts observed periods rather than unused factor levels.</li>
 <li>
-<code><a href="../reference/sparkline.html">sparkline()</a></code> labels the rightmost point rather than the last row. On unsorted input the line’s right-hand end and the printed final value were different observations, and <code><a href="../reference/sparklines.html">sparklines()</a></code> disagreed with it on identical data.</li>
-<li>
-<code><a href="../reference/slopegraph.html">slopegraph()</a></code> counts the periods present. An unused factor level counted as a period and warned about labelling that was complete.</li>
-<li>
-<code><a href="../reference/audit_figures.html">audit_figures()</a></code> keeps the names it was given. One unnamed element replaced every supplied name, breaking the documented drill-in.</li>
-<li>
-<code><a href="../reference/theme_sparkline.html">theme_sparkline()</a></code> and <code><a href="../reference/theme_slopegraph.html">theme_slopegraph()</a></code> document their own base font sizes, 9 and 11, rather than inheriting <code><a href="../reference/theme_tufte.html">theme_tufte()</a></code>’s 12.</li>
+<code><a href="../reference/audit_figures.html">audit_figures()</a></code> preserves supplied names when some figures are unnamed.</li>
+<li>Sparkline and slopegraph themes document their own base font sizes.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.1" id="tufter-061">tufter 0.6.1<a class="anchor" aria-label="anchor" href="#tufter-061"></a></h2>
-<p>Twenty-one fixes from two independent audits, one by a Claude subagent and one by Codex. Codex could not run R in its sandbox, so its findings were static traces; every one was confirmed by hand before being fixed.</p>
+<p>This release includes twenty-one fixes identified in audits by a Claude subagent and Codex. Codex used static inspection because R wasn’t available in its sandbox; the findings were checked before the fixes were made.</p>
 <div class="section level3">
 <h3 id="measurement-0-6-1">Measurement<a class="anchor" aria-label="anchor" href="#measurement-0-6-1"></a></h3>
-<ul><li>
-<code><a href="../reference/check_contrast.html">check_contrast()</a></code> holds text layers to the 4.5:1 text minimum. Every layer was a “data mark” at 3:1, so grey label text at 4.48:1 passed a check whose own documentation promises 4.5:1 for words.</li>
-<li>
-<code><a href="../reference/data_density.html">data_density()</a></code> counts the variables actually drawn. Plot and layer mappings were pooled, so a layer overriding an aesthetic added a column rather than replacing one, and <code>inherit.aes = FALSE</code> was ignored. A plot showing two variables reported three. A graphic with no mapped variable was also rounded up to one, inventing a data matrix for a figure that carries none.</li>
-<li>
-<code><a href="../reference/bank_to_45.html">bank_to_45()</a></code> measures the slopes as drawn. It divided the built columns by the panel ranges without going through the coord, so under <code><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip()</a></code> it measured neither the data slopes nor the drawn ones.</li>
-<li>
-<code><a href="../reference/bank_to_45.html">bank_to_45()</a></code> refuses a step chart. <code>GeomStep</code> builds its stairs inside <code>draw_panel()</code>, so differencing the built points banked a diagonal it never draws, while every segment it does draw sits at 0 or 90 degrees.</li>
-<li>
-<code><a href="../reference/lie_factor.html">lie_factor()</a></code> measures a rectangle only when it really is a bar. <code>GeomRect</code> counted as a bar, so a background band or an interval rectangle was given the panel floor for a baseline and a fabricated distortion figure.</li>
-<li>
-<code><a href="../reference/data_density.html">data_density()</a></code>, <code><a href="../reference/data_ink_ratio.html">data_ink_ratio()</a></code>, <code><a href="../reference/check_labels_fit.html">check_labels_fit()</a></code> and <code><a href="../reference/bank_to_45.html">bank_to_45()</a></code> reject any width or height other than a positive finite number. Zero gave an infinite density and a negative width a negative banked height, silently.</li>
+<ul><li>Contrast checks use the 4.5:1 text threshold for text layers.</li>
+<li>Data density respects layer-specific mappings and <code>inherit.aes = FALSE</code>. Plots without mapped variables can report zero entries.</li>
+<li>Banking accounts for coordinate transformations when measuring slopes.</li>
+<li>Banking rejects step charts, whose rendered segments are horizontal or vertical.</li>
+<li>Lie-factor checks exclude general rectangles that aren’t bars.</li>
+<li>Measurement functions reject non-positive or non-finite dimensions.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="drawing-0-6-1">Drawing<a class="anchor" aria-label="anchor" href="#drawing-0-6-1"></a></h3>
-<ul><li>Cleveland leader lines follow the coord. The dots delegate to <code>GeomPoint</code> and flipped, while the leaders read the untransformed orientation and stayed horizontal, at right angles to the dots they belong to.</li>
-<li>
-<code><a href="../reference/geom_tufteboxplot.html">geom_tufteboxplot()</a></code> says why it won’t draw sideways instead of failing with ggplot2’s “requires the following missing aesthetics”.</li>
-<li>
-<code><a href="../reference/slopegraph.html">slopegraph()</a></code> warns when given more than two periods, since the labels sit outside the panel on either side and a middle period has nowhere to put its numbers.</li>
+<ul><li>Cleveland leader lines follow coordinate transformations.</li>
+<li>Minimal box plots report a clearer error for unsupported horizontal layouts.</li>
+<li>Slopegraphs warn when more than two periods are supplied because only the first and last periods are labelled.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="documentation-that-disagreed-with-the-code-0-6-1">Documentation that disagreed with the code<a class="anchor" aria-label="anchor" href="#documentation-that-disagreed-with-the-code-0-6-1"></a></h3>
-<ul><li>
-<code><a href="../reference/check_labels_fit.html">check_labels_fit()</a></code> measures axis labels and strips on all four sides, not only the bottom, the left and the top. Its title no longer claims to check every text element: text a layer draws inside the panel goes unmeasured, and the help now says so.</li>
+<h3 id="documentation-0-6-1">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-6-1"></a></h3>
+<ul><li>Label-fit help describes coverage of axes and strips on all four sides and explains that panel text needs separate inspection.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="earlier-in-this-release-0-6-1">Earlier in this release<a class="anchor" aria-label="anchor" href="#earlier-in-this-release-0-6-1"></a></h3>
-<ul><li>
-<code><a href="../reference/geom_rangeframe.html">geom_quartileframe()</a></code> breaks where the axis labels sit on any scale. It took quantiles of the scale-transformed values while <code><a href="../reference/quartile_breaks.html">quartile_breaks()</a></code> took them of the raw data, and type-7 quantiles survive an affine transform but not a log or a square root. On a log10 axis the label read 5050 and the frame broke at 1000. The summary is computed in data space and sent through the coord, which also puts it on the right side under <code><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip()</a></code>.</li>
-<li>
-<code><a href="../reference/audit_figures.html">audit_figures()</a></code> keeps its per-figure detail when a figure fails. Assigning <code>NULL</code> into a list element deleted it rather than storing it, shifting every later name, so the documented drill-in returned <code>NULL</code> for every figure after the first failure.</li>
-<li>
-<code><a href="https://ggplot2.tidyverse.org/reference/coord_radial.html" class="external-link">coord_radial()</a></code> pie charts are caught. The check tested only for <code>CoordPolar</code>, and <code><a href="https://ggplot2.tidyverse.org/reference/coord_radial.html" class="external-link">coord_radial()</a></code> doesn’t inherit from it.</li>
-<li>A variable mapped to both position and colour is caught on either axis. Only <code>x</code> was consulted, so horizontal bar charts passed.</li>
-<li>A white panel counts as white however the colour was spelled. The check compared strings, so <code>grey100</code>, <code>gray100</code>, <code>#fff</code> and the eight-digit <code>#FFFFFFFF</code> all read as coloured panels. ggplot2 4.0 returns eight-digit hex from <code><a href="https://ggplot2.tidyverse.org/reference/complete_theme.html" class="external-link">complete_theme()</a></code>, so that spelling is the common one, and the false fail inflated the violation count.</li>
-<li>
-<code>bank_to_45(method = "average_orientation")</code> refuses when no aspect ratio reaches 45 degrees. It returned the bracket bound instead: a panel three billion inches tall for a mostly flat series, or an aspect ratio of two billionths for a mostly vertical one, both silently. The suggestion to use this method when the median one refuses has been corrected, since the two fail at the same threshold.</li>
-<li>A continuous legend of any aesthetic is no longer told to label its series. Only colour and fill were exempt, so a continuous <code>size</code> key was advised to use <code><a href="../reference/geom_text_last.html">geom_text_last()</a></code> on series it doesn’t have.</li>
-<li>
-<code><a href="../reference/data_density.html">data_density()</a></code> handles a plot with no layers. <code>ggplot()$data</code> is a waiver rather than <code>NULL</code>, so the fallback never fired and the result object came back malformed.</li>
-<li>
-<code><a href="../reference/check_labels_fit.html">check_labels_fit()</a></code> is invisible when everything fits, as documented.</li>
-<li>
-<code>geom_col_tufte(minor = TRUE)</code> draws each rule once. <code>get_breaks_minor()</code> includes the majors, so every major rule was drawn twice.</li>
-<li>
-<code><a href="../reference/geom_text_last.html">geom_text_last()</a></code> documents <code>label</code> as required, which it always was. Its argument documentation claimed a default that never existed. A paragraph of <code><a href="../reference/audit_figures.html">audit_figures()</a></code> documentation was stranded inside a parameter description, and its opening line called the count a score.</li>
+<h3 id="other-fixes-0-6-1">Other fixes<a class="anchor" aria-label="anchor" href="#other-fixes-0-6-1"></a></h3>
+<ul><li>Quartile frames and their axis labels use the same data-space summary under nonlinear scales and coordinate flips.</li>
+<li>Batch audits preserve the position and details of figures after a failure.</li>
+<li>Pie-chart checks recognize <code><a href="https://ggplot2.tidyverse.org/reference/coord_radial.html" class="external-link">coord_radial()</a></code>.</li>
+<li>Redundant position-and-colour mappings are detected on either axis.</li>
+<li>Equivalent white colour specifications no longer trigger a background failure.</li>
+<li>Average-orientation banking reports an error when no aspect ratio reaches the target.</li>
+<li>Continuous guides for size, alpha and linewidth no longer prompt advice to label discrete series.</li>
+<li>Data density handles plots without layers.</li>
+<li>Successful label-fit checks return invisibly.</li>
+<li>Bar rules are drawn once when minor breaks include major breaks.</li>
+<li>Direct-label help identifies <code>label</code> as required. Batch-audit help separates its parameters from the explanation of the count.</li>
 </ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.0" id="tufter-060">tufter 0.6.0<a class="anchor" aria-label="anchor" href="#tufter-060"></a></h2>
-<ul><li>
-<code><a href="../reference/data_ink_ratio.html">data_ink_ratio()</a></code> counts the ink of every geom. It identified data layers by a grob name beginning with “geom”, but ggplot2 names only some of them that way: <code>GeomPath</code>, <code>GeomLine</code>, <code>GeomStep</code>, <code>GeomText</code> and <code>GeomSegment</code> return bare grid grobs called <code>GRID.polyline</code>, <code>GRID.text</code> and <code>GRID.segments</code>. Those were never stripped, so they stayed in the furniture rendering and were subtracted from the data ink. A plain line chart measured a data-ink ratio of exactly zero. The furniture is now named instead, being the grill, the panel border and ggplot2’s zeroGrob placeholders, and anything else in the panel is a layer.</li>
-<li>
-<code><a href="../reference/geom_col_tufte.html">geom_col_tufte()</a></code> and <code><a href="../reference/geom_col_tufte.html">geom_bar_tufte()</a></code> work out which axis to erase the rules along, so <code>sides</code> defaults to <code>NULL</code>. Horizontal bars drew no rules at all, whether written as <code>aes(value, category)</code>, passed <code>orientation = "y"</code>, or flipped by the coord. An explicit <code>sides</code> pointing at a scale with no numeric breaks now warns instead of silently drawing nothing.</li>
-<li>Which axis carries a bar’s length is settled in one place, <code>.bar_axes()</code>, and the five-number summary behind the quartile frame and its labels in another, <code>.five_number()</code>. Three separate answers to the first question and two to the second were five separate bugs.</li>
+<ul><li>Data-ink estimates include line, path, step, text and segment grobs whose names don’t begin with <code>geom</code>.</li>
+<li>Bar rules use the appropriate axis for the layer’s orientation. An explicit <code>sides</code> value without numeric breaks produces a warning.</li>
+<li>Shared helpers determine bar orientation and the five-number summary used by quartile frames and their labels.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.4" id="tufter-054">tufter 0.5.4<a class="anchor" aria-label="anchor" href="#tufter-054"></a></h2>
-<ul><li>
-<code><a href="../reference/geom_col_tufte.html">geom_col_tufte()</a></code> draws its erased rules under <code><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip()</a></code>. It chose the panel scale from <code>sides</code> alone, so a flip left it reading the discrete category scale, whose breaks aren’t numbers, and the layer drew nothing at all. Paired with <code>theme_tufte(grid = "none")</code> that left bars with no rules of any kind to read values against.</li>
+<ul><li>Erased bar rules work under <code><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip()</a></code>.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.3" id="tufter-053">tufter 0.5.3<a class="anchor" aria-label="anchor" href="#tufter-053"></a></h2>
-<ul><li>The <code>"accent"</code> palette always contains its accent. It took the first <code>n</code> of a fixed vector whose third element was the signal colour, so two series gave two greys and no signal, which is the one thing that palette exists to provide. The signal is now the last level at every <code>n</code>, and the greys fill in ahead of it.</li>
+<ul><li>The accent palette includes its accent at every requested palette size. The accent is assigned to the last level.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.2" id="tufter-052">tufter 0.5.2<a class="anchor" aria-label="anchor" href="#tufter-052"></a></h2>
 <ul><li>
-<code><a href="../reference/quartile_breaks.html">quartile_breaks()</a></code> puts the axis labels where the quartile frame actually breaks. It used <code><a href="https://rdrr.io/r/stats/fivenum.html" class="external-link">stats::fivenum()</a></code> while the frame used <code>stats::quantile(type = 7)</code>, so for most sample sizes the printed labels sat somewhere other than the gaps they were meant to name. At n = 8 the axis read 56 next to a break at 53.4. With too few distinct values for a summary it now returns the two ends, matching the plain range the frame draws there.</li>
+<code><a href="../reference/quartile_breaks.html">quartile_breaks()</a></code> uses the same type-7 quantiles as the frame. With too few distinct values, it returns the endpoints used by the plain range frame.</li>
 <li>
-<code>tufte_audit(measure = FALSE)</code> no longer changes a figure’s verdict. The clipping check was gated behind <code>measure</code> although it’s a stated criterion, so a figure with a subtitle too wide to fit reported no violations on the fast path. <code>measure</code> now governs only the data-ink ratio and the data density, which are ungraded.</li>
+<code>tufte_audit(measure = FALSE)</code> still runs label-fit checks. The option skips only the ungraded data-ink and density measurements.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.1" id="tufter-051">tufter 0.5.1<a class="anchor" aria-label="anchor" href="#tufter-051"></a></h2>
-<ul><li>
-<code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> no longer counts categories along a discrete axis as overlaid series. A dot plot of five countries reported “5 series overlaid in one panel” and recommended small multiples, which would have put one point in each panel. Only a non-positional aesthetic separates series now.</li>
-<li>
-<code><a href="../reference/data_ink_ratio.html">data_ink_ratio()</a></code> documents the case where the number runs the wrong way: a pie chart of continental population measures 0.75 against 0.16 for the dot plot that replaces it, because filled interiors count and dots are small. The graded criteria separate them correctly, six unmet against one, which is why the audit reports the ratio rather than scoring it.</li>
-<li>
-<code><a href="../reference/tufte_principles.html">tufte_principles()</a></code> says in its documentation that <code>audited</code> and <code>criterion</code> are logical, and which of the two separates graded from measured.</li>
-<li>The description of <code><a href="../reference/tufte_audit.html">tufte_audit()</a></code>’s return value had lost a verb.</li>
+<ul><li>Discrete axis categories aren’t counted as separate overlaid series.</li>
+<li>Data-ink help explains why filled shapes can have higher ratios than dot plots of the same values.</li>
+<li>Principles-table help explains the logical <code>audited</code> and <code>criterion</code> columns.</li>
+<li>Corrected the audit return-value description.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0" id="tufter-050">tufter 0.5.0<a class="anchor" aria-label="anchor" href="#tufter-050"></a></h2>
-<ul><li>New vignette, “Working through a real dataset”, using <code>gapminder</code> and <code>palmerpenguins</code>. Both are suggested and guarded.</li>
-<li>
-<code><a href="../reference/check_labels_fit.html">check_labels_fit()</a></code>, <code><a href="../reference/data_ink_ratio.html">data_ink_ratio()</a></code>, <code><a href="../reference/data_density.html">data_density()</a></code> and <code><a href="../reference/sparkline_grob.html">sparkline_grob()</a></code> no longer leave a graphics device open or write an <code>Rplots.pdf</code> into the working directory. Measuring borrows a <code>pdf(NULL)</code> device for the whole measurement, which covers unit conversion as well as building the gtable. <code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> on a plot with a legend was a second route to the same stray file.</li>
-<li>README figures and example output use <code>palmerpenguins</code> and <code>gapminder</code>.</li>
-<li>The cached API data behind the live-data article has moved to <code>data-raw/</code> and is no longer installed with the package.</li>
-<li>
-<code>Language</code> is <code>en-GB</code>, with an <code>inst/WORDLIST</code>.</li>
+<ul><li>Added “Working through a real dataset”, using <code>gapminder</code> and <code>palmerpenguins</code> with guarded suggested dependencies.</li>
+<li>Measurement and legend checks restore graphics devices and avoid writing <code>Rplots.pdf</code> to the working directory.</li>
+<li>README examples use <code>palmerpenguins</code> and <code>gapminder</code>.</li>
+<li>The cached API snapshot moved to <code>data-raw/</code> and is excluded from installation.</li>
+<li>Set <code>Language</code> to <code>en-GB</code> and added <code>inst/WORDLIST</code>.</li>
 <li>Cleveland, McGill and McGill (1988) cited by DOI in <code>DESCRIPTION</code>.</li>
-<li>AI usage disclosure added to the README.</li>
+<li>Added an AI usage disclosure to the README.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.2" id="tufter-042">tufter 0.4.2<a class="anchor" aria-label="anchor" href="#tufter-042"></a></h2>
-<ul><li>
-<code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> and <code><a href="../reference/tufte_principles.html">tufte_principles()</a></code> use the same names and the same citations for every principle. The audit looks each source up from the table.</li>
-<li>Two principles are marked <code>audited = FALSE</code>: nothing reports on them.</li>
-<li>README example output is generated by <code>data-raw/make_readme_output.R</code>.</li>
-<li>
-<code><a href="../reference/scale_colour_tufte.html">scale_fill_tufte_c()</a></code> gains a test.</li>
+<ul><li>Audits look up principle names and citations in the principles table.</li>
+<li>Marked two uncheckable principles with <code>audited = FALSE</code>.</li>
+<li>README output is generated by <code>data-raw/make_readme_output.R</code>.</li>
+<li>Added a test for <code><a href="../reference/scale_colour_tufte.html">scale_fill_tufte_c()</a></code>.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.1" id="tufter-041">tufter 0.4.1<a class="anchor" aria-label="anchor" href="#tufter-041"></a></h2>
-<ul><li>
-<code><a href="../reference/lie_factor.html">lie_factor()</a></code> reads horizontal bars and <code><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip()</a></code> bars along the axis that carries their length. All three orientations report the same distortion.</li>
-<li>
-<code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> names the axis a reader can see when a bar baseline isn’t zero.</li>
-<li>
-<code><a href="../reference/bank_to_45.html">bank_to_45()</a></code> normalises each panel by its own ranges, which matters under free scales.</li>
-<li>A plot setting fixed colours outside <code><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes()</a></code> is no longer reported as carrying a legend.</li>
-<li>
-<code><a href="../reference/slopegraph.html">slopegraph()</a></code> warns when a unit has more than one value in a period.</li>
-<li>
-<code><a href="../reference/tufte_principles.html">tufte_principles()</a></code> uses <code>NA</code> in <code>implemented_by</code> where no function reaches a principle.</li>
+<ul><li>Lie factors account for horizontal bars and <code><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip()</a></code>.</li>
+<li>Baseline messages name the visible axis.</li>
+<li>Banking normalizes each panel by its own ranges.</li>
+<li>Fixed colours outside <code><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes()</a></code> don’t trigger a legend warning.</li>
+<li>Slopegraphs warn about duplicate unit-period observations.</li>
+<li>Principles without an implementing function use <code>NA</code> in <code>implemented_by</code>.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.0" id="tufter-040">tufter 0.4.0<a class="anchor" aria-label="anchor" href="#tufter-040"></a></h2>
-<ul><li>New article, “Examples with live API data”, drawing on CRAN download logs, the USGS earthquake catalogue, the Open-Meteo ERA5 archive and Wikipedia pageviews. <code>data-raw/fetch_live_examples.R</code> does the fetching and caches the result.</li>
-<li>
-<code><a href="../reference/check_labels_fit.html">check_labels_fit()</a></code> measures a rotated y axis title along the length of the string, against the height of the panel area.</li>
-<li>
-<code><a href="../reference/sparkline.html">sparkline()</a></code> and <code><a href="../reference/sparklines.html">sparklines()</a></code> gain a <code>big.mark</code> argument, defaulting to a comma.</li>
-<li>
-<code><a href="../reference/bank_to_45.html">bank_to_45()</a></code> documents that the height it returns is for the panel.</li>
+<ul><li>Added “Examples with live API data”, using CRAN downloads, USGS earthquakes, Open-Meteo ERA5 temperatures and Wikipedia pageviews. The fetching script saves a snapshot for the documentation build.</li>
+<li>Label fitting measures rotated y-axis titles against panel height.</li>
+<li>Sparklines accept <code>big.mark</code>, with a comma as the default.</li>
+<li>Banking help clarifies that its suggested height describes the panel.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="tufter-030">tufter 0.3.0<a class="anchor" aria-label="anchor" href="#tufter-030"></a></h2>
-<ul><li>
-<code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> grades only the principles for which Tufte states a criterion, and measures the rest without a verdict. The thresholds that used to grade the measurements are removed.</li>
-<li>The <code>score</code> attribute is replaced by <code>violations</code>, a count of stated criteria not met. <code><a href="../reference/audit_figures.html">audit_figures()</a></code> orders figures by that count.</li>
-<li>
-<code><a href="../reference/tufte_principles.html">tufte_principles()</a></code> gains a <code>criterion</code> column.</li>
-<li>The legend check fails on named series and reports a continuous key.</li>
-<li>
-<code><a href="../reference/quartile_breaks.html">quartile_breaks()</a></code> returns the whole five-number summary by default.</li>
+<ul><li>Audits grade principles with stated criteria and report other measurements without thresholds.</li>
+<li>Replaced <code>score</code> with <code>violations</code>, the count used to order batch results.</li>
+<li>Added the <code>criterion</code> column to the principles table.</li>
+<li>Legend checks distinguish named series from continuous keys.</li>
+<li>Quartile breaks keep the full five-number summary by default.</li>
 <li>The audit cites WCAG for the contrast minimum and Cleveland for banking.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.1" id="tufter-021">tufter 0.2.1<a class="anchor" aria-label="anchor" href="#tufter-021"></a></h2>
-<ul><li>
-<code><a href="../reference/geom_rangeframe.html">geom_rangeframe()</a></code> and <code><a href="../reference/geom_rangeframe.html">geom_quartileframe()</a></code> name their grobs, so <code><a href="../reference/data_ink_ratio.html">data_ink_ratio()</a></code> counts them as data ink.</li>
-<li>
-<code><a href="../reference/data_density.html">data_density()</a></code> groups layers by the data they read, and resolves aesthetics to the columns they use.</li>
-<li>
-<code><a href="../reference/bank_to_45.html">bank_to_45()</a></code> reads segments in drawn order and keeps vertical ones. A path that’s more than half vertical is refused.</li>
-<li>
-<code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> treats a continuous colour scale as one code, catches redundant encoding through a transformation, and fails a bar chart on a transformed scale. <code><a href="../reference/lie_factor.html">lie_factor()</a></code> returns <code>NA</code> for the same.</li>
+<ul><li>Range-frame grobs are named so they count as data ink.</li>
+<li>Data density groups layers by data source and resolves mapped columns.</li>
+<li>Banking uses drawn segment order and includes vertical segments. It rejects paths that are more than half vertical.</li>
+<li>Audits handle continuous colour, transformed redundant mappings, and bars on transformed scales. Lie factor returns <code>NA</code> for the last case.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="tufter-020">tufter 0.2.0<a class="anchor" aria-label="anchor" href="#tufter-020"></a></h2>
-<ul><li>
-<code><a href="../reference/bank_to_45.html">bank_to_45()</a></code> computes the aspect ratio that brings slopes nearest 45 degrees, by median absolute slope or mean absolute orientation.</li>
-<li>
-<code><a href="../reference/check_contrast.html">check_contrast()</a></code> and <code><a href="../reference/contrast_ratio.html">contrast_ratio()</a></code> measure every colour a plot draws with against its background, using the WCAG 2.1 minima.</li>
-<li>
-<code><a href="../reference/audit_figures.html">audit_figures()</a></code> runs the audit across a list of plots or a directory.</li>
-<li>
-<code><a href="../reference/geom_cleveland_dot.html">geom_cleveland_dot()</a></code> draws a dot plot with leader lines.</li>
+<ul><li>Added banking by median absolute slope or mean absolute orientation.</li>
+<li>Added colour-contrast measurements using WCAG 2.1 thresholds.</li>
+<li>Added batch audits for plot lists and directories.</li>
+<li>Added Cleveland dot plots with leader lines.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="tufter-010">tufter 0.1.0<a class="anchor" aria-label="anchor" href="#tufter-010"></a></h2>
-<p>First release.</p>
-<div class="section level3">
-<h3 id="drawing-0-1-0">Drawing<a class="anchor" aria-label="anchor" href="#drawing-0-1-0"></a></h3>
-<ul><li>
-<code><a href="../reference/theme_tufte.html">theme_tufte()</a></code>, <code><a href="../reference/theme_sparkline.html">theme_sparkline()</a></code>, <code><a href="../reference/theme_slopegraph.html">theme_slopegraph()</a></code>.</li>
-<li>
-<code><a href="../reference/geom_rangeframe.html">geom_rangeframe()</a></code>, <code><a href="../reference/geom_rangeframe.html">geom_quartileframe()</a></code>, <code><a href="../reference/quartile_breaks.html">quartile_breaks()</a></code>.</li>
-<li>
-<code><a href="../reference/geom_tufteboxplot.html">geom_tufteboxplot()</a></code>, with <code>"point"</code>, <code>"line"</code> and <code>"offset"</code> variants.</li>
-<li>
-<code><a href="../reference/geom_dotdash.html">geom_dotdash()</a></code>.</li>
-<li>
-<code><a href="../reference/geom_col_tufte.html">geom_col_tufte()</a></code> and <code><a href="../reference/geom_col_tufte.html">geom_bar_tufte()</a></code>.</li>
-<li>
-<code><a href="../reference/slopegraph.html">slopegraph()</a></code>, <code><a href="../reference/sparkline.html">sparkline()</a></code>, <code><a href="../reference/sparklines.html">sparklines()</a></code>, <code><a href="../reference/sparkline_grob.html">sparkline_grob()</a></code>.</li>
-<li>
-<code><a href="../reference/facet_tufte.html">facet_tufte()</a></code>.</li>
-<li>
-<code><a href="../reference/geom_text_last.html">geom_text_last()</a></code> and <code><a href="../reference/geom_text_last.html">geom_text_first()</a></code>.</li>
-<li>
-<code><a href="../reference/tufte_pal.html">tufte_pal()</a></code>, <code><a href="../reference/tufte_pal.html">tufte_colours()</a></code> and the <code>scale_*_tufte()</code> family.</li>
-<li>
-<code><a href="../reference/label_source.html">label_source()</a></code> and <code><a href="../reference/save_tufte.html">save_tufte()</a></code>.</li>
-</ul></div>
-<div class="section level3">
-<h3 id="measuring-0-1-0">Measuring<a class="anchor" aria-label="anchor" href="#measuring-0-1-0"></a></h3>
-<ul><li>
-<code><a href="../reference/data_ink_ratio.html">data_ink_ratio()</a></code>, <code><a href="../reference/lie_factor.html">lie_factor()</a></code>, <code><a href="../reference/data_density.html">data_density()</a></code>, <code><a href="../reference/check_labels_fit.html">check_labels_fit()</a></code>.</li>
-<li>
-<code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> and <code><a href="../reference/tufte_principles.html">tufte_principles()</a></code>.</li>
-</ul></div>
+<p>The first release includes themes, range and quartile frames, minimal box plots, dot-dash margins, and bars with erased gridlines. It also provides slopegraphs, sparklines, small multiples, direct labels and colour scales. Source notes and export helpers support preparing figures for use.</p>
+<p>The measurement tools estimate data-ink ratio, lie factor and data density, and check label space. The audit and principles table bring those tools together.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

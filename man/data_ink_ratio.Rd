@@ -24,34 +24,21 @@ An object of class \code{tufte_data_ink}: a list with the estimated
   \code{total_ink} it was computed from, in pixel-equivalents.
 }
 \description{
-Tufte defines the data-ink ratio as the share of a graphic's ink that's
-devoted to the non-redundant display of data, and asks that it be pushed
-towards one. \code{data_ink_ratio()} estimates it empirically: the plot is
-rendered twice, once whole and once with every data layer removed, and the
-ink in each rendering is measured from the pixels.
+Tufte defines the data-ink ratio as the share of a graphic's ink devoted to
+the non-redundant display of data. This function estimates it by rendering
+the plot twice, with and without its data layers, and comparing the pixels.
 }
 \details{
-The measurement is an estimate, for three reasons worth knowing before you
-quote the number. Anti-aliased edges are counted in proportion to how far
-they sit from the background colour, which is the right treatment but not an
-exact one. Ink that overlaps is counted once, so a dense scatterplot
-understates its own data-ink. And redundant data-ink, which Tufte would
-subtract, still counts here as data-ink, because no measurement can tell
-whether a mark repeats information the reader already has. Treat the result
-as a comparative instrument: it's reliable for judging whether one version
-of a figure is leaner than another, and unreliable as an absolute score.
+Pixels are weighted by their distance from the background colour.
+Overlapping marks count once. Redundant marks still count as data ink because
+the function can't determine whether they repeat information. These choices
+matter, particularly for dense scatterplots and large filled shapes.
 
-The redundancy point is worth a concrete case, because the number can run
-the wrong way. Every pixel a data layer draws counts, the interiors of
-filled shapes included, so a design built from large filled areas scores
-high. Continental population as a pie chart measures 0.75; the same numbers
-as a Cleveland dot plot measure 0.16, because dots are small and the axis
-labels that make them readable are furniture. The pie is the worse graphic
-and the ratio prefers it. Tufte would subtract the wedge interiors as
-redundant, since the angle already carries the number, but no measurement
-can decide which ink repeats what. The graded criteria in
-\code{\link{tufte_audit}()} do separate the two, six unmet against one, and
-this is why the audit reports the ratio rather than scoring it.
+A pie chart can have a higher ratio than a dot plot of the same numbers
+because its filled wedges occupy more of the canvas. That doesn't tell us
+which chart is easier to read. I use the estimate to compare drafts at the
+same size and resolution, alongside \code{\link{tufte_audit}()} and a look at
+the figure itself.
 }
 \examples{
 library(ggplot2)

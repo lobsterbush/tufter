@@ -1,10 +1,9 @@
-# Save a figure, and check it before you do
+# Save a figure after checking its labels
 
-A wrapper on
-[`ggsave()`](https://ggplot2.tidyverse.org/reference/ggsave.html) with
-the defaults set for print: 6.5 inches wide, which is a single text
-column; `cairo_pdf` for PDF output, so that fonts embed properly; and
-300 dpi for raster formats.
+Save with
+[`ggsave()`](https://ggplot2.tidyverse.org/reference/ggsave.html) using
+defaults for print: 6.5 inches wide, `cairo_pdf` for PDF output, and 300
+dpi for raster formats. Set the height to suit your figure.
 
 ## Usage
 
@@ -58,14 +57,15 @@ The filename, invisibly.
 
 ## Details
 
-Before writing the file it runs
+Before saving, the function runs
 [`check_labels_fit()`](https://lobsterbush.github.io/tufter/reference/check_labels_fit.md)
-at the size you asked for, because a subtitle that fits on screen at the
-default device size isn't a subtitle that fits in the saved file.
-Clipping is reported as a warning; set `strict = TRUE` to make it an
-error instead. A failed check also warns, or errors in strict mode.
-Dimensions are always in inches; `units` and `scale` cannot be
-overridden through `...`, so the checked size is the saved size.
+at the requested size. Labels that don't fit produce a warning. With
+`strict = TRUE`, they stop the save. A check that can't run also warns,
+or stops a strict save.
+
+Dimensions are in inches. You can't override `units` or `scale` through
+`...`, because the size checked needs to match the size saved. The label
+check has limits; inspect the exported figure too.
 
 ## Examples
 

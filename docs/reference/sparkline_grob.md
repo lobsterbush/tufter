@@ -1,8 +1,7 @@
 # A sparkline as a grob
 
-Returns a `grid` grob so that a sparkline can be placed inside another
-graphic, a table cell, or an rmarkdown inline chunk, which is where
-Tufte intended them to live.
+Return a `grid` grob that you can place in another graphic, a table
+cell, or an rmarkdown inline chunk.
 
 ## Usage
 

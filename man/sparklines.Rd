@@ -35,15 +35,12 @@ sparklines(
 A \code{ggplot} object.
 }
 \description{
-Draws one sparkline per series, stacked, with the series name to the left
-and the final value to the right. This is the form Tufte uses for tables of
-indicators, where the reader wants shape and level together.
+Stack one sparkline per series, with its name on the left and final value
+on the right. Each series has its own vertical scale.
 }
 \details{
-Each series keeps its own vertical scale, because a sparkline reports the
-shape of one series rather than inviting comparison of levels across
-series. If you do want levels compared, use \code{\link{facet_tufte}()},
-which fixes the scales.
+This is useful for comparing patterns over time. To compare levels across
+series on a shared scale, use \code{\link{facet_tufte}()}.
 }
 \examples{
 set.seed(1)

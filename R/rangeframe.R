@@ -1,14 +1,12 @@
 #' Range frames and quartile frames
 #'
-#' A conventional panel border is pure non-data ink: the box is the same box
-#' whatever the numbers are. Tufte's replacement is an axis line drawn only
-#' across the range the data actually occupy, so that the frame reports the
-#' minimum and maximum for free. \code{geom_quartileframe()} goes further and
-#' breaks that line at the quartiles, so the axis carries the whole five-number
-#' summary.
+#' A range frame draws an axis line between the smallest and largest observed
+#' values. Tufte's quartile frame adds breaks at the quartiles, so the axis also
+#' shows the five-number summary.
 #'
-#' Use these with \code{\link{theme_tufte}()}, which draws no axis line of its
-#' own, and remember to turn the panel border off in any other theme.
+#' Use these with \code{\link{theme_tufte}()}, which has no axis lines by
+#' default. With another theme, turn off its panel border and axis lines if
+#' you want only the range frame.
 #'
 #' @param mapping,data,stat,position,na.rm,show.legend,inherit.aes,... Standard
 #'   \code{ggplot2} layer arguments. See \code{\link[ggplot2]{layer}()}.
@@ -238,19 +236,14 @@ GeomQuartileFrame <- ggplot2::ggproto(
 
 #' Axis breaks at the five-number summary
 #'
-#' Returns a breaks function that labels the minimum, the quartiles, the median
-#' and the maximum, so that the printed axis labels agree with what a
-#' \code{\link{geom_quartileframe}()} shows. Tufte's point is that an axis
-#' should report the distribution rather than a set of round numbers picked
-#' by the plotting software.
+#' Label the minimum, quartiles, median and maximum at the positions shown by
+#' \code{\link{geom_quartileframe}()}. This follows Tufte's use of the axis to
+#' show the distribution.
 #'
-#' All five values are returned by default, because the five-number summary is
-#' what a quartile frame reports. Where two of them fall close enough together
-#' that their labels overprint, \code{min_gap} drops the crowded ones. It's off
-#' by default: the spacing at which labels collide depends on the font, the
-#' figure size and the number of digits, none of which a breaks function can
-#' see. \code{\link{check_labels_fit}()} measures the collision at the size you
-#' intend to print.
+#' All five values are kept by default. Set \code{min_gap} to omit crowded
+#' breaks. The space labels need depends on your font, figure size and number
+#' of digits, so there's no single spacing that works for every figure.
+#' Use \code{\link{check_labels_fit}()} and inspect the saved result.
 #'
 #' @param x Optional numeric vector. If supplied, the breaks are computed from
 #'   it once, which is what you want when the axis limits are wider than the

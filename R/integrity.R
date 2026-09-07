@@ -1,32 +1,19 @@
 #' Data-ink ratio
 #'
-#' Tufte defines the data-ink ratio as the share of a graphic's ink that's
-#' devoted to the non-redundant display of data, and asks that it be pushed
-#' towards one. \code{data_ink_ratio()} estimates it empirically: the plot is
-#' rendered twice, once whole and once with every data layer removed, and the
-#' ink in each rendering is measured from the pixels.
+#' Tufte defines the data-ink ratio as the share of a graphic's ink devoted to
+#' the non-redundant display of data. This function estimates it by rendering
+#' the plot twice, with and without its data layers, and comparing the pixels.
 #'
-#' The measurement is an estimate, for three reasons worth knowing before you
-#' quote the number. Anti-aliased edges are counted in proportion to how far
-#' they sit from the background colour, which is the right treatment but not an
-#' exact one. Ink that overlaps is counted once, so a dense scatterplot
-#' understates its own data-ink. And redundant data-ink, which Tufte would
-#' subtract, still counts here as data-ink, because no measurement can tell
-#' whether a mark repeats information the reader already has. Treat the result
-#' as a comparative instrument: it's reliable for judging whether one version
-#' of a figure is leaner than another, and unreliable as an absolute score.
+#' Pixels are weighted by their distance from the background colour.
+#' Overlapping marks count once. Redundant marks still count as data ink because
+#' the function can't determine whether they repeat information. These choices
+#' matter, particularly for dense scatterplots and large filled shapes.
 #'
-#' The redundancy point is worth a concrete case, because the number can run
-#' the wrong way. Every pixel a data layer draws counts, the interiors of
-#' filled shapes included, so a design built from large filled areas scores
-#' high. Continental population as a pie chart measures 0.75; the same numbers
-#' as a Cleveland dot plot measure 0.16, because dots are small and the axis
-#' labels that make them readable are furniture. The pie is the worse graphic
-#' and the ratio prefers it. Tufte would subtract the wedge interiors as
-#' redundant, since the angle already carries the number, but no measurement
-#' can decide which ink repeats what. The graded criteria in
-#' \code{\link{tufte_audit}()} do separate the two, six unmet against one, and
-#' this is why the audit reports the ratio rather than scoring it.
+#' A pie chart can have a higher ratio than a dot plot of the same numbers
+#' because its filled wedges occupy more of the canvas. That doesn't tell us
+#' which chart is easier to read. I use the estimate to compare drafts at the
+#' same size and resolution, alongside \code{\link{tufte_audit}()} and a look at
+#' the figure itself.
 #'
 #' @param plot A \code{ggplot} object.
 #' @param width,height Rendering size in inches. Defaults to 6.5 by 4, the
@@ -187,17 +174,14 @@ print.tufte_data_ink <- function(x, ...) {
 
 #' Lie factor
 #'
-#' Tufte's measure of graphical integrity: the size of the effect shown in the
-#' graphic divided by the size of the effect in the data. A truthful graphic
-#' has a lie factor of one. Tufte treats anything outside roughly 0.95 to 1.05
-#' as distortion.
+#' The lie factor divides the proportional change shown in a graphic by the
+#' proportional change in the data. A value of one means those changes agree.
+#' Tufte treats values outside roughly 0.95 to 1.05 as distortion.
 #'
-#' Two ways in. Given two numeric vectors, the first the underlying values and
-#' the second the sizes actually drawn, \code{lie_factor()} compares the
-#' proportional change in each. Given a \code{ggplot} containing bars or
-#' columns, it computes the distortion introduced by a baseline that doesn't
-#' start at zero, which is by far the most common way a real figure lies: a bar
-#' whose length no longer is the quantity it stands for.
+#' Supply two numeric vectors to compare data values with the sizes drawn.
+#' Or supply a \code{ggplot} with bars to measure the effect of a non-zero
+#' baseline. The plot method is limited to supported bar comparisons; a result
+#' of one isn't a general assessment of the figure's accuracy.
 #'
 #' @param x Either a numeric vector of underlying data values, or a
 #'   \code{ggplot} object.
@@ -319,19 +303,19 @@ lie_factor.default <- function(x, ...) {
 
 #' Data density
 #'
-#' The number of entries in the data matrix divided by the area of the data
-#' graphic, in square inches. Tufte's complaint about most published statistical
-#' graphics is that they're enormous and say almost nothing: a chart carrying
-#' four numbers over half a page has a data density near zero, and the numbers
-#' would have been better set as a sentence.
+#' Estimate the number of data entries per square inch of a figure. This
+#' implements Tufte's data-density measure. It can help you compare how much
+#' information different versions of a figure occupy on the page.
 #'
-#' The data matrix here is counted as the number of rows drawn, times the number
-#' of distinct variables mapped to aesthetics. Positional aesthetics count;
-#' constants set outside \code{aes()} don't, because they carry no data.
-#' This is an estimate, especially for statistical layers and plots combining
-#' different data sources: it multiplies a pooled row count by the union of
-#' mapped variables rather than reconstructing each displayed data matrix.
-#' If panel area cannot be estimated, the whole canvas area is used.
+#' Entries are counted as pooled rows times the number of distinct variables
+#' mapped to aesthetics. Constants outside \code{aes()} don't count.
+#' Statistical layers and plots that combine data sources need care: the
+#' function doesn't reconstruct a separate data matrix for each layer.
+#'
+#' Panel area is estimated from the rendered plot. If that estimate isn't
+#' available, the function uses the whole canvas. I'd read the result alongside
+#' the entry count and the figure, since a high density doesn't establish that
+#' the information is useful.
 #'
 #' @param plot A \code{ggplot} object.
 #' @param width,height Intended printed size in inches. Defaults to 6.5 by 4.

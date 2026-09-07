@@ -1,20 +1,19 @@
 #' Tufte's colour palettes
 #'
-#' Four palettes, each answering a different question about colour.
+#' These four palettes are intended for different uses. Choose one for the
+#' comparison you want readers to make, then check the contrast in your figure.
 #'
 #' \describe{
-#'   \item{\code{"grey"}}{Tufte's default. Grey encodes an ordered variable
-#'     without introducing a second, unwanted, categorical signal.}
-#'   \item{\code{"accent"}}{Greys plus one signal red, which always goes to the
-#'     last level, so order your factor to put the series that matters last.
-#'     Use when exactly one series matters and the rest are context. This is
-#'     the palette that does the most work in \emph{Envisioning Information}:
-#'     layering by value, not by hue.}
-#'   \item{\code{"muted"}}{Desaturated earth tones, after the maps and
-#'     timetables Tufte reproduces. Colours this weak sit behind text and
-#'     annotation without fighting them.}
-#'   \item{\code{"divergent"}}{A muted blue-to-red ramp for signed quantities,
-#'     with a neutral rather than a white midpoint.}
+#'   \item{\code{"grey"}}{A sequence of greys for ordered values.}
+#'   \item{\code{"accent"}}{Greys with one red accent, assigned to the last
+#'     level. Put the series you want to highlight last in the factor order.
+#'     This draws on the use of value for layering in
+#'     \emph{Envisioning Information}.}
+#'   \item{\code{"muted"}}{Desaturated earth tones, drawing on the maps and
+#'     timetables Tufte reproduces. Check that they remain readable at the
+#'     size you'll use.}
+#'   \item{\code{"divergent"}}{A muted blue-to-red sequence for signed values,
+#'     with a neutral midpoint.}
 #' }
 #'
 #' @param palette One of \code{"grey"}, \code{"accent"}, \code{"muted"},
@@ -86,7 +85,8 @@ tufte_colors <- tufte_colours
 
 #' Tufte colour and fill scales
 #'
-#' Discrete and continuous scales built on \code{\link{tufte_pal}()}.
+#' Apply the palettes from \code{\link{tufte_pal}()} to discrete or continuous
+#' colour and fill mappings.
 #'
 #' @inheritParams tufte_pal
 #' @param ... Passed to \code{\link[ggplot2]{discrete_scale}()} or

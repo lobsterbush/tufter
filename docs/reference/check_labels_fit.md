@@ -1,10 +1,8 @@
 # Check that the labels fit inside the canvas
 
-A figure that has been designed carefully and then saved at the wrong
-size is a figure with a truncated subtitle. This renders the plot at the
-size you intend to print it and measures the text elements against the
-space available, so that clipping is caught before the figure reaches a
-page.
+A subtitle that fits in a preview can still be cut off in the saved
+figure. This function measures text at the width and height you plan to
+use.
 
 ## Usage
 
@@ -30,21 +28,20 @@ fit.
 
 ## Details
 
-Subtitles and captions are the usual offenders, because `ggplot2` does
-not wrap them: text longer than the device is silently cut at the edge.
-The fix is a hard line break, a wider canvas, or a smaller font, and
-then a second look at the rendered file.
+It checks the title, subtitle, caption, axis titles and tick labels on
+all four sides, legend, and facet strips. If something doesn't fit, try
+a line break, a wider figure, or a smaller font, then inspect the saved
+file.
 
-What gets measured is the furniture: the plot title, subtitle and
-caption, the axis titles and labels on all four sides, the legend, and
-the facet strips. Text drawn inside the panel by a layer, from
+Text inside the panel, including labels from
 [`geom_text()`](https://ggplot2.tidyverse.org/reference/geom_text.html)
-or
+and
 [`geom_text_last()`](https://lobsterbush.github.io/tufter/reference/geom_text_last.md),
-is not measured, because clipping there depends on the panel range and
-the coord's `clip` setting rather than on the canvas. Look at those
-yourself, or give the scale room with
-[`expansion()`](https://ggplot2.tidyverse.org/reference/expansion.html).
+isn't measured. Its clipping depends on the panel range and coordinate
+settings. Check those labels yourself and add room with
+[`expansion()`](https://ggplot2.tidyverse.org/reference/expansion.html)
+where needed. This check can't certify that every label is readable or
+free of overlap.
 
 ## Examples
 

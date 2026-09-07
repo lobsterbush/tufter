@@ -1,14 +1,14 @@
 #' Label series directly instead of with a legend
 #'
-#' A legend makes the reader look away from the data, hold a colour in memory,
-#' look back, and match. Tufte's rule is to integrate word and image: put the
-#' name on the line. \code{geom_text_last()} labels each group at its largest x
-#' value, which is where the eye leaves a time series;
-#' \code{geom_text_first()} labels at the smallest.
+#' Put a series name beside its line so readers can identify it without
+#' looking up a legend. This follows Tufte's advice to bring text and graphics
+#' together. \code{geom_text_last()} labels each group at its largest x value;
+#' \code{geom_text_first()} labels it at the smallest.
 #'
-#' Both add horizontal space to the right or left of the panel by clipping off,
-#' so pair them with \code{coord_cartesian(clip = "off")} and a plot margin, or
-#' widen the x scale with \code{\link[ggplot2]{expansion}()}.
+#' Leave room for the labels. You can widen the x scale with
+#' \code{\link[ggplot2]{expansion}()}, or use
+#' \code{coord_cartesian(clip = "off")} with a suitable plot margin.
+#' These layers don't move overlapping labels apart.
 #'
 #' @param mapping,data,position,na.rm,show.legend,inherit.aes,... Standard
 #'   \code{ggplot2} layer arguments. See \code{\link[ggplot2]{layer}()}. The
@@ -99,10 +99,9 @@ StatExtreme <- ggplot2::ggproto(
 
 #' Add a source note to a figure
 #'
-#' Tufte's documentation principle: a graphic should say where its numbers came
-#' from, on the graphic, so that the claim can be checked without hunting for
-#' the surrounding text. This is a thin wrapper on \code{labs(caption = ...)}
-#' that formats the note consistently.
+#' Name the data source on the figure so readers can check where the numbers
+#' came from. This follows Tufte's documentation principle and wraps
+#' \code{labs(caption = ...)} with consistent formatting.
 #'
 #' @param source Where the data came from.
 #' @param note Optional extra note, appended after the source.

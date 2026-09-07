@@ -1,8 +1,8 @@
 AI – Human (editor) | 🤖✏️👤
 Standard: https://thelatentreview.com/provenance/
 
-Human editor and maintainer: Charles Crabtree
-Anthropic's Claude, through Claude Code, wrote most of the original R source,
-tests, documentation, and vignettes. OpenAI's Codex assisted with the release
-audit, fixes, and documentation redesign. Charles specified the design and
-retains editorial responsibility.
+I'm Charles Crabtree, the human editor and maintainer. Anthropic's Claude,
+through Claude Code, wrote most of the original R source, tests, documentation
+and vignettes. OpenAI's Codex assisted with the audit, fixes and site redesign,
+including the prose rewrite. I specified the design and retain editorial
+responsibility.

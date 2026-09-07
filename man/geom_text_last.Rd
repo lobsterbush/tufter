@@ -54,16 +54,16 @@ the series name, usually the same one you mapped to \code{colour}.}
 A \code{ggplot2} layer.
 }
 \description{
-A legend makes the reader look away from the data, hold a colour in memory,
-look back, and match. Tufte's rule is to integrate word and image: put the
-name on the line. \code{geom_text_last()} labels each group at its largest x
-value, which is where the eye leaves a time series;
-\code{geom_text_first()} labels at the smallest.
+Put a series name beside its line so readers can identify it without
+looking up a legend. This follows Tufte's advice to bring text and graphics
+together. \code{geom_text_last()} labels each group at its largest x value;
+\code{geom_text_first()} labels it at the smallest.
 }
 \details{
-Both add horizontal space to the right or left of the panel by clipping off,
-so pair them with \code{coord_cartesian(clip = "off")} and a plot margin, or
-widen the x scale with \code{\link[ggplot2]{expansion}()}.
+Leave room for the labels. You can widen the x scale with
+\code{\link[ggplot2]{expansion}()}, or use
+\code{coord_cartesian(clip = "off")} with a suitable plot margin.
+These layers don't move overlapping labels apart.
 }
 \examples{
 library(ggplot2)

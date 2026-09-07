@@ -42,34 +42,27 @@ them, as Tufte usually does.}
 \code{\link[scales]{label_number}()}.}
 
 \item{direction_colour}{Logical. Colour lines by whether the unit rose or
-fell between the first and last period? Defaults to \code{FALSE}; Tufte's
-own slopegraphs use a single grey.}
+fell between the first and last period? Defaults to \code{FALSE}.}
 
 \item{min_gap}{Minimum vertical separation between labels, as a fraction of
 the y range. Labels closer than this are nudged apart. Set to \code{0} to
-disable. This is a typesetting allowance rather than a quantity from
-Tufte. It's here only so two units with near-identical values don't print
-on top of each other, and the right value depends on your font size.}
+disable. Adjust this for the font size and spacing in your figure.}
 }
 \value{
 A \code{ggplot} object.
 }
 \description{
-A slopegraph shows a before-and-after comparison for many units at once.
-Each unit is one line; the slope of the line is the change, the vertical
-position is the level, and the crossings show which units changed rank.
-Tufte's version prints every number on the graphic, which makes the y axis
-redundant, so it's removed. The table and the graphic become the same
-object.
+Compare values across two periods, with a line for each unit and a label at
+each end. Line crossings show changes in rank. Tufte's version prints the
+values directly, so the y axis is removed.
 }
 \details{
-Two periods, then. The labels sit outside the panel on either side, so a
-third period has nowhere to put its numbers: the lines run through it and
-only the first and last are labelled, with a warning saying so.
+The function accepts more than two periods, but labels only the first and
+last and warns about that limit.
 
-The design fails quietly when many units share a value, because the labels
-collide. \code{slopegraph()} nudges colliding labels apart by default; if
-your data are dense, reduce \code{label_size} or plot fewer units.
+Nearby labels are moved apart by default. If you have many similar values,
+you may still need a smaller label size or fewer units. Check the figure at
+its final size.
 }
 \examples{
 d <- data.frame(

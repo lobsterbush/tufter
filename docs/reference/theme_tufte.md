@@ -1,9 +1,7 @@
-# A maximum data-ink theme
+# A minimal theme for statistical graphics
 
-Strips every element of the plot that doesn't itself carry data: the
-panel background, the grid, the panel border, and the legend frame. This
-is the theme half of Tufte's instruction to maximise the share of ink
-that varies with the data, and to erase the rest.
+Remove the panel background, grid, panel border and legend frame. The
+theme follows Tufte's advice to reduce ink that doesn't represent data.
 
 ## Usage
 
@@ -35,9 +33,8 @@ theme_tufte(
 
 - axis_lines:
 
-  Logical. Draw conventional axis lines? Defaults to `FALSE`, since
-  [`geom_rangeframe()`](https://lobsterbush.github.io/tufter/reference/geom_rangeframe.md)
-  is the better choice.
+  Logical. Draw conventional axis lines? Defaults to `FALSE`. Add a
+  range frame if you'd like axes tied to the data.
 
 - grid:
 
@@ -50,19 +47,16 @@ A `ggplot2` theme object.
 
 ## Details
 
-The default has no axis lines at all, on the assumption that you'll add
-a
+There are no axis lines by default. Add
 [`geom_rangeframe()`](https://lobsterbush.github.io/tufter/reference/geom_rangeframe.md)
 or
 [`geom_quartileframe()`](https://lobsterbush.github.io/tufter/reference/geom_rangeframe.md),
-which carries information the panel border doesn't. Set
-`axis_lines = TRUE` if you want conventional full-length axes instead.
+or set `axis_lines = TRUE` for ordinary axes.
 
-A faint grid is sometimes the honest choice: when readers must recover
-values from the plot rather than compare shapes. Tufte's own bar charts
-keep gridlines but erase them where they cross the bars, which is what
-[`geom_col_tufte()`](https://lobsterbush.github.io/tufter/reference/geom_col_tufte.md)
-does. `grid = "y"` or `"x"` gives you a hairline grid on one axis only.
+I'd keep a grid when it helps readers estimate values. Use `grid = "y"`
+or `"x"` for a light grid on one axis. For Tufte's bar design, with
+rules erased through the bars, use
+[`geom_col_tufte()`](https://lobsterbush.github.io/tufter/reference/geom_col_tufte.md).
 
 ## See also
 

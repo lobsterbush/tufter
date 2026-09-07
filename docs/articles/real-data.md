@@ -1,14 +1,13 @@
 # Working through a real dataset
 
-Two datasets, both public domain, both installed from CRAN rather than
-downloaded while this page builds. `gapminder` gives life expectancy,
-income and population for 142 countries every five years from 1952 to
-2007. `palmerpenguins` gives body measurements for 344 penguins on three
-islands in the Palmer Archipelago.
+Here I use two datasets available in R packages. `gapminder` contains
+life expectancy, income and population for 142 countries at five-year
+intervals from 1952 to 2007. `palmerpenguins` contains measurements of
+344 penguins from three islands in the Palmer Archipelago.
 
-I’ve used real data here because the awkwardness is the point. Simulated
-data is symmetric and well behaved, and most of what these measurements
-have to say only shows up when the data isn’t.
+These examples show where the plotting tools help and where the data
+call for a different choice. The page uses the installed datasets and
+doesn’t download them during the build.
 
 ``` r
 library(gapminder)
@@ -50,17 +49,15 @@ r_default
 #> • measured at 6.5in x 4in, 150 dpi
 ```
 
-The grey panel and the white grid account for most of that, and none of
-it changes when a penguin does.
+The panel background and grid account for much of the estimated non-data
+ink in this version.
 
 ## Erase, then replace the frame
 
+I’ll remove those elements with
 [`theme_tufte()`](https://lobsterbush.github.io/tufter/reference/theme_tufte.md)
-takes off the background, the grid and the border.
-[`geom_rangeframe()`](https://lobsterbush.github.io/tufter/reference/geom_rangeframe.md)
-puts back something the border never gave you: an axis line that spans
-only the range the data occupy, so the frame reports the minimum and
-maximum for free.
+and add a range frame. The new axis lines show the smallest and largest
+observed values.
 
 ``` r
 lean <- default +
@@ -85,16 +82,14 @@ r_lean
 #> • measured at 6.5in x 4in, 150 dpi
 ```
 
-3.4 times the share of the ink now varies with the data, on the same 333
-penguins.
+The estimated data-ink share is now 3.4 times the original share. Both
+plots use the same 333 complete observations.
 
 ## A quartile frame, and where it stops working
 
-[`geom_quartileframe()`](https://lobsterbush.github.io/tufter/reference/geom_rangeframe.md)
-breaks the axis at the five-number summary, so the frame carries the
-distribution rather than boxing the panel.
+A quartile frame marks the five-number summary.
 [`quartile_breaks()`](https://lobsterbush.github.io/tufter/reference/quartile_breaks.md)
-puts the printed labels in the same places.
+places the axis labels at those values.
 
 ``` r
 ggplot(peng, aes(flipper_length_mm, body_mass_g)) +
@@ -108,11 +103,9 @@ ggplot(peng, aes(flipper_length_mm, body_mass_g)) +
 
 ![](real-data_files/figure-html/quartile-1.png)
 
-Both variables here are close to symmetric, which is why all five marks
-sit comfortably apart. On a skewed variable they crowd at one end. That
-crowding is information, since it tells you the distribution is skewed,
-and it also makes for an axis nobody can read, so on skewed data I’d use
-a plain range frame and let the marks show the skew.
+The five labels fit here. With a skewed distribution, several can end up
+close together. I’d use a plain range frame if the quartile labels
+became hard to read.
 
 ## Distributions: the box plot with the box erased
 
@@ -127,14 +120,14 @@ ggplot(peng, aes(species, body_mass_g)) +
 
 ![](real-data_files/figure-html/boxplot-1.png)
 
-Gentoo penguins are heavier than the other two by about a kilogram, and
-the two lighter species overlap almost completely. The box plot with the
-box erased says that in a line and three dots.
+Gentoo penguins are heavier on average than the other two species, whose
+distributions overlap substantially. The median dots and whiskers make
+that comparison visible.
 
-## Slopegraphs: a before and after that a bar chart would bury
+## Slopegraphs: changes in life expectancy
 
-Life expectancy in South-East Asia, 1952 against 2007. Every number is
-printed on the graphic, which makes the y axis redundant, so it goes.
+Here’s life expectancy in seven South-East Asian countries in 1952 and
+2007. The values are printed at both ends of each line.
 
 ``` r
 picked <- c("Cambodia", "Indonesia", "Malaysia", "Philippines",
@@ -149,18 +142,16 @@ slopegraph(sea, year, lifeExp, country, accuracy = 0.1) +
 
 ![](real-data_files/figure-html/slopegraph-1.png)
 
-Every country rose, and the crossings are the interesting part. Thailand
-began the highest of the seven and ends fifth. Vietnam began fourth and
-ends joint top with Malaysia. Cambodia began third from the bottom and
-ends last. A pair of bar charts would have shown exactly the same
-fourteen numbers and hidden every one of those reorderings, which is the
-case for the form.
+Life expectancy increased in every country shown. The lines also help us
+see changes in rank: Thailand starts highest and ends fifth, while
+Vietnam moves from fourth to roughly level with Malaysia at the top.
+Cambodia ends lowest.
 
 ## Small multiples
 
+For the next comparison, I’ll keep the same scales across panels.
 [`facet_tufte()`](https://lobsterbush.github.io/tufter/reference/facet_tufte.md)
-fixes the scales, and warns if you try to free them, because free scales
-destroy the comparison the design exists to make.
+does that by default and warns if you request free scales.
 
 ``` r
 recent <- subset(gap, year >= 1977 & continent != "Oceania")
@@ -179,11 +170,12 @@ ggplot(recent, aes(gdpPercap, lifeExp)) +
 
 ## Banking: how tall should the panel be?
 
-One country’s life expectancy over 55 years. How steep the rise looks
-depends on how tall the panel is, and
+The apparent steepness of a trend depends on the panel’s height. Here I
+use
 [`bank_to_45()`](https://lobsterbush.github.io/tufter/reference/bank_to_45.md)
-picks the height that puts the median slope nearest 45 degrees, where
-Cleveland found we judge slope most accurately.
+to suggest a height for one country’s life-expectancy series. It applies
+Cleveland’s approach to bringing the median absolute slope near 45
+degrees.
 
 ``` r
 korea <- subset(gap, country == "Korea, Rep.")
@@ -202,10 +194,10 @@ bank_to_45(series, width = 6.5)
 #> titles.
 ```
 
-That height is for the panel. A saved figure needs more, for the axis
-labels and the y title, and
+The suggested height describes the panel. Leave additional space for
+titles and axis labels, then run
 [`check_labels_fit()`](https://lobsterbush.github.io/tufter/reference/check_labels_fit.md)
-will tell you when you haven’t left enough.
+at the intended export size.
 
 ``` r
 series
@@ -223,10 +215,10 @@ sparklines(four, year, gdpPercap, country, accuracy = 1)
 
 ![](real-data_files/figure-html/sparklines-1.png)
 
-Four series whose levels differ by an order of magnitude. On shared axes
-three of them would flatten against the bottom; each on its own scale,
-the shapes are comparable even though the levels aren’t. That’s the
-opposite choice from the small multiples above, and both are honest.
+These four series have very different levels. Giving each its own scale
+makes the patterns easier to see, but it prevents direct comparisons of
+height across series. Use the fixed-scale panels above when levels are
+the question.
 
 ## Dot plots, when zero is a long way away
 
@@ -243,12 +235,11 @@ ggplot(top, aes(lifeExp, stats::reorder(country, lifeExp))) +
 
 ![](real-data_files/figure-html/dotplot-1.png)
 
-These ten countries sit between 79.5 and 81.8 years. Bars from zero
-would put every one at nearly the same length and waste four fifths of
-the panel. Bars cropped to the data would make a two-year spread look
-like the whole story, and
+The ten values range from 79.5 to 81.8 years. Bars starting at zero make
+the differences hard to see. Cropping those bars makes their lengths
+misleading. Here’s what
 [`lie_factor()`](https://lobsterbush.github.io/tufter/reference/lie_factor.md)
-puts a number on how much.
+reports for the cropped version.
 
 ``` r
 bars <- ggplot(top, aes(stats::reorder(country, lifeExp), lifeExp)) + geom_col()
@@ -259,9 +250,8 @@ c(from_zero = lie_factor(bars),
 #>    1.0000  125.5656
 ```
 
-A dot encodes its value by position, so it can be read against a scale
-that excludes zero without claiming anything about proportions. That’s
-the whole reason to reach for one.
+Dots show values by position, so they’re useful for this comparison on
+an axis that excludes zero.
 
 ## Auditing the result
 
@@ -275,14 +265,13 @@ tufte_audit(lean, width = 6.5, height = 4)
 #> ── Measured, not graded
 #> Tufte states a direction for these rather than a threshold. Read them against
 #> another draft of the same figure.
-#> • Data-ink ratio 0.71: 71% of the ink varies with the data. Tufte asks that
-#>   this be maximised within reason and names no threshold, so read it against
-#>   another draft of this figure rather than against a target.
-#> • Data density 36.3 numbers per square inch: 666 entries over 18.3 square
-#>   inches. Tufte ranks published graphics by this and sets no minimum.
-#> • 1 distinct colour in use. Tufte's advice on colour is qualitative, so this is
-#>   a count and not a verdict.
-#> • One series in one panel, so there is nothing to separate into small
+#> • Data-ink ratio 0.71: an estimated 71% of the ink comes from data layers.
+#>   Compare drafts at the same dimensions; there's no target value.
+#> • Data density 36.3 entries per square inch: 666 estimated entries over 18.3
+#>   square inches. Read this alongside the figure and entry count.
+#> • 1 distinct colour in use. This is a count, not a verdict on whether the
+#>   colours help readers.
+#> • One series in one panel. There's no series grouping to separate into small
 #>   multiples.
 #> 
 #> ── Met
@@ -326,6 +315,6 @@ audit_figures(figures, measure = FALSE)
 #> ℹ Full detail for any one figure: `attr(x, "audits")[["<name>"]]`
 ```
 
-The cropped bar chart comes first because it fails the most stated
-criteria, and the count is comparable across the three because every
-figure is counted against the same list.
+The cropped bar chart appears first because it has the most unmet
+criteria. That’s a useful place to begin reviewing these figures. Also
+check whether any audit steps were skipped.

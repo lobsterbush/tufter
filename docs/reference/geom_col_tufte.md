@@ -1,11 +1,8 @@
 # Bar charts with the gridlines erased through the bars
 
-Tufte's bar chart redesign is the clearest case of erasing redundant
-data-ink. The gridlines are needed, because readers have to recover
-values from bar heights. But a gridline crossing a bar is drawn on top
-of ink that already encodes the same information, so it's erased there
-instead of being drawn over the bar. The result is a bar with white
-rules through it, which reads as a ruler laid against the data.
+Gridlines can help readers estimate values from a bar chart. In Tufte's
+redesign, the lines appear as gaps through the bars. This layer draws
+those gaps using the background colour.
 
 ## Usage
 
@@ -75,10 +72,10 @@ A `ggplot2` layer.
 
 ## Details
 
-Use with
+Use it with
 [`theme_tufte()`](https://lobsterbush.github.io/tufter/reference/theme_tufte.md)
-and `grid = "none"`: this layer draws the white rules, and the theme
-should not add grey ones underneath.
+and `grid = "none"`. The layer already draws the rules, so there's no
+need for the theme to add another grid.
 
 ## Examples
 

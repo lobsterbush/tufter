@@ -1,18 +1,16 @@
 # Examples with simulated data
 
-Everything below runs on simulated data. Nothing gets read from a file
-or downloaded, and every chunk is reproducible from the seed at the top
-of its section, so you can paste any of them into a fresh session and
-get the same figure. The scenarios are the ones I actually run into in
-survey-experimental work: treatment effects across conditions,
-audit-study callback rates, cross-national indicators over time,
-before-and-after comparisons.
+Here are examples using simulated data. I’ve used settings familiar from
+survey experiments and discrimination research, including callback rates
+and treatment effects across conditions. The numbers are illustrative.
+
+Run the setup and simulation helper before the examples. Each section
+sets its seed so you can reproduce the figures.
 
 ## Simulating the data
 
-One helper, used throughout. It generates a small survey experiment with
-a set of respondents, a randomly assigned condition, and an outcome
-carrying a real but modest treatment effect.
+This helper creates respondents, randomly assigns a condition, and
+generates an outcome with a modest treatment effect.
 
 ``` r
 simulate_experiment <- function(n = 900,
@@ -49,12 +47,10 @@ str(experiment)
 
 ## Distributions: the box plot with the box erased
 
-The box in a box plot holds four numbers, and a line and a dot can hold
-them just as well.
 [`geom_tufteboxplot()`](https://lobsterbush.github.io/tufter/reference/geom_tufteboxplot.md)
-erases it and keeps somewhere between a third and a fifth of the ink.
-`geom_rangeframe(sides = "l")` puts an axis line only where the data
-are.
+shows the distribution with whisker lines and a median mark.
+`geom_rangeframe(sides = "l")` adds a vertical axis line spanning the
+data.
 
 ``` r
 ggplot(experiment, aes(condition, support)) +
@@ -70,10 +66,10 @@ ggplot(experiment, aes(condition, support)) +
 
 ![](simulated-examples_files/figure-html/boxplot-1.png)
 
-The three variants trade ink for legibility. `"point"` is the default
-and the sparest, with whiskers, a gap, and a dot at the median. `"line"`
-keeps a thick interquartile segment. `"offset"` shifts that segment to
-one side, which is what you want when the whiskers are short.
+The default, `"point"`, leaves a gap for the interquartile range and
+places a dot at the median. `"line"` uses a thicker interquartile
+segment. `"offset"` places that segment beside the whiskers. I’d compare
+them at the size the figure will be printed.
 
 ``` r
 for (variant in c("line", "offset")) {
@@ -91,19 +87,14 @@ for (variant in c("line", "offset")) {
 
 ## Range frames and quartile frames
 
-A panel border is the same box whatever the numbers are. A range frame
-spans only the data, so it reports the minimum and maximum for free. A
-quartile frame breaks that line at the quartiles, so the axis carries
-the whole five-number summary.
-[`quartile_breaks()`](https://lobsterbush.github.io/tufter/reference/quartile_breaks.md)
-puts the printed labels in the same places.
+A range frame spans the observed values. A quartile frame also marks the
+five-number summary, with labels supplied by
+[`quartile_breaks()`](https://lobsterbush.github.io/tufter/reference/quartile_breaks.md).
 
-It keeps all five by default, since that’s what the frame reports. If
-two of them sit close enough to overprint at your font and figure size,
-set `min_gap` yourself instead of trusting a default to guess it, and
-use
+All five breaks are kept by default. If labels crowd together, use
+`min_gap` to omit some of them. Run
 [`check_labels_fit()`](https://lobsterbush.github.io/tufter/reference/check_labels_fit.md)
-to find out whether they collide at all.
+and inspect the saved figure.
 
 ``` r
 ggplot(experiment, aes(age, support)) +
@@ -118,9 +109,8 @@ ggplot(experiment, aes(age, support)) +
 ![](simulated-examples_files/figure-html/frames-1.png)
 
 [`geom_dotdash()`](https://lobsterbush.github.io/tufter/reference/geom_dotdash.md)
-goes further still and replaces the frame with the data themselves,
-putting a short tick at every observation on both margins. Turn the
-theme ticks off, or you’ll get two sets of marks saying the same thing.
+adds a short tick for every observation along each margin. Turn off
+ordinary theme ticks if you’d like these marks to replace them.
 
 ``` r
 ggplot(experiment, aes(age, support)) +
@@ -134,12 +124,10 @@ ggplot(experiment, aes(age, support)) +
 
 ## Bars with the gridlines erased through them
 
-Bar charts need gridlines, because readers recover values from bar
-heights. A gridline crossing a bar, though, sits on top of ink that
-already carries that value, so Tufte erases it there instead of drawing
-over the bar.
+This bar design uses gaps through the bars as gridlines. They help
+readers estimate values without adding a separate grid across the panel.
 
-Here is a simulated audit study: callback rates by applicant name and
+The example shows simulated callback rates by applicant name and
 occupation.
 
 ``` r
@@ -163,23 +151,19 @@ ggplot(callbacks, aes(name, rate)) +
 
 ![](simulated-examples_files/figure-html/bars-1.png)
 
-Note the bars start at zero.
+The bars start at zero.
 [`tufte_audit()`](https://lobsterbush.github.io/tufter/reference/tufte_audit.md)
-will tell you when they don’t, and
+checks the baseline, and
 [`lie_factor()`](https://lobsterbush.github.io/tufter/reference/lie_factor.md)
-will tell you by how much the figure exaggerates.
+estimates distortion in supported bar comparisons.
 
 ## Dots, when a zero baseline isn’t wanted
 
-Sometimes zero sits a long way from the data and starting there wastes
-most of the panel. That’s the case for dots over bars. A dot encodes its
-value by position, so you can read it against a scale that excludes zero
-without lying about proportions, and it costs a fraction of the ink.
-Cleveland’s leader lines let the eye run along a row without drifting
-into the next one.
+A dot plot is useful when the values occupy a narrow range far from
+zero. The dots show position on the scale. Leader lines help readers
+follow each row to its value.
 
-Sort before plotting. An alphabetical dot plot throws away the main
-advantage of the form, which is that you can see rank at a glance.
+I’ve sorted the categories by value so rank is easy to see.
 
 ``` r
 support <- aggregate(support ~ condition, experiment, mean)
@@ -195,12 +179,10 @@ ggplot(support, aes(support, stats::reorder(condition, support))) +
 
 ## Banking the aspect ratio
 
-The same series can look like a gentle drift or a cliff depending only
-on how tall the panel is, and neither reading is the data’s fault.
-Cleveland’s rule is that we judge slope most accurately near 45 degrees,
-and the aspect ratio is what puts it there.
+The same series looks steeper in a taller panel.
 [`bank_to_45()`](https://lobsterbush.github.io/tufter/reference/bank_to_45.md)
-computes the height that does it.
+uses Cleveland’s banking approach to suggest a height that brings the
+median absolute slope near 45 degrees.
 
 ``` r
 cycles <- data.frame(
@@ -223,9 +205,8 @@ banked
 #> titles.
 ```
 
-Drawn at roughly that height the panel is short and wide, the rising and
-falling flanks of each cycle sit near 45 degrees, and the slow upward
-drift underneath the oscillation is the first thing you see.
+At this height, I find the gradual upward trend easy to see. The
+individual cycles are compressed.
 
 ``` r
 series
@@ -233,11 +214,8 @@ series
 
 ![](simulated-examples_files/figure-html/banked-figure-1.png)
 
-Here’s the same data in a conventionally proportioned panel. Nothing is
-hidden, and for reading the individual cycles I think it’s arguably the
-better picture. The vertical stretch does exaggerate every flank,
-though. The oscillation dominates, and the trend it’s riding on takes
-noticeably longer to spot.
+Here’s a taller version. It gives the cycles more space, which may be
+useful if their pattern is what you want to compare.
 
 ``` r
 series
@@ -245,18 +223,15 @@ series
 
 ![](simulated-examples_files/figure-html/unbanked-figure-1.png)
 
-Which one you want depends on the question. Banking is a rule for
-reading *slopes*, so it helps when the rate of change is the finding and
-hurts when the levels are. I’d call it a defensible default rather than
-an obligation.
+The choice depends on the question. I’d use the suggested height as a
+starting point and compare it with another version.
 
 ## Is it dark enough to read?
 
-Erasing ink is a virtue right up to the point where what survives can
-still be seen.
 [`check_contrast()`](https://lobsterbush.github.io/tufter/reference/check_contrast.md)
-measures every colour the plot draws with against the background, using
-the WCAG minima of 4.5 to 1 for text and 3 to 1 for marks.
+compares mark and text colours with the background. Its default minima
+are 4.5 to 1 for text and 3 to 1 for marks. It doesn’t resolve every
+overlapping mark or separately filled background.
 
 ``` r
 check_contrast(
@@ -272,16 +247,14 @@ check_contrast(
 #> 3 axis title black  21          4.5 TRUE
 ```
 
-Grey 80 on white is elegant, and for a good number of readers it’s
-invisible.
+Grey 80 has low contrast against white. I’d use a darker colour for
+marks that readers need to distinguish individually.
 
 ## Small multiples
 
-Tufte’s answer to multivariate data is repetition instead of
-complication. The same graphic, at the same scale, once per condition.
+Repeating the same plot for each condition can make comparisons easier.
 [`facet_tufte()`](https://lobsterbush.github.io/tufter/reference/facet_tufte.md)
-fixes the scales and warns if you try to free them, since free scales
-wreck the comparison the design exists to make.
+fixes the scales and warns if you change them.
 
 ``` r
 ggplot(experiment, aes(age, support)) +
@@ -298,10 +271,9 @@ ggplot(experiment, aes(age, support)) +
 
 ## Direct labelling instead of a legend
 
-A legend makes the reader look away, hold a colour in memory, look back
-and match it up.
-[`geom_text_last()`](https://lobsterbush.github.io/tufter/reference/geom_text_last.md)
-puts the name where the eye already is, at the end of the line.
+Put the series name at the end of the line with
+[`geom_text_last()`](https://lobsterbush.github.io/tufter/reference/geom_text_last.md).
+Readers can then identify a series where they’re looking at its values.
 
 ``` r
 set.seed(4)
@@ -330,21 +302,18 @@ ggplot(panel, aes(year, trust, colour = country)) +
 
 ![](simulated-examples_files/figure-html/direct-1.png)
 
+These labels can overlap because
 [`geom_text_last()`](https://lobsterbush.github.io/tufter/reference/geom_text_last.md)
-places each label at its series’ final point and does no collision
-avoidance, so two series ending at nearly the same value will overprint.
-When that happens, nudge one with `nudge_y`, or swap in
+doesn’t move them apart. Try `nudge_y` or
 [`ggrepel::geom_text_repel()`](https://ggrepel.slowkow.com/reference/geom_text_repel.html)
-on the same data. A slopegraph, below, solves the problem properly by
-spreading colliding labels apart itself.
+if the endpoints are close. The slopegraph function below includes label
+spacing, though dense plots still need inspection.
 
 ## Slopegraphs
 
-A slopegraph shows before-and-after for many units at once. Each unit is
-a line. The slope is the change, the height is the level, and the
-crossings show you which units changed rank. Every number gets printed
-on the graphic, which makes the y axis redundant, so it goes. The table
-and the figure end up being the same object.
+A slopegraph compares two periods. The labels give the values and line
+crossings show changes in rank. I find it useful when both the levels
+and the changes matter.
 
 ``` r
 set.seed(7)
@@ -372,8 +341,9 @@ slopegraph(wave, wave, value, state) +
 
 ![](simulated-examples_files/figure-html/slopegraph-1.png)
 
-`direction_colour = TRUE` colours the lines by whether the unit rose or
-fell. I’d only bother when the direction is the finding.
+Set `direction_colour = TRUE` to distinguish increases from decreases by
+colour. I’d use that when direction is the comparison I want to
+emphasize.
 
 ``` r
 slopegraph(wave, wave, value, state, direction_colour = TRUE) +
@@ -387,11 +357,10 @@ slopegraph(wave, wave, value, state, direction_colour = TRUE) +
 
 ## Sparklines
 
-A sparkline is word-sized, small enough to sit inside a sentence, with
-the normal range as a grey band, dots at the extremes, and the final
-value printed at the end. Each series keeps its own vertical scale,
-since a sparkline reports the shape of one series instead of inviting
-you to compare levels.
+Sparklines fit a series into a small space. Here the band shows its
+interquartile range and the dots identify the extremes. Each series has
+its own vertical scale, so compare patterns rather than heights across
+rows.
 
 ``` r
 set.seed(21)
@@ -411,11 +380,11 @@ sparklines(indicators, quarter, value, series)
 
 ![](simulated-examples_files/figure-html/sparklines-1.png)
 
-A single sparkline at the size it’s meant to be printed is
-[`sparkline()`](https://lobsterbush.github.io/tufter/reference/sparkline.md).
+Use
+[`sparkline()`](https://lobsterbush.github.io/tufter/reference/sparkline.md)
+for one series.
 [`sparkline_grob()`](https://lobsterbush.github.io/tufter/reference/sparkline_grob.md)
-returns a grob, so you can drop one into a table cell or an inline
-chunk.
+returns a grob you can place in a table or another graphic.
 
 ``` r
 set.seed(3)
@@ -426,13 +395,10 @@ sparkline(cumsum(rnorm(60)) + 20)
 
 ## Colour as a code
 
-Four palettes, each answering a different question. `"grey"` encodes an
-ordered variable without smuggling in a second categorical signal you
-didn’t ask for. `"accent"` is greys plus one signal red, for when
-exactly one series matters and the rest are context. `"muted"` is
-desaturated earth tones that sit behind annotation without fighting it.
-`"divergent"` handles signed quantities with a neutral midpoint instead
-of a white one.
+The palettes serve different uses. `"grey"` gives an ordered sequence.
+`"accent"` adds one red series to a set of greys. `"muted"` uses earth
+tones, and `"divergent"` provides a blue-to-red scale with a neutral
+midpoint. Check their contrast in the figure where you’ll use them.
 
 ``` r
 pals <- c("grey", "accent", "muted", "divergent")
@@ -451,8 +417,8 @@ ggplot(swatches, aes(i, palette, fill = colour)) +
 
 ![](simulated-examples_files/figure-html/palettes-1.png)
 
-Used in anger, with grey for context and one accent for the series
-carrying the argument.
+Here I’ve used grey for the comparison series and an accent for the one
+I want readers to notice.
 
 ``` r
 focus <- panel
@@ -476,10 +442,9 @@ ggplot(focus, aes(year, trust, group = country, colour = highlight)) +
 
 ## Auditing the result
 
-Every figure above can be audited.
 [`tufte_audit()`](https://lobsterbush.github.io/tufter/reference/tufte_audit.md)
-reports the stated criteria a figure misses, and separately measures the
-quantities Tufte gives a direction for but no threshold.
+checks the available criteria and reports measurements that you can
+compare across drafts.
 
 ``` r
 final <- ggplot(experiment, aes(condition, support)) +
@@ -498,14 +463,13 @@ tufte_audit(final, width = 6.5, height = 4)
 #> ── Measured, not graded
 #> Tufte states a direction for these rather than a threshold. Read them against
 #> another draft of the same figure.
-#> • Data-ink ratio 0.52: 52% of the ink varies with the data. Tufte asks that
-#>   this be maximised within reason and names no threshold, so read it against
-#>   another draft of this figure rather than against a target.
-#> • Data density 88.3 numbers per square inch: 1800 entries over 20.4 square
-#>   inches. Tufte ranks published graphics by this and sets no minimum.
-#> • 1 distinct colour in use. Tufte's advice on colour is qualitative, so this is
-#>   a count and not a verdict.
-#> • One series in one panel, so there is nothing to separate into small
+#> • Data-ink ratio 0.52: an estimated 52% of the ink comes from data layers.
+#>   Compare drafts at the same dimensions; there's no target value.
+#> • Data density 88.3 entries per square inch: 1800 estimated entries over 20.4
+#>   square inches. Read this alongside the figure and entry count.
+#> • 1 distinct colour in use. This is a count, not a verdict on whether the
+#>   colours help readers.
+#> • One series in one panel. There's no series grouping to separate into small
 #>   multiples.
 #> 
 #> ── Met
@@ -524,5 +488,5 @@ tufte_audit(final, width = 6.5, height = 4)
 
 The [measuring
 article](https://lobsterbush.github.io/tufter/articles/measuring.md)
-goes through what each of those is actually computing, and where the
-numbers can mislead you.
+explains how the estimates work and where they need careful
+interpretation.

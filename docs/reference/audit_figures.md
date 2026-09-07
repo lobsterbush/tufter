@@ -1,10 +1,9 @@
 # Audit every figure in a paper at once
 
-Running
+Give this function a set of plots or a directory of saved plots. It runs
 [`tufte_audit()`](https://lobsterbush.github.io/tufter/reference/tufte_audit.md)
-on one plot is useful while you're drawing it. Running it on all of
-them, the evening before you submit, is when it earns its keep: the
-figure with the truncated subtitle is never the one you were looking at.
+on each one and returns a row per figure. I find this useful when
+reviewing a paper's figures together.
 
 ## Usage
 
@@ -17,8 +16,8 @@ audit_figures(plots, width = 6.5, height = 4, measure = TRUE)
 - plots:
 
   One of: a named list of `ggplot` objects; a single `ggplot`; or a path
-  to a directory, in which case every `.rds` file in it's read and any
-  that contains a `ggplot` is audited.
+  to a directory, in which case every `.rds` file is read and any that
+  contains a `ggplot` is audited.
 
 - width, height:
 
@@ -29,29 +28,27 @@ audit_figures(plots, width = 6.5, height = 4, measure = TRUE)
 
   Logical. Report the data-ink ratio and the data density? Defaults to
   `TRUE`. Setting it to `FALSE` skips only those two, which are
-  ungraded, so the ordering by unmet criteria is the same either way and
-  roughly twice as fast to get.
+  ungraded, so the ordering by unmet criteria is the same either way.
+  This avoids the extra rendering needed for those measurements.
 
 ## Value
 
 An object of class `tufte_audit_batch`: a tibble with one row per
 figure, giving `figure`, `violations`, `met`, `skipped` (checks that
-could not run), and `failing`, a comma-separated list of the criteria
-not met. The full audits are attached as the `"audits"` attribute, named
-by figure.
+couldn't run), and `failing`, a comma-separated list of the criteria not
+met. The full audits are attached as the `"audits"` attribute, named by
+figure.
 
 ## Details
 
-Give it the plots you built, or a directory of saved ones. It returns a
-row per figure with the count of unmet criteria and the checks that
-failed, and keeps the full per-check detail attached so you can drill
-into any of them.
+The table lists the unmet criteria and any checks that couldn't run.
+Full results are attached to the table so you can inspect a particular
+figure.
 
-Figures are ordered by the number of stated criteria they fail, most
-first. That's a count and not a score: it's comparable across figures
-because every figure is being counted against the same criteria, whereas
-a proportion would divide by a denominator that changes with the plot
-type.
+Figures with more unmet criteria come first. Use that order to decide
+where to look; it doesn't tell you which figure is substantively more
+useful. Check the skipped count too, since an incomplete audit can miss
+a problem.
 
 ## See also
 

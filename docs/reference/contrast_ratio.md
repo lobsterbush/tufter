@@ -1,10 +1,9 @@
 # WCAG contrast ratio between two colours
 
-The ratio of the relative luminances of two colours, as defined by the
-Web Content Accessibility Guidelines. It runs from 1, for two identical
-colours, to 21, for black on white. The guidelines ask for at least 4.5
-for body text and at least 3 for large text and for graphical objects
-such as the marks and rules on a chart.
+Compare the relative luminance of two colours using the Web Content
+Accessibility Guidelines. The ratio ranges from 1 for identical colours
+to 21 for black against white. The guidelines specify at least 4.5 for
+body text and 3 for large text and graphical objects.
 
 ## Usage
 

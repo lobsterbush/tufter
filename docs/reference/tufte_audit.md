@@ -1,7 +1,8 @@
 # Audit a plot against Tufte's principles
 
-Reports what a plot does against what Tufte actually wrote, and is
-careful about the difference between the two kinds of thing he wrote.
+Use this to check a figure while you're working on it. The output
+identifies unmet criteria and gives you measurements to compare across
+drafts.
 
 ## Usage
 
@@ -38,22 +39,19 @@ criteria, a single integer, is attached as the `"violations"` attribute.
 
 ## Details
 
-For some principles Tufte states a criterion a graphic either meets or
-does not: bars are measured from zero, the lie factor lies between 0.95
-and 1.05, graphics tend toward the horizontal, non-data ink comes off
-the page. Those are reported as met or not met.
+I've kept a distinction between principles with a stated criterion and
+those without one. Bars measured from zero and a lie factor between 0.95
+and 1.05 can be checked against explicit rules. The audit also checks
+the advice that graphics tend toward the horizontal and that non-data
+ink be removed.
 
-For others he states only a direction. He asks that the data-ink ratio
-be maximised "within reason" and that data density be increased, and
-nowhere says how much is enough, because the answer depends on the
-content. Those are measured and reported without a verdict, since any
-threshold would be the package author's rather than his.
+Tufte asks that the data-ink ratio be maximised "within reason" and that
+data density increase, but he doesn't give either a numerical target.
+Those measurements are reported without a pass or fail.
 
-There's no score. Counting satisfied principles would mean weighting
-them against each other, and Tufte offers no exchange rate between a pie
-chart and a missing source note. The audit gives you a list of stated
-criteria that aren't met, and a set of measurements to compare against
-another draft of the same figure.
+I haven't combined the results into a score. That would require me to
+decide how much each criterion matters. Read the individual results and
+check whether the suggested changes help someone understand your figure.
 
 ## See also
 
@@ -71,28 +69,26 @@ tufte_audit(ggplot(mtcars, aes(wt, mpg)) + geom_point())
 #> At 6.5in x 4in: 3 stated criteria not met.
 #> 
 #> ── Not met 
-#> ✖ The panel is filled with #EBEBEBFF. The fill is identical whatever the
-#>   numbers are, so it's non-data ink and Tufte's instruction is to erase it.
+#> ✖ The panel uses a #EBEBEBFF background fill. Try removing it and compare
+#>   whether the figure is easier to read.
 #> Erase non-data ink - VDQI ch. 4
-#> ✖ Minor gridlines are drawn. They subdivide the scale past the precision anyone
-#>   reads off a graphic, so they're non-data ink.
+#> ✖ Minor gridlines are drawn. Consider whether readers need this level of detail
+#>   to estimate values.
 #> Erase non-data ink - VDQI ch. 4
-#> ✖ No caption. Tufte asks that evidence be thoroughly described and its sources
-#>   named on the graphic itself, so a reader can check the claim without hunting
-#>   through the surrounding text. See label_source().
+#> ✖ No caption is present. Add the data source with label_source() so readers can
+#>   check where the numbers came from.
 #> Documentation - Beautiful Evidence ch. 6
 #> 
 #> ── Measured, not graded 
 #> Tufte states a direction for these rather than a threshold. Read them against
 #> another draft of the same figure.
-#> • Data-ink ratio 0.06: 6% of the ink varies with the data. Tufte asks that this
-#>   be maximised within reason and names no threshold, so read it against another
-#>   draft of this figure rather than against a target.
-#> • Data density 3.1 numbers per square inch: 64 entries over 20.8 square inches.
-#>   Tufte ranks published graphics by this and sets no minimum.
-#> • 1 distinct colour in use. Tufte's advice on colour is qualitative, so this is
-#>   a count and not a verdict.
-#> • One series in one panel, so there is nothing to separate into small
+#> • Data-ink ratio 0.06: an estimated 6% of the ink comes from data layers.
+#>   Compare drafts at the same dimensions; there's no target value.
+#> • Data density 3.1 entries per square inch: 64 estimated entries over 20.8
+#>   square inches. Read this alongside the figure and entry count.
+#> • 1 distinct colour in use. This is a count, not a verdict on whether the
+#>   colours help readers.
+#> • One series in one panel. There's no series grouping to separate into small
 #>   multiples.
 #> 
 #> ── Met 

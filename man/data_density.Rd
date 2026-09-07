@@ -21,20 +21,20 @@ An object of class \code{tufte_density}: a list with
   \code{variables} and \code{area}.
 }
 \description{
-The number of entries in the data matrix divided by the area of the data
-graphic, in square inches. Tufte's complaint about most published statistical
-graphics is that they're enormous and say almost nothing: a chart carrying
-four numbers over half a page has a data density near zero, and the numbers
-would have been better set as a sentence.
+Estimate the number of data entries per square inch of a figure. This
+implements Tufte's data-density measure. It can help you compare how much
+information different versions of a figure occupy on the page.
 }
 \details{
-The data matrix here is counted as the number of rows drawn, times the number
-of distinct variables mapped to aesthetics. Positional aesthetics count;
-constants set outside \code{aes()} don't, because they carry no data.
-This is an estimate, especially for statistical layers and plots combining
-different data sources: it multiplies a pooled row count by the union of
-mapped variables rather than reconstructing each displayed data matrix.
-If panel area cannot be estimated, the whole canvas area is used.
+Entries are counted as pooled rows times the number of distinct variables
+mapped to aesthetics. Constants outside \code{aes()} don't count.
+Statistical layers and plots that combine data sources need care: the
+function doesn't reconstruct a separate data matrix for each layer.
+
+Panel area is estimated from the rendered plot. If that estimate isn't
+available, the function uses the whole canvas. I'd read the result alongside
+the entry count and the figure, since a high density doesn't establish that
+the information is useful.
 }
 \examples{
 library(ggplot2)

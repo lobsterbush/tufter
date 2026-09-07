@@ -1,8 +1,7 @@
 # A theme for sparklines
 
-Removes everything. A sparkline is a word-sized graphic meant to sit
-inside running text, so it has no axes, no labels, no frame, and almost
-no margin.
+Remove axes, labels and the frame, and leave a small margin. This gives
+a sparkline room to sit beside the text that explains it.
 
 ## Usage
 

@@ -1,7 +1,8 @@
 # Tufte colour and fill scales
 
-Discrete and continuous scales built on
-[`tufte_pal()`](https://lobsterbush.github.io/tufter/reference/tufte_pal.md).
+Apply the palettes from
+[`tufte_pal()`](https://lobsterbush.github.io/tufter/reference/tufte_pal.md)
+to discrete or continuous colour and fill mappings.
 
 ## Usage
 

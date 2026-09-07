@@ -21,22 +21,21 @@ For \code{tufte_pal()}, a function of \code{n} returning \code{n}
   colours. For \code{tufte_colours()}, a character vector of hex colours.
 }
 \description{
-Four palettes, each answering a different question about colour.
+These four palettes are intended for different uses. Choose one for the
+comparison you want readers to make, then check the contrast in your figure.
 }
 \details{
 \describe{
-  \item{\code{"grey"}}{Tufte's default. Grey encodes an ordered variable
-    without introducing a second, unwanted, categorical signal.}
-  \item{\code{"accent"}}{Greys plus one signal red, which always goes to the
-    last level, so order your factor to put the series that matters last.
-    Use when exactly one series matters and the rest are context. This is
-    the palette that does the most work in \emph{Envisioning Information}:
-    layering by value, not by hue.}
-  \item{\code{"muted"}}{Desaturated earth tones, after the maps and
-    timetables Tufte reproduces. Colours this weak sit behind text and
-    annotation without fighting them.}
-  \item{\code{"divergent"}}{A muted blue-to-red ramp for signed quantities,
-    with a neutral rather than a white midpoint.}
+  \item{\code{"grey"}}{A sequence of greys for ordered values.}
+  \item{\code{"accent"}}{Greys with one red accent, assigned to the last
+    level. Put the series you want to highlight last in the factor order.
+    This draws on the use of value for layering in
+    \emph{Envisioning Information}.}
+  \item{\code{"muted"}}{Desaturated earth tones, drawing on the maps and
+    timetables Tufte reproduces. Check that they remain readable at the
+    size you'll use.}
+  \item{\code{"divergent"}}{A muted blue-to-red sequence for signed values,
+    with a neutral midpoint.}
 }
 }
 \examples{

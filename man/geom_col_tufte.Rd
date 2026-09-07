@@ -59,16 +59,13 @@ otherwise.}
 A \code{ggplot2} layer.
 }
 \description{
-Tufte's bar chart redesign is the clearest case of erasing redundant
-data-ink. The gridlines are needed, because readers have to recover values
-from bar heights. But a gridline crossing a bar is drawn on top of ink that
-already encodes the same information, so it's erased there instead of being
-drawn over the bar. The result is a bar with white rules through it, which
-reads as a ruler laid against the data.
+Gridlines can help readers estimate values from a bar chart. In Tufte's
+redesign, the lines appear as gaps through the bars. This layer draws those
+gaps using the background colour.
 }
 \details{
-Use with \code{\link{theme_tufte}()} and \code{grid = "none"}: this layer
-draws the white rules, and the theme should not add grey ones underneath.
+Use it with \code{\link{theme_tufte}()} and \code{grid = "none"}. The layer
+already draws the rules, so there's no need for the theme to add another grid.
 }
 \examples{
 library(ggplot2)

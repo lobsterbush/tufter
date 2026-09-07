@@ -1,9 +1,8 @@
 # Dot-dash-plot marginal distributions
 
-Tufte's dot-dash plot replaces the axis line with the data themselves: a
-short tick at the location of every observation, on both margins. The
-reader gets the scatterplot and both marginal distributions from the
-same ink, and the frame disappears entirely.
+Add a short tick for each observation along the plot's margins. Tufte's
+dot-dash plot uses these ticks to show the marginal distributions beside
+a scatterplot.
 
 ## Usage
 
@@ -45,8 +44,8 @@ A `ggplot2` layer.
 
 ## Details
 
-This is a rug, drawn thin and short by default so that it reads as
-texture rather than as a second set of marks competing with the points.
+The default ticks are short and thin. Use `theme_tufte(ticks = FALSE)`
+if you'd like them to replace the ordinary axis ticks.
 
 ## Examples
 

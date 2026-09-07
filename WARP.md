@@ -184,3 +184,10 @@ primarily Claude-generated; Codex assisted with this audit and redesign.
 `data-raw/build_site.R` keeps old docs in `.dev/site-backups/`, excludes internal
 notes from public HTML, and fixes pkgdown 2.2.0's asynchronous search-index race.
 The R package includes the same provenance declaration in `inst/PROVENANCE`.
+
+### Writing voice
+Public prose follows the writing-voice skill: direct explanations, first person
+for the maintainer's choices, and explicit limits on measurement claims. The
+2026-09-07 rewrite covers the README, all five articles, reference help, release
+notes, site metadata, provenance, and explanatory audit messages. Keep examples
+generated and preserve existing citation and bibliography entries.

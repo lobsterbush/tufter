@@ -31,7 +31,8 @@ scale_fill_tufte_c(palette = "divergent", ..., reverse = FALSE)
 A \code{ggplot2} scale.
 }
 \description{
-Discrete and continuous scales built on \code{\link{tufte_pal}()}.
+Apply the palettes from \code{\link{tufte_pal}()} to discrete or continuous
+colour and fill mappings.
 }
 \examples{
 library(ggplot2)

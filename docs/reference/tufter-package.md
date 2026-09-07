@@ -1,19 +1,18 @@
-# tufter: Implement Edward Tufte's Principles of Graphical Design
+# tufter: Implement Edward Tufte's principles of graphical design
 
-The package has two halves. The generative half provides the graphical
-forms Tufte designed or advocated, as ggplot2 layers, themes, scales and
-plot constructors. The evaluative half provides the quantities Tufte
-defined, so that a finished figure can be measured rather than merely
-admired: the data-ink ratio, the lie factor, and data density.
+Use Tufte-inspired ggplot2 layers and themes to draw figures, then
+estimate their data-ink ratio, lie factor and data density.
 
 ## Details
 
-Call
+I built the package to make these ideas easier to try and examine. The
+measurements can help you compare drafts, but they can't tell you
+whether a figure supports your argument.
+
 [`tufte_principles()`](https://lobsterbush.github.io/tufter/reference/tufte_principles.md)
-for a table mapping each principle to the function that implements it,
-and
+maps principles to functions and records which ones can be checked.
 [`tufte_audit()`](https://lobsterbush.github.io/tufter/reference/tufte_audit.md)
-to score an existing plot against all of them at once.
+runs the available checks on an existing plot.
 
 ## See also
 

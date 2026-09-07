@@ -1,31 +1,28 @@
 #' Audit every figure in a paper at once
 #'
-#' Running \code{\link{tufte_audit}()} on one plot is useful while you're
-#' drawing it. Running it on all of them, the evening before you submit, is when
-#' it earns its keep: the figure with the truncated subtitle is never the one
-#' you were looking at.
+#' Give this function a set of plots or a directory of saved plots. It runs
+#' \code{\link{tufte_audit}()} on each one and returns a row per figure. I find
+#' this useful when reviewing a paper's figures together.
 #'
-#' Give it the plots you built, or a directory of saved ones. It returns a row
-#' per figure with the count of unmet criteria and the checks that failed, and
-#' keeps the full per-check detail attached so you can drill into any of them.
+#' The table lists the unmet criteria and any checks that couldn't run. Full
+#' results are attached to the table so you can inspect a particular figure.
 #'
-#' Figures are ordered by the number of stated criteria they fail, most first.
-#' That's a count and not a score: it's comparable across figures because
-#' every figure is being counted against the same criteria, whereas a
-#' proportion would divide by a denominator that changes with the plot type.
+#' Figures with more unmet criteria come first. Use that order to decide where
+#' to look; it doesn't tell you which figure is substantively more useful.
+#' Check the skipped count too, since an incomplete audit can miss a problem.
 #'
 #' @param plots One of: a named list of \code{ggplot} objects; a single
 #'   \code{ggplot}; or a path to a directory, in which case every \code{.rds}
-#'   file in it's read and any that contains a \code{ggplot} is audited.
+#'   file is read and any that contains a \code{ggplot} is audited.
 #' @param width,height Intended printed size in inches, applied to every figure.
 #'   Pass a vector as long as \code{plots} to give each its own size.
 #' @param measure Logical. Report the data-ink ratio and the data density?
 #'   Defaults to \code{TRUE}. Setting it to \code{FALSE} skips only those two,
 #'   which are ungraded, so the ordering by unmet criteria is the same either
-#'   way and roughly twice as fast to get.
+#'   way. This avoids the extra rendering needed for those measurements.
 #' @return An object of class \code{tufte_audit_batch}: a tibble with one row
 #'   per figure, giving \code{figure}, \code{violations}, \code{met},
-#'   \code{skipped} (checks that could not run), and
+#'   \code{skipped} (checks that couldn't run), and
 #'   \code{failing}, a comma-separated list of the criteria not met. The full
 #'   audits are attached as the \code{"audits"} attribute, named by figure.
 #' @seealso \code{\link{tufte_audit}()} for a single plot.

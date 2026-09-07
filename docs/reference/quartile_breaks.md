@@ -1,11 +1,9 @@
 # Axis breaks at the five-number summary
 
-Returns a breaks function that labels the minimum, the quartiles, the
-median and the maximum, so that the printed axis labels agree with what
-a
-[`geom_quartileframe()`](https://lobsterbush.github.io/tufter/reference/geom_rangeframe.md)
-shows. Tufte's point is that an axis should report the distribution
-rather than a set of round numbers picked by the plotting software.
+Label the minimum, quartiles, median and maximum at the positions shown
+by
+[`geom_quartileframe()`](https://lobsterbush.github.io/tufter/reference/geom_rangeframe.md).
+This follows Tufte's use of the axis to show the distribution.
 
 ## Usage
 
@@ -39,14 +37,12 @@ A function suitable for the `breaks` argument of a continuous scale.
 
 ## Details
 
-All five values are returned by default, because the five-number summary
-is what a quartile frame reports. Where two of them fall close enough
-together that their labels overprint, `min_gap` drops the crowded ones.
-It's off by default: the spacing at which labels collide depends on the
-font, the figure size and the number of digits, none of which a breaks
-function can see.
+All five values are kept by default. Set `min_gap` to omit crowded
+breaks. The space labels need depends on your font, figure size and
+number of digits, so there's no single spacing that works for every
+figure. Use
 [`check_labels_fit()`](https://lobsterbush.github.io/tufter/reference/check_labels_fit.md)
-measures the collision at the size you intend to print.
+and inspect the saved result.
 
 ## Examples
 

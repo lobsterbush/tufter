@@ -1,24 +1,20 @@
 #' Audit a plot against Tufte's principles
 #'
-#' Reports what a plot does against what Tufte actually wrote, and is careful
-#' about the difference between the two kinds of thing he wrote.
+#' Use this to check a figure while you're working on it. The output identifies
+#' unmet criteria and gives you measurements to compare across drafts.
 #'
-#' For some principles Tufte states a criterion a graphic either meets or does
-#' not: bars are measured from zero, the lie factor lies between 0.95 and 1.05,
-#' graphics tend toward the horizontal, non-data ink comes off the page. Those
-#' are reported as met or not met.
+#' I've kept a distinction between principles with a stated criterion and those
+#' without one. Bars measured from zero and a lie factor between 0.95 and 1.05
+#' can be checked against explicit rules. The audit also checks the advice that
+#' graphics tend toward the horizontal and that non-data ink be removed.
 #'
-#' For others he states only a direction. He asks that the data-ink ratio be
-#' maximised "within reason" and that data density be increased, and nowhere
-#' says how much is enough, because the answer depends on the content. Those are
-#' measured and reported without a verdict, since any threshold would be the
-#' package author's rather than his.
+#' Tufte asks that the data-ink ratio be maximised "within reason" and that data
+#' density increase, but he doesn't give either a numerical target. Those
+#' measurements are reported without a pass or fail.
 #'
-#' There's no score. Counting satisfied principles would mean weighting them
-#' against each other, and Tufte offers no exchange rate between a pie chart and
-#' a missing source note. The audit gives you a list of stated criteria that
-#' aren't met, and a set of measurements to compare against another draft of the
-#' same figure.
+#' I haven't combined the results into a score. That would require me to decide
+#' how much each criterion matters. Read the individual results and check whether
+#' the suggested changes help someone understand your figure.
 #'
 #' @param plot A \code{ggplot} object.
 #' @param width,height Intended printed size in inches, used by the checks and
@@ -216,7 +212,7 @@ print.tufte_audit <- function(x, ...) {
     "Panel carries no background fill",
     if (opaque) "fail" else "pass",
     if (opaque) {
-      sprintf("The panel is filled with %s. The fill is identical whatever the numbers are, so it's non-data ink and Tufte's instruction is to erase it.", fill)
+      sprintf("The panel uses a %s background fill. Try removing it and compare whether the figure is easier to read.", fill)
     } else {
       "The panel has no background fill."
     }
@@ -235,7 +231,7 @@ print.tufte_audit <- function(x, ...) {
     return(.row(
       "Erase non-data ink",
       "No minor gridlines", "fail",
-      "Minor gridlines are drawn. They subdivide the scale past the precision anyone reads off a graphic, so they're non-data ink."
+      "Minor gridlines are drawn. Consider whether readers need this level of detail to estimate values."
     ))
   }
   .row(
@@ -254,7 +250,7 @@ print.tufte_audit <- function(x, ...) {
     return(.row(
       "The range-frame",
       "No full panel border", "fail",
-      "A full panel border is drawn. The box is the same box whatever the data are. geom_rangeframe() replaces it with a line spanning only the range the data occupy, which reports the extremes for free."
+      "A full panel border is drawn. You can use geom_rangeframe() to show the observed range along the axes."
     ))
   }
   .row(
@@ -275,7 +271,7 @@ print.tufte_audit <- function(x, ...) {
     return(.row(
       "Graphical integrity",
       "No pie chart", "fail",
-      "This is a pie chart. Tufte's judgement is that the only design worse than one pie chart is several of them. Readers compare angles and areas far less accurately than positions along a common scale."
+      "This is a pie chart. Try a dot plot if comparing the values on a shared scale would help readers."
     ))
   }
   .row("Graphical integrity", "No pie chart", "pass",
@@ -342,7 +338,7 @@ print.tufte_audit <- function(x, ...) {
     return(.row(
       "Integrate word, number and image",
       "No legend to decode", "pass",
-      "No legend, so the plot either labels itself or needs no key."
+      "No legend is drawn. Check that the series can still be identified."
     ))
   }
   # A continuous scale has no series to name, so direct labelling is not on
@@ -352,13 +348,13 @@ print.tufte_audit <- function(x, ...) {
     return(.row(
       "Integrate word, number and image",
       "No legend to decode", "report",
-      "A key is drawn for a continuous scale. There are no named series to label on the data, so this isn't the legend Tufte objects to."
+      "A continuous scale has a key. Direct series labels don't replace that scale information."
     ))
   }
   .row(
     "Integrate word, number and image",
     "No legend to decode", "fail",
-    "A legend is drawn for named series. Tufte's instruction is that words belong on the data rather than in a key the reader has to hold in memory and look back to. geom_text_last() labels each series in place, and where there are too many to label, facet_tufte() shows them as small multiples instead."
+    "A legend identifies the series. Consider direct labels with geom_text_last(), or separate panels with facet_tufte(), if either makes identification easier."
   )
 }
 
@@ -433,7 +429,7 @@ print.tufte_audit <- function(x, ...) {
     return(.row(
       "Erase redundant data-ink",
       "No variable encoded twice", "fail",
-      sprintf("'%s' is mapped to both position and colour. The second encoding is redundant data-ink, adding ink and a legend without adding information.", shared[1])
+      sprintf("'%s' is mapped to both position and colour. Consider whether both encodings help with the comparison.", shared[1])
     ))
   }
   .row(
@@ -452,9 +448,9 @@ print.tufte_audit <- function(x, ...) {
     "The figure names its source",
     if (has_cap) "pass" else "fail",
     if (has_cap) {
-      "A caption documents the figure."
+      "A caption is present. Check that it identifies the data source correctly."
     } else {
-      "No caption. Tufte asks that evidence be thoroughly described and its sources named on the graphic itself, so a reader can check the claim without hunting through the surrounding text. See label_source()."
+      "No caption is present. Add the data source with label_source() so readers can check where the numbers came from."
     }
   )
 }
@@ -469,7 +465,7 @@ print.tufte_audit <- function(x, ...) {
     return(.row(
       "Proportion and scale",
       "Wider than it is tall", "fail",
-      sprintf("The figure is %.2f times as wide as it is tall, so it's taller than it's wide. Tufte's rule is that graphics should tend toward the horizontal, greater in length than height.", ratio)
+      sprintf("The figure is %.2f times as wide as it is tall. It falls outside Tufte's advice to use a horizontal format. Check which shape suits your comparison.", ratio)
     ))
   }
   .row("Proportion and scale",
@@ -487,7 +483,7 @@ print.tufte_audit <- function(x, ...) {
     return(.row(
       "Legibility",
       "Ink clears the WCAG contrast minimum", "fail",
-      sprintf("%s sits at contrast %.1f against the background, below the published minimum of %.1f. This isn't one of Tufte's criteria. It's the limit past which erasing ink stops being economy and starts being an unreadable figure.",
+      sprintf("%s has contrast %.1f against the background, below the published minimum of %.1f. Try a colour with greater contrast and inspect the result.",
               paste0(bad$role[1], " ", bad$colour[1]), bad$ratio[1],
               bad$threshold[1])
     ))
@@ -495,7 +491,7 @@ print.tufte_audit <- function(x, ...) {
   .row(
     "Legibility",
     "Ink clears the WCAG contrast minimum", "pass",
-    sprintf("Every colour clears its published minimum; the faintest is %.1f to 1.",
+    sprintf("The checked colours meet their contrast thresholds; the lowest ratio is %.1f to 1.",
             min(cc$ratio))
   )
 }
@@ -535,7 +531,7 @@ print.tufte_audit <- function(x, ...) {
   .row(
     "Maximise the data-ink ratio",
     "Data-ink ratio", "report",
-    sprintf("Data-ink ratio %.2f: %.0f%% of the ink varies with the data. Tufte asks that this be maximised within reason and names no threshold, so read it against another draft of this figure rather than against a target.",
+    sprintf("Data-ink ratio %.2f: an estimated %.0f%% of the ink comes from data layers. Compare drafts at the same dimensions; there's no target value.",
             di$ratio, 100 * di$ratio)
   )
 }
@@ -549,7 +545,7 @@ print.tufte_audit <- function(x, ...) {
   .row(
     "Maximise data density",
     "Data density", "report",
-    sprintf("Data density %.1f numbers per square inch: %d entries over %.1f square inches. Tufte ranks published graphics by this and sets no minimum.",
+    sprintf("Data density %.1f entries per square inch: %d estimated entries over %.1f square inches. Read this alongside the figure and entry count.",
             dd$density, dd$entries, dd$area)
   )
 }
@@ -563,7 +559,7 @@ print.tufte_audit <- function(x, ...) {
   .row(
     "Bank to 45 degrees",
     "Banked height", "report",
-    sprintf("Slopes bank to 45 degrees at %.2fin tall for a %gin width; you have specified %gin. Cleveland gives 45 degrees as the target and states no tolerance around it, so there's nothing here to pass or fail.",
+    sprintf("Banking to 45 degrees suggests a panel height of %.2fin at %gin wide; the specified figure height is %gin. Leave extra room for titles and axes.",
             b$height, ctx$width, ctx$height)
   )
 }
@@ -574,14 +570,14 @@ print.tufte_audit <- function(x, ...) {
     return(.row(
       "Colour as a code, not decoration",
       "Distinct hues", "report",
-      "Colour varies continuously, which is one code rather than a set of competing hues."
+      "Colour varies continuously along a scale."
     ))
   }
   n <- .legend_hues(ctx$built)
   .row(
     "Colour as a code, not decoration",
     "Distinct hues", "report",
-    sprintf("%d distinct colour%s in use. Tufte's advice on colour is qualitative, so this is a count and not a verdict.",
+    sprintf("%d distinct colour%s in use. This is a count, not a verdict on whether the colours help readers.",
             max(n, 1L), if (max(n, 1L) == 1) "" else "s")
   )
 }
@@ -612,13 +608,13 @@ print.tufte_audit <- function(x, ...) {
     return(.row(
       "Small multiples",
       "Overlaid series", "report",
-      "One series in one panel, so there is nothing to separate into small multiples."
+      "One series in one panel. There's no series grouping to separate into small multiples."
     ))
   }
   .row(
     "Small multiples",
     "Overlaid series", "report",
-    sprintf("%d series overlaid in one panel. facet_tufte() would show the same data as small multiples. Tufte gives no number at which to switch.",
+    sprintf("%d series share one panel. Try facet_tufte() if separate panels would make the comparison easier.",
             groups)
   )
 }

@@ -14,9 +14,9 @@
 <link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Tufte's design principles as R code">
-<meta name="description" content="Edward Tufte's principles of graphical design, as working ggplot2 code and as measurements you can apply to a figure you have already drawn.
+<meta name="description" content="Tools for drawing and reviewing statistical graphics in ggplot2, based on Edward Tufte's ideas. By Charles Crabtree.
 ">
-<meta property="og:description" content="Edward Tufte's principles of graphical design, as working ggplot2 code and as measurements you can apply to a figure you have already drawn.
+<meta property="og:description" content="Tools for drawing and reviewing statistical graphics in ggplot2, based on Edward Tufte's ideas. By Charles Crabtree.
 ">
 </head>
 <body>
@@ -69,30 +69,31 @@
 R tools · Charles Crabtree
 </div>
 <p class="package-lead">
-Draw with purpose.<br>Measure what the ink says.
+Make figures easier to read.
 </p>
-<p>Edward Tufte’s principles of graphical design, as working <code>ggplot2</code> code and as measurements you can apply to a figure you’ve already drawn.</p>
-<p>Most Tufte packages give you a theme. That’s one principle out of about twenty, and I think it’s the easiest one. His real argument is that statistical graphics can be <em>evaluated</em>, and he hands you the quantities to do it with: the data-ink ratio, the lie factor, data density. This package does both halves.</p>
+<p>I built <code>tufter</code> to help draw and review statistical graphics in R. It brings Tufte-inspired plotting tools and measurements into <code>ggplot2</code>, so you can try a change and examine what it does.</p>
+<p>You can add a range frame, label a series directly, or compare two versions of a figure’s data-ink ratio. I use these as aids to judgement. A figure still needs to answer a useful question, and no function here can decide that for you.</p>
 <div class="float">
-<img src="reference/figures/README-before-after.png" alt="The same penguins, drawn twice. Erasing the panel, the grid and the border, then putting a quartile frame where the border was, moves the data-ink ratio from 0.22 to 0.78."><div class="figcaption">The same penguins, drawn twice. Erasing the panel, the grid and the border, then putting a quartile frame where the border was, moves the data-ink ratio from 0.22 to 0.78.</div>
+<img src="reference/figures/README-before-after.png" alt="Two scatterplots of penguin measurements. The second removes the panel background and grid and adds a quartile frame. Its estimated data-ink ratio rises from 0.22 to 0.78."><div class="figcaption">Two scatterplots of penguin measurements. The second removes the panel background and grid and adds a quartile frame. Its estimated data-ink ratio rises from 0.22 to 0.78.</div>
 </div>
 <div class="section level2">
 <h2 id="where-to-start">Where to start<a class="anchor" aria-label="anchor" href="#where-to-start"></a>
 </h2>
-<p><a href="https://lobsterbush.github.io/tufter/articles/real-data.html">Working through a real dataset</a> takes <code>gapminder</code> and <code>palmerpenguins</code> through every form and every measurement. There’s also a <a href="https://lobsterbush.github.io/tufter/articles/simulated-examples.html">gallery on simulated data</a>, a third <a href="https://lobsterbush.github.io/tufter/articles/live-data.html">built on live API data</a> from CRAN logs, USGS earthquakes, Open-Meteo and Wikipedia, and a walk through <a href="https://lobsterbush.github.io/tufter/articles/measuring.html">what each measurement actually computes</a>.</p>
+<p>The <a href="https://lobsterbush.github.io/tufter/articles/real-data.html">real-data guide</a> works through examples using <code>gapminder</code> and <code>palmerpenguins</code>. For examples closer to my research, try the <a href="https://lobsterbush.github.io/tufter/articles/simulated-examples.html">simulated-data gallery</a>, which includes survey experiments and callback rates.</p>
+<p>There’s also a <a href="https://lobsterbush.github.io/tufter/articles/live-data.html">gallery using API data</a> and a <a href="https://lobsterbush.github.io/tufter/articles/measuring.html">measurement guide</a> that explains how the estimates work and where they need care.</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>Requires R 4.1 or later and ggplot2 4.0.0 or later. This is a development release preparing for its first CRAN submission.</p>
+<p>You’ll need R 4.1 or later and ggplot2 4.0.0 or later. I’m preparing the first CRAN submission; for now, install from GitHub.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"lobsterbush/tufter"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="the-two-halves">The two halves<a class="anchor" aria-label="anchor" href="#the-two-halves"></a>
+<h2 id="drawing-figures">Drawing figures<a class="anchor" aria-label="anchor" href="#drawing-figures"></a>
 </h2>
-<p>The forms Tufte designed or argued for:</p>
+<p>Choose the tools that help with your comparison. You don’t need to use the whole set.</p>
 <table class="table">
 <colgroup>
 <col width="50%">
@@ -105,68 +106,71 @@ Draw with purpose.<br>Measure what the ink says.
 <tbody>
 <tr>
 <td><code><a href="reference/theme_tufte.html">theme_tufte()</a></code></td>
-<td>Strips the panel, the grid, the border, the legend frame</td>
+<td>Removes the panel background, grid, border and legend frame</td>
 </tr>
 <tr>
 <td><code><a href="reference/geom_rangeframe.html">geom_rangeframe()</a></code></td>
-<td>An axis line spanning only the range the data occupy</td>
+<td>Draws axis lines across the observed range</td>
 </tr>
 <tr>
 <td><code><a href="reference/geom_rangeframe.html">geom_quartileframe()</a></code></td>
-<td>The same, broken at the quartiles, so the axis carries the five-number summary</td>
+<td>Marks the five-number summary along the axes</td>
 </tr>
 <tr>
 <td><code><a href="reference/geom_dotdash.html">geom_dotdash()</a></code></td>
-<td>Marginal distributions on both axes, in place of a frame</td>
+<td>Adds marginal ticks for individual observations</td>
 </tr>
 <tr>
 <td><code><a href="reference/geom_tufteboxplot.html">geom_tufteboxplot()</a></code></td>
-<td>The box plot with the box erased; three variants</td>
+<td>Shows a box plot using lines and median marks</td>
 </tr>
 <tr>
 <td><code><a href="reference/geom_col_tufte.html">geom_col_tufte()</a></code></td>
-<td>Bars with the gridlines erased where they cross the bars</td>
+<td>Draws bars with gridlines as gaps through them</td>
 </tr>
 <tr>
 <td><code><a href="reference/geom_cleveland_dot.html">geom_cleveland_dot()</a></code></td>
-<td>Dot plot with leader lines, so a zero baseline isn’t needed</td>
+<td>Compares values with dots and leader lines</td>
 </tr>
 <tr>
 <td><code><a href="reference/slopegraph.html">slopegraph()</a></code></td>
-<td>Before-and-after for many units, with every number printed</td>
+<td>Compares two periods with values printed at each end</td>
 </tr>
 <tr>
 <td>
 <code><a href="reference/sparkline.html">sparkline()</a></code>, <code><a href="reference/sparklines.html">sparklines()</a></code>
 </td>
-<td>Word-sized graphics, with normal band and extremes</td>
+<td>Shows time-series patterns in a small space</td>
 </tr>
 <tr>
 <td><code><a href="reference/facet_tufte.html">facet_tufte()</a></code></td>
-<td>Small multiples, scales fixed so panels stay comparable</td>
+<td>Uses fixed scales for comparisons across panels</td>
 </tr>
 <tr>
 <td><code><a href="reference/geom_text_last.html">geom_text_last()</a></code></td>
-<td>Labels on the data, in place of a legend</td>
+<td>Labels each series at its final point</td>
 </tr>
 <tr>
 <td>
 <code><a href="reference/tufte_pal.html">tufte_pal()</a></code>, <code><a href="reference/scale_colour_tufte.html">scale_colour_tufte()</a></code>
 </td>
-<td>Greys, greys with one accent, muted earth tones</td>
+<td>Supplies grey, accent, muted and divergent palettes</td>
 </tr>
 <tr>
 <td><code><a href="reference/label_source.html">label_source()</a></code></td>
-<td>Say where the numbers came from, on the graphic</td>
+<td>Adds a source note to the figure</td>
 </tr>
 <tr>
 <td><code><a href="reference/save_tufte.html">save_tufte()</a></code></td>
-<td>
-<code><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave()</a></code> with print defaults, and a clipping check first</td>
+<td>Checks label space and saves at the requested print dimensions</td>
 </tr>
 </tbody>
 </table>
-<p>The quantities he defined:</p>
+</div>
+<div class="section level2">
+<h2 id="reviewing-figures">Reviewing figures<a class="anchor" aria-label="anchor" href="#reviewing-figures"></a>
+</h2>
+<p>These functions measure specific features. Their results are useful for comparing drafts, but they don’t provide an overall quality score.</p>
 <table class="table">
 <colgroup>
 <col width="50%">
@@ -174,51 +178,51 @@ Draw with purpose.<br>Measure what the ink says.
 </colgroup>
 <thead><tr>
 <th>Function</th>
-<th>What it measures</th>
+<th>What it checks or estimates</th>
 </tr></thead>
 <tbody>
 <tr>
 <td><code><a href="reference/data_ink_ratio.html">data_ink_ratio()</a></code></td>
-<td>The share of ink that varies with the data, estimated by rendering the plot with and without its data layers</td>
+<td>The share of ink from data layers, estimated from two renderings</td>
 </tr>
 <tr>
 <td><code><a href="reference/lie_factor.html">lie_factor()</a></code></td>
-<td>The size of the effect shown over the size of the effect in the data</td>
+<td>Proportional change shown relative to change in the data, for supported comparisons</td>
 </tr>
 <tr>
 <td><code><a href="reference/data_density.html">data_density()</a></code></td>
-<td>Numbers per square inch of data graphic</td>
+<td>Estimated data entries per square inch</td>
 </tr>
 <tr>
 <td><code><a href="reference/bank_to_45.html">bank_to_45()</a></code></td>
-<td>The aspect ratio that puts the slopes nearest 45 degrees, where they’re judged best</td>
+<td>A panel height that brings line slopes closer to 45 degrees</td>
 </tr>
 <tr>
 <td>
 <code><a href="reference/check_contrast.html">check_contrast()</a></code>, <code><a href="reference/contrast_ratio.html">contrast_ratio()</a></code>
 </td>
-<td>Whether the ink is dark enough to see, against the WCAG minima</td>
+<td>Colour contrast against the background</td>
 </tr>
 <tr>
 <td><code><a href="reference/check_labels_fit.html">check_labels_fit()</a></code></td>
-<td>Whether any text will be clipped at the printed size</td>
+<td>Space for titles, axes, legends and facet strips at the export size</td>
 </tr>
 <tr>
 <td><code><a href="reference/tufte_audit.html">tufte_audit()</a></code></td>
-<td>All of the above, graded or measured as Tufte states them</td>
+<td>Available checks and measurements for one figure</td>
 </tr>
 <tr>
 <td><code><a href="reference/audit_figures.html">audit_figures()</a></code></td>
-<td>The same across every figure in a paper, most unmet criteria first</td>
+<td>Results across a set of figures, including skipped checks</td>
 </tr>
 </tbody>
 </table>
 <div class="float">
-<img src="reference/figures/README-gallery.png" alt="Four graphical forms: the box plot with the box erased, a bar chart with gridlines erased through the bars, a slopegraph, and stacked sparklines"><div class="figcaption">Four graphical forms: the box plot with the box erased, a bar chart with gridlines erased through the bars, a slopegraph, and stacked sparklines</div>
+<img src="reference/figures/README-gallery.png" alt="Examples of a minimal box plot, bars with gridline gaps, a slopegraph and stacked sparklines"><div class="figcaption">Examples of a minimal box plot, bars with gridline gaps, a slopegraph and stacked sparklines</div>
 </div>
 </div>
 <div class="section level2">
-<h2 id="the-short-version">The short version<a class="anchor" aria-label="anchor" href="#the-short-version"></a>
+<h2 id="a-quick-example">A quick example<a class="anchor" aria-label="anchor" href="#a-quick-example"></a>
 </h2>
 <!-- readme-short:start -->
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -247,7 +251,7 @@ Draw with purpose.<br>Measure what the ink says.
 <!-- readme-short:end -->
 </div>
 <div class="section level2">
-<h2 id="the-audit">The audit<a class="anchor" aria-label="anchor" href="#the-audit"></a>
+<h2 id="running-an-audit">Running an audit<a class="anchor" aria-label="anchor" href="#running-an-audit"></a>
 </h2>
 <!-- readme-audit:start -->
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -255,27 +259,25 @@ Draw with purpose.<br>Measure what the ink says.
 <span><span class="co">#&gt; ── Tufte audit ──</span></span>
 <span><span class="co">#&gt; At 6.5in x 4in: 3 stated criteria not met.</span></span>
 <span><span class="co">#&gt; ── Not met</span></span>
-<span><span class="co">#&gt; ✖ The panel is filled with #EBEBEBFF. The fill is identical whatever the</span></span>
-<span><span class="co">#&gt;   numbers are, so it's non-data ink and Tufte's instruction is to erase it.</span></span>
+<span><span class="co">#&gt; ✖ The panel uses a #EBEBEBFF background fill. Try removing it and compare</span></span>
+<span><span class="co">#&gt;   whether the figure is easier to read.</span></span>
 <span><span class="co">#&gt; Erase non-data ink - VDQI ch. 4</span></span>
-<span><span class="co">#&gt; ✖ Minor gridlines are drawn. They subdivide the scale past the precision anyone</span></span>
-<span><span class="co">#&gt;   reads off a graphic, so they're non-data ink.</span></span>
+<span><span class="co">#&gt; ✖ Minor gridlines are drawn. Consider whether readers need this level of detail</span></span>
+<span><span class="co">#&gt;   to estimate values.</span></span>
 <span><span class="co">#&gt; Erase non-data ink - VDQI ch. 4</span></span>
-<span><span class="co">#&gt; ✖ No caption. Tufte asks that evidence be thoroughly described and its sources</span></span>
-<span><span class="co">#&gt;   named on the graphic itself, so a reader can check the claim without hunting</span></span>
-<span><span class="co">#&gt;   through the surrounding text. See label_source().</span></span>
+<span><span class="co">#&gt; ✖ No caption is present. Add the data source with label_source() so readers can</span></span>
+<span><span class="co">#&gt;   check where the numbers came from.</span></span>
 <span><span class="co">#&gt; Documentation - Beautiful Evidence ch. 6</span></span>
 <span><span class="co">#&gt; ── Measured, not graded</span></span>
 <span><span class="co">#&gt; Tufte states a direction for these rather than a threshold. Read them against</span></span>
 <span><span class="co">#&gt; another draft of the same figure.</span></span>
-<span><span class="co">#&gt; • Data-ink ratio 0.34: 34% of the ink varies with the data. Tufte asks that</span></span>
-<span><span class="co">#&gt;   this be maximised within reason and names no threshold, so read it against</span></span>
-<span><span class="co">#&gt;   another draft of this figure rather than against a target.</span></span>
-<span><span class="co">#&gt; • Data density 32.9 numbers per square inch: 666 entries over 20.2 square</span></span>
-<span><span class="co">#&gt;   inches. Tufte ranks published graphics by this and sets no minimum.</span></span>
-<span><span class="co">#&gt; • 1 distinct colour in use. Tufte's advice on colour is qualitative, so this is</span></span>
-<span><span class="co">#&gt;   a count and not a verdict.</span></span>
-<span><span class="co">#&gt; • One series in one panel, so there is nothing to separate into small</span></span>
+<span><span class="co">#&gt; • Data-ink ratio 0.34: an estimated 34% of the ink comes from data layers.</span></span>
+<span><span class="co">#&gt;   Compare drafts at the same dimensions; there's no target value.</span></span>
+<span><span class="co">#&gt; • Data density 32.9 entries per square inch: 666 estimated entries over 20.2</span></span>
+<span><span class="co">#&gt;   square inches. Read this alongside the figure and entry count.</span></span>
+<span><span class="co">#&gt; • 1 distinct colour in use. This is a count, not a verdict on whether the</span></span>
+<span><span class="co">#&gt;   colours help readers.</span></span>
+<span><span class="co">#&gt; • One series in one panel. There's no series grouping to separate into small</span></span>
 <span><span class="co">#&gt;   multiples.</span></span>
 <span><span class="co">#&gt; ── Met</span></span>
 <span><span class="co">#&gt; • No full panel border</span></span>
@@ -287,14 +289,13 @@ Draw with purpose.<br>Measure what the ink says.
 <span><span class="co">#&gt; • Ink clears the WCAG contrast minimum</span></span>
 <span><span class="co">#&gt; • Measured labels fit at the printed size</span></span></code></pre></div>
 <!-- readme-audit:end -->
-<p>There’s no score. Tufte says two different kinds of thing. Sometimes he gives a criterion a graphic either meets or doesn’t: bars measured from zero, a lie factor between 0.95 and 1.05, graphics wider than they’re tall, non-data ink off the page. Those get graded. Other times he gives only a direction, asking that the data-ink ratio be maximised “within reason” and that data density go up without saying how much is enough. Those get measured, and the judgement stays with you. A threshold on the second kind would be mine rather than his, and a single number would need a weighting between a pie chart and a missing source note that he never offers. <code><a href="reference/tufte_principles.html">tufte_principles()</a></code> marks which is which in its <code>criterion</code> column.</p>
-<p>For a whole paper at once, <code><a href="reference/audit_figures.html">audit_figures()</a></code> orders figures by how many stated criteria each one fails. That’s a count rather than a proportion, so it’s comparable across figures. A percentage would divide by a denominator that shifts with the plot type.</p>
-<p>What it’s good at is the mechanical stuff you stop seeing after the fifth draft. A pie chart. A bar baseline that isn’t zero. A bar chart on a log scale. A variable encoded twice. A legend where direct labels belong. A subtitle that gets clipped at the size you’re about to save.</p>
+<p>I’ve kept criteria with explicit rules separate from measurements without a numerical target. The audit checks, for example, whether bars start at zero. It reports data-ink ratio and density without grading them. Tufte asks that these increase, but doesn’t specify how much is enough.</p>
+<p><code><a href="reference/tufte_principles.html">tufte_principles()</a></code> records that distinction in its <code>criterion</code> column. <code><a href="reference/audit_figures.html">audit_figures()</a></code> lets you review a whole set of plots, starting with those that have the most unmet criteria. Check its <code>skipped</code> column too: a check that couldn’t run may leave a problem undetected.</p>
 </div>
 <div class="section level2">
 <h2 id="what-it-wont-tell-you">What it won’t tell you<a class="anchor" aria-label="anchor" href="#what-it-wont-tell-you"></a>
 </h2>
-<p><code><a href="reference/tufte_principles.html">tufte_principles()</a></code> lists every principle, its source, the function that implements it, and whether the audit can check it at all.</p>
+<p>The package can’t assess whether a figure supports a causal claim or makes a useful substantive comparison. You can see those limits in the principles table.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tufte_principles.html">tufte_principles</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">p</span><span class="op">[</span><span class="op">!</span><span class="va">p</span><span class="op">$</span><span class="va">audited</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"principle"</span>, <span class="st">"implemented_by"</span><span class="op">)</span><span class="op">]</span></span>
@@ -302,19 +303,14 @@ Draw with purpose.<br>Measure what the ink says.
 <span><span class="co">#&gt; Show causality              NA</span></span>
 <span><span class="co">#&gt; Show multivariate data      facet_tufte(), sparklines()</span></span>
 <span><span class="co">#&gt; Content counts most of all  NA</span></span></code></pre></div>
-<p>The two <code>NA</code>s are the honest part. Nothing in the package reaches them.</p>
-<p>A figure can meet every stated criterion and still be pointless. Tufte’s first principle is that content counts most of all, and no function evaluates that.</p>
+<p>There are limits to the measurements too. Label fitting doesn’t check text inside panels. Contrast checks don’t resolve every overlap or filled label background. I’d always inspect the exported figure at the size and in the setting where it’ll be read.</p>
 </div>
 <div class="section level2">
-<h2 id="how-this-sits-alongside-other-packages">How this sits alongside other packages<a class="anchor" aria-label="anchor" href="#how-this-sits-alongside-other-packages"></a>
+<h2 id="other-packages-you-might-use">Other packages you might use<a class="anchor" aria-label="anchor" href="#other-packages-you-might-use"></a>
 </h2>
-<p>Some of this duplicates work that already exists. <a href="https://github.com/jrnold/ggthemes" class="external-link"><code>ggthemes</code></a> has a <code><a href="reference/theme_tufte.html">theme_tufte()</a></code>, a <code><a href="reference/geom_rangeframe.html">geom_rangeframe()</a></code> and a <code><a href="reference/geom_tufteboxplot.html">geom_tufteboxplot()</a></code>. It’s actively maintained and widely used. If the theme is all you want, it’s the lighter dependency and you should use it. Loading both packages masks <code><a href="reference/theme_tufte.html">theme_tufte()</a></code>, so watch for that.</p>
-<p>If you need labels that can’t collide, <a href="https://cran.r-project.org/package=directlabels" class="external-link"><code>directlabels</code></a> and <a href="https://cran.r-project.org/package=ggrepel" class="external-link"><code>ggrepel</code></a> solve the general problem properly. <code><a href="reference/geom_text_last.html">geom_text_last()</a></code> here only handles the narrow case of labelling the end of a series.</p>
-<p>The gap I think this fills is measurement. As far as I can tell, no R package computes the data-ink ratio, the lie factor or data density. A search of every CRAN title and description turns up nothing for “data-ink”, “lie factor” or “chartjunk”. The near neighbours do adjacent work: <code>ggcheck</code> reads built ggplot objects to autograde student code, <code>ggalttext</code> reads them to write alt text, and <a href="https://cran.r-project.org/package=GGenemy" class="external-link"><code>GGenemy</code></a> audits plots for accessibility, meaning WCAG contrast and colour-vision deficiency. The only data-ink implementation I could find in any language is a Java repository, archived in 2025 and last worked on in 2010, and it makes you segment the image by hand before it counts anything.</p>
-<p><code><a href="reference/check_contrast.html">check_contrast()</a></code> overlaps GGenemy deliberately. A package that tells you to erase ink owes you a check that what’s left is still visible. GGenemy goes further on accessibility, including colour-vision simulation, and it’s the better tool if that’s your question.</p>
-<p>One caution about what the numbers are for. The empirical literature doesn’t support maximising the data-ink ratio as an objective, and hasn’t since the mid nineties. I treat these measurements as diagnostics. They tell you where a figure spends its ink, and I’d rather you argue with them than optimise against them. The <a href="https://lobsterbush.github.io/tufter/articles/measuring.html#and-a-larger-caveat-the-principle-itself-is-contested">measuring article</a> lays out the evidence against the principle.</p>
-<p>Several Tufte forms are unmaintained or missing in R. <code>CGPfunctions</code>, which provided <code>newggslopegraph()</code>, was removed from CRAN in November 2025. <code>leeper/slopegraph</code> hasn’t moved since 2018. <code>ggtufte</code>, Jeff Arnold’s own attempt to spin the Tufte parts out of <code>ggthemes</code>, was abandoned in 2018. I couldn’t find any implementation of the bar chart with gridlines erased through the bars, no first-class dot-dash geom, and no Tufte colour palette. <code>ggthemes</code> ships Few, Cleveland, Tableau and Ptol palettes, but nothing from Tufte.</p>
-<p>The measurement half is why this package exists. The drawing half is partly convenience and partly consolidation.</p>
+<p><a href="https://github.com/jrnold/ggthemes" class="external-link"><code>ggthemes</code></a> includes its own <code><a href="reference/theme_tufte.html">theme_tufte()</a></code>, <code><a href="reference/geom_rangeframe.html">geom_rangeframe()</a></code> and <code><a href="reference/geom_tufteboxplot.html">geom_tufteboxplot()</a></code>. Loading both packages can mask those names; use <code>tufter::</code> or <code>ggthemes::</code> to be explicit.</p>
+<p>For more flexible label placement, see <a href="https://cran.r-project.org/package=directlabels" class="external-link"><code>directlabels</code></a> and <a href="https://cran.r-project.org/package=ggrepel" class="external-link"><code>ggrepel</code></a>. The direct-label tools here handle series endpoints and don’t move overlapping labels apart. <a href="https://cran.r-project.org/package=GGenemy" class="external-link"><code>GGenemy</code></a> provides additional accessibility checks, including colour-vision deficiency tools.</p>
+<p>I built <code>tufter</code> because I wanted to work with these measurements alongside the plotting tools. I don’t treat a higher data-ink ratio as a goal in itself. The <a href="https://lobsterbush.github.io/tufter/articles/measuring.html#and-a-larger-caveat-the-principle-itself-is-contested">measurement guide</a> discusses the evidence and the limits of that principle.</p>
 </div>
 <div class="section level2">
 <h2 id="provenance">Provenance<a class="anchor" aria-label="anchor" href="#provenance"></a>
@@ -334,20 +330,20 @@ Draw with purpose.<br>Measure what the ink says.
 </td>
 </tr></tbody>
 </table>
-<p>Charles Crabtree is the human editor and maintainer. Anthropic’s Claude, run through Claude Code, wrote most of the original R source, tests, documentation, and vignettes. OpenAI’s Codex assisted with the release audit, fixes, and site redesign. Charles specified the design and retains editorial responsibility.</p>
-<p>Check results and remaining submission requirements are recorded in <a href="https://github.com/lobsterbush/tufter/blob/main/cran-comments.md" class="external-link">cran-comments.md</a>. The measurements are estimates with the limitations described in the <a href="https://lobsterbush.github.io/tufter/articles/measuring.html">measurement guide</a>.</p>
+<p>I’m the human editor and maintainer. Anthropic’s Claude, through Claude Code, wrote most of the original R source, tests, documentation and vignettes. OpenAI’s Codex assisted with the audit, fixes and site redesign, including this rewrite. I specified the design and retain editorial responsibility.</p>
+<p>I’ve recorded the completed checks and remaining CRAN requirements in <a href="https://github.com/lobsterbush/tufter/blob/main/cran-comments.md" class="external-link">cran-comments.md</a>. If you find a problem, please <a href="https://github.com/lobsterbush/tufter/issues" class="external-link">open an issue</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="development-and-replication">Development and replication<a class="anchor" aria-label="anchor" href="#development-and-replication"></a>
 </h2>
-<p>From a clone of the repository, install the development tools and dependencies:</p>
+<p>From the repository root, install the development tools and dependencies, then regenerate the help files and run the checks.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"devtools"</span>, <span class="st">"pkgdown"</span>, <span class="st">"here"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/install_deps.html" class="external-link">install_deps</a></span><span class="op">(</span>dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/document.html" class="external-link">document</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/test.html" class="external-link">test</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/check.html" class="external-link">check</a></span><span class="op">(</span>args <span class="op">=</span> <span class="st">"--as-cran"</span><span class="op">)</span></span></code></pre></div>
-<p>Rebuild the documentation with <code>Rscript data-raw/build_site.R</code>. The live-data article uses the bundled snapshot; fetching new data is a separate manual step. Regenerate the README illustrations with <code>Rscript data-raw/make_readme_figures.R</code> and its console output with <code>Rscript data-raw/make_readme_output.R</code>.</p>
+<p>Run <code>Rscript data-raw/build_site.R</code> to rebuild the site. The API-data article uses a saved snapshot; refreshing it is a separate manual step. <code>Rscript data-raw/make_readme_figures.R</code> regenerates the README illustrations, and <code>Rscript data-raw/make_readme_output.R</code> updates its example output.</p>
 </div>
 <div class="section level2">
 <h2 id="sources">Sources<a class="anchor" aria-label="anchor" href="#sources"></a>
@@ -362,8 +358,8 @@ Draw with purpose.<br>Measure what the ink says.
 <div class="section level2">
 <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a>
 </h2>
-<p>Charles Crabtree, Senior Lecturer, School of Social Sciences, Monash University and K-Club Professor, University College, Korea University.</p>
-<p>MIT licensed.</p>
+<p>I’m Charles Crabtree, Senior Lecturer in the School of Social Sciences at Monash University and K-Club Professor at University College, Korea University.</p>
+<p>The package is available under the MIT licence.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">

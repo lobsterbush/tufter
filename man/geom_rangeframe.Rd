@@ -48,16 +48,14 @@ quartile, in npc units of the panel. Defaults to \code{0.01}.}
 A \code{ggplot2} layer.
 }
 \description{
-A conventional panel border is pure non-data ink: the box is the same box
-whatever the numbers are. Tufte's replacement is an axis line drawn only
-across the range the data actually occupy, so that the frame reports the
-minimum and maximum for free. \code{geom_quartileframe()} goes further and
-breaks that line at the quartiles, so the axis carries the whole five-number
-summary.
+A range frame draws an axis line between the smallest and largest observed
+values. Tufte's quartile frame adds breaks at the quartiles, so the axis also
+shows the five-number summary.
 }
 \details{
-Use these with \code{\link{theme_tufte}()}, which draws no axis line of its
-own, and remember to turn the panel border off in any other theme.
+Use these with \code{\link{theme_tufte}()}, which has no axis lines by
+default. With another theme, turn off its panel border and axis lines if
+you want only the range frame.
 }
 \examples{
 library(ggplot2)

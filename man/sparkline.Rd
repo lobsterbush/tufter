@@ -55,16 +55,14 @@ maximum dots.}
 A \code{ggplot} object with no axes, sized to be printed small.
 }
 \description{
-A sparkline is a word-sized graphic: a time series drawn small enough to sit
-inside a sentence, a table cell, or a margin, where the reader meets it in
-the same glance as the text around it. Tufte introduced them in
-\emph{Beautiful Evidence} as the extreme case of data-ink maximisation, with
-resolution traded for context.
+Draw a time series small enough to place in a sentence, table cell, or
+margin. Tufte describes these word-sized graphics in
+\emph{Beautiful Evidence}.
 }
 \details{
-The conventional furniture is a grey band showing the normal range, dots at
-the minimum and maximum, and the final value printed at the right-hand end.
-Everything else, including both axes, is gone.
+The default grey band marks the interquartile range. Dots identify the
+minimum and maximum, and a label gives the final value. There are no axes,
+so make sure the surrounding text supplies the context readers need.
 }
 \examples{
 set.seed(1)

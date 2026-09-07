@@ -23,16 +23,14 @@ warns if you change it, because free scales make panels incomparable.}
 A \code{ggplot2} facet specification.
 }
 \description{
-Tufte's answer to multivariate data is repetition rather than complication:
-the same graphic, at the same scale, once per condition, so that comparison
-is a matter of looking rather than of decoding. Once the reader has learned
-to read one panel, they have learned to read all of them.
+Show the same kind of plot for each group. Keeping the scales fixed lets
+readers compare levels across panels without adjusting for different axes.
 }
 \details{
-This is \code{\link[ggplot2]{facet_wrap}()} with the defaults changed to
-match that argument. Scales are fixed, because free scales destroy the
-comparison the design exists to make. Strips are left-aligned and unboxed.
-The panel count is left to \code{ggplot2} unless you set \code{ncol}.
+This wraps \code{\link[ggplot2]{facet_wrap}()} with fixed scales and
+left-aligned, unboxed strip labels. \code{ggplot2} chooses the layout unless
+you specify it. Free scales can help with other questions, but they make
+comparisons of levels harder, so the function warns when you request them.
 }
 \examples{
 library(ggplot2)

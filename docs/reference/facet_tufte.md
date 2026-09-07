@@ -1,10 +1,8 @@
 # Small multiples
 
-Tufte's answer to multivariate data is repetition rather than
-complication: the same graphic, at the same scale, once per condition,
-so that comparison is a matter of looking rather than of decoding. Once
-the reader has learned to read one panel, they have learned to read all
-of them.
+Show the same kind of plot for each group. Keeping the scales fixed lets
+readers compare levels across panels without adjusting for different
+axes.
 
 ## Usage
 
@@ -42,12 +40,12 @@ A `ggplot2` facet specification.
 
 ## Details
 
-This is
+This wraps
 [`facet_wrap()`](https://ggplot2.tidyverse.org/reference/facet_wrap.html)
-with the defaults changed to match that argument. Scales are fixed,
-because free scales destroy the comparison the design exists to make.
-Strips are left-aligned and unboxed. The panel count is left to
-`ggplot2` unless you set `ncol`.
+with fixed scales and left-aligned, unboxed strip labels. `ggplot2`
+chooses the layout unless you specify it. Free scales can help with
+other questions, but they make comparisons of levels harder, so the
+function warns when you request them.
 
 ## Examples
 

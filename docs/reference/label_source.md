@@ -1,9 +1,8 @@
 # Add a source note to a figure
 
-Tufte's documentation principle: a graphic should say where its numbers
-came from, on the graphic, so that the claim can be checked without
-hunting for the surrounding text. This is a thin wrapper on
-`labs(caption = ...)` that formats the note consistently.
+Name the data source on the figure so readers can check where the
+numbers came from. This follows Tufte's documentation principle and
+wraps `labs(caption = ...)` with consistent formatting.
 
 ## Usage
 

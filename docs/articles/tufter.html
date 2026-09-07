@@ -73,30 +73,25 @@
 
     
     
-<p>Tufte’s argument in <em>The Visual Display of Quantitative
-Information</em> is that you can evaluate a statistical graphic. He
-hands you quantities to do it with: the data-ink ratio, the lie factor,
-data density. This package takes him at his word in both directions. It
-gives you the forms he designed, and it gives you the measurements, so a
-figure you’ve drawn can be examined as well as admired.</p>
-<p>One distinction runs through all of it. Tufte states a criterion for
-some principles, which a graphic either meets or doesn’t, and for others
-he states only a direction. The audit grades the first kind and measures
-the second. There’s no score, because collapsing the two would mean
-making up thresholds and a weighting that aren’t anywhere in his
-books.</p>
+<p>How can we make a figure easier to read? I built <code>tufter</code>
+to try some of the ideas in Tufte’s <em>The Visual Display of
+Quantitative Information</em> and examine what changes. It provides
+plotting tools and estimates of data-ink ratio, lie factor and data
+density.</p>
+<p>The audit checks explicit criteria and reports the other measurements
+without a pass or fail. I’ve kept those separate because Tufte doesn’t
+give every principle a numerical target. There’s no overall score.</p>
 <div class="section level2">
 <h2 id="start-with-a-default-plot">Start with a default plot<a class="anchor" aria-label="anchor" href="#start-with-a-default-plot"></a>
 </h2>
-<p>Here is a scatterplot as <code>ggplot2</code> draws it out of the
-box.</p>
+<p>Here’s a scatterplot using the defaults in <code>ggplot2</code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">base</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">wt</span>, <span class="va">mpg</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">base</span></span></code></pre></div>
 <p><img src="tufter_files/figure-html/default-1.png" class="r-plt" alt="" width="100%"></p>
-<p>Now measure it.</p>
+<p>We can estimate how much of its ink comes from the data layers.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/data_ink_ratio.html">data_ink_ratio</a></span><span class="op">(</span><span class="va">base</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -105,17 +100,16 @@ box.</p>
 <span><span class="co">#&gt; • data ink: <span style="color: #0000BB;">2102</span> pixel-equivalents</span></span>
 <span><span class="co">#&gt; • non-data ink: <span style="color: #0000BB;">35581</span></span></span>
 <span><span class="co">#&gt; • measured at 6.5in x 4in, 150 dpi</span></span></code></pre></div>
-<p>Almost none of that ink is doing any work. The grey panel, the white
-grid, the minor gridlines and the axis furniture take up nearly all of
-it, and none of them change when the data change.</p>
+<p>The estimate counts the panel background and grid as non-data ink.
+That helps explain the low ratio, though it doesn’t tell us whether
+those elements help a reader.</p>
 </div>
 <div class="section level2">
 <h2 id="erase-then-replace-the-frame">Erase, then replace the frame<a class="anchor" aria-label="anchor" href="#erase-then-replace-the-frame"></a>
 </h2>
-<p><code><a href="../reference/theme_tufte.html">theme_tufte()</a></code> takes off the background, the grid and the
-border. <code><a href="../reference/geom_rangeframe.html">geom_rangeframe()</a></code> gives you something better in
-place of the border. It draws the axis line only across the range the
-data occupy, so the frame reports the minimum and maximum for free.</p>
+<p><code><a href="../reference/theme_tufte.html">theme_tufte()</a></code> removes the background, grid and border.
+Adding <code><a href="../reference/geom_rangeframe.html">geom_rangeframe()</a></code> draws an axis line between the
+smallest and largest observed values.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lean</span> <span class="op">&lt;-</span> <span class="va">base</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_rangeframe.html">geom_rangeframe</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -131,10 +125,9 @@ data occupy, so the frame reports the minimum and maximum for free.</p>
 <span><span class="co">#&gt; • data ink: <span style="color: #0000BB;">3549</span> pixel-equivalents</span></span>
 <span><span class="co">#&gt; • non-data ink: <span style="color: #0000BB;">1245</span></span></span>
 <span><span class="co">#&gt; • measured at 6.5in x 4in, 150 dpi</span></span></code></pre></div>
-<p><code><a href="../reference/geom_rangeframe.html">geom_quartileframe()</a></code> goes further and breaks the axis at
-the quartiles, so it carries the whole five-number summary. Pair it with
-<code><a href="../reference/quartile_breaks.html">quartile_breaks()</a></code> and the printed labels will agree with
-the breaks.</p>
+<p>A quartile frame also marks the five-number summary. Pair
+<code><a href="../reference/geom_rangeframe.html">geom_quartileframe()</a></code> with <code><a href="../reference/quartile_breaks.html">quartile_breaks()</a></code> to
+put labels at those values.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">base</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_rangeframe.html">geom_quartileframe</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -146,9 +139,9 @@ the breaks.</p>
 <div class="section level2">
 <h2 id="the-audit">The audit<a class="anchor" aria-label="anchor" href="#the-audit"></a>
 </h2>
-<p><code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> reports the stated criteria a figure
-misses, each one named with the principle and the chapter it comes from.
-Separately, it measures the quantities Tufte gives a direction for.</p>
+<p><code><a href="../reference/tufte_audit.html">tufte_audit()</a></code> lists unmet criteria with their sources.
+It also reports measurements that you can compare with another version
+of the figure.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/tufte_audit.html">tufte_audit</a></span><span class="op">(</span><span class="va">lean</span>, width <span class="op">=</span> <span class="fl">6.5</span>, height <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -157,22 +150,20 @@ Separately, it measures the quantities Tufte gives a direction for.</p>
 <span><span class="co">#&gt; At 6.5in x 4in: <span style="font-weight: bold;">1</span> stated criterion not met.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Not met</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> No caption. Tufte asks that evidence be thoroughly described and its sources</span></span>
-<span><span class="co">#&gt;   named on the graphic itself, so a reader can check the claim without hunting</span></span>
-<span><span class="co">#&gt;   through the surrounding text. See label_source().</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> No caption is present. Add the data source with label_source() so readers can</span></span>
+<span><span class="co">#&gt;   check where the numbers came from.</span></span>
 <span><span class="co">#&gt; <span style="font-style: italic;">Documentation - Beautiful Evidence ch. 6</span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Measured, not graded</span></span>
 <span><span class="co">#&gt; <span style="font-style: italic;">Tufte states a direction for these rather than a threshold. Read them against</span></span></span>
 <span><span class="co">#&gt; <span style="font-style: italic;">another draft of the same figure.</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Data-ink ratio 0.74: 74% of the ink varies with the data. Tufte asks that</span></span>
-<span><span class="co">#&gt;   this be maximised within reason and names no threshold, so read it against</span></span>
-<span><span class="co">#&gt;   another draft of this figure rather than against a target.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Data density 3.2 numbers per square inch: 64 entries over 20.1 square inches.</span></span>
-<span><span class="co">#&gt;   Tufte ranks published graphics by this and sets no minimum.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> 1 distinct colour in use. Tufte's advice on colour is qualitative, so this is</span></span>
-<span><span class="co">#&gt;   a count and not a verdict.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> One series in one panel, so there is nothing to separate into small</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Data-ink ratio 0.74: an estimated 74% of the ink comes from data layers.</span></span>
+<span><span class="co">#&gt;   Compare drafts at the same dimensions; there's no target value.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Data density 3.2 entries per square inch: 64 estimated entries over 20.1</span></span>
+<span><span class="co">#&gt;   square inches. Read this alongside the figure and entry count.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> 1 distinct colour in use. This is a count, not a verdict on whether the</span></span>
+<span><span class="co">#&gt;   colours help readers.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> One series in one panel. There's no series grouping to separate into small</span></span>
 <span><span class="co">#&gt;   multiples.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Met</span></span>
@@ -186,9 +177,8 @@ Separately, it measures the quantities Tufte gives a direction for.</p>
 <span><span class="co">#&gt; • Wider than it is tall</span></span>
 <span><span class="co">#&gt; • Ink clears the WCAG contrast minimum</span></span>
 <span><span class="co">#&gt; • Measured labels fit at the printed size</span></span></code></pre></div>
-<p>The one that’s left is the one no theme can fix for you. The figure
-doesn’t say where its numbers came from. <code><a href="../reference/label_source.html">label_source()</a></code>
-handles that.</p>
+<p>This version still needs a data source. Add one with
+<code><a href="../reference/label_source.html">label_source()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/tufte_audit.html">tufte_audit</a></span><span class="op">(</span><span class="va">lean</span> <span class="op">+</span> <span class="fu"><a href="../reference/label_source.html">label_source</a></span><span class="op">(</span><span class="st">"Motor Trend, 1974"</span><span class="op">)</span>, width <span class="op">=</span> <span class="fl">6.5</span>, height <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -199,14 +189,13 @@ handles that.</p>
 <span><span class="co">#&gt; ── Measured, not graded</span></span>
 <span><span class="co">#&gt; <span style="font-style: italic;">Tufte states a direction for these rather than a threshold. Read them against</span></span></span>
 <span><span class="co">#&gt; <span style="font-style: italic;">another draft of the same figure.</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Data-ink ratio 0.66: 66% of the ink varies with the data. Tufte asks that</span></span>
-<span><span class="co">#&gt;   this be maximised within reason and names no threshold, so read it against</span></span>
-<span><span class="co">#&gt;   another draft of this figure rather than against a target.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Data density 3.4 numbers per square inch: 64 entries over 18.9 square inches.</span></span>
-<span><span class="co">#&gt;   Tufte ranks published graphics by this and sets no minimum.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> 1 distinct colour in use. Tufte's advice on colour is qualitative, so this is</span></span>
-<span><span class="co">#&gt;   a count and not a verdict.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> One series in one panel, so there is nothing to separate into small</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Data-ink ratio 0.66: an estimated 66% of the ink comes from data layers.</span></span>
+<span><span class="co">#&gt;   Compare drafts at the same dimensions; there's no target value.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Data density 3.4 entries per square inch: 64 estimated entries over 18.9</span></span>
+<span><span class="co">#&gt;   square inches. Read this alongside the figure and entry count.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> 1 distinct colour in use. This is a count, not a verdict on whether the</span></span>
+<span><span class="co">#&gt;   colours help readers.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> One series in one panel. There's no series grouping to separate into small</span></span>
 <span><span class="co">#&gt;   multiples.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Met</span></span>
@@ -221,21 +210,19 @@ handles that.</p>
 <span><span class="co">#&gt; • Wider than it is tall</span></span>
 <span><span class="co">#&gt; • Ink clears the WCAG contrast minimum</span></span>
 <span><span class="co">#&gt; • Measured labels fit at the printed size</span></span></code></pre></div>
-<p>The audit never grades the data-ink ratio or the data density. Tufte
-asks that both go in a direction and never says how far, so it reports
-them and leaves the judgement with you. Read them against another draft
-of the same figure.</p>
-<p>Meeting every stated criterion doesn’t make a figure good. Tufte’s
-first principle is that content counts most of all, and no function
-evaluates that. What the audit is good at is the mechanical stuff you
-stop seeing after the fifth draft.</p>
+<p>The data-ink ratio and data density are reported without grades. I’d
+compare them across drafts and ask whether the change makes the figure
+more useful. A higher value isn’t sufficient reason to prefer a
+design.</p>
+<p>The audit can flag a missing source or a truncated label. It can’t
+assess whether the figure supports your argument.</p>
 </div>
 <div class="section level2">
 <h2 id="graphical-integrity">Graphical integrity<a class="anchor" aria-label="anchor" href="#graphical-integrity"></a>
 </h2>
-<p>The most common way a real figure lies is a bar chart whose baseline
-isn’t zero. Bar length stops being proportional to the quantity it
-stands for. <code><a href="../reference/lie_factor.html">lie_factor()</a></code> measures how far off it gets.</p>
+<p>Truncating a bar chart’s baseline changes the proportions shown by
+its bars. <code><a href="../reference/lie_factor.html">lie_factor()</a></code> measures that distortion for
+supported bar charts.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>president <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Bush"</span>, <span class="st">"Obama"</span><span class="op">)</span>, growth <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">110</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -246,13 +233,11 @@ stands for. <code><a href="../reference/lie_factor.html">lie_factor()</a></code>
 <span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="fu"><a href="../reference/lie_factor.html">lie_factor</a></span><span class="op">(</span><span class="va">truncated</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 16.66667</span></span></code></pre></div>
-<p>A ten percent difference drawn as a sixteen-fold one. Tufte treats
-anything outside roughly 0.95 to 1.05 as distortion, and I think that’s
-about right.</p>
-<p>Given the numbers directly, <code><a href="../reference/lie_factor.html">lie_factor()</a></code> reproduces his
-own examples. The fuel-economy graphic in <em>The Visual Display</em>
-showed an eighteen percent change as a line growing by seven hundred and
-eighty-three percent.</p>
+<p>Here the displayed proportional change is much larger than the change
+in the data. Tufte’s reference band is roughly 0.95 to 1.05.</p>
+<p>You can also supply numeric vectors, as in the fuel-economy example
+from <em>The Visual Display</em>. The function compares proportional
+changes in the values and in the marks used to draw them.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/lie_factor.html">lie_factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">18.0</span>, <span class="fl">27.5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">5.3</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 14.84211</span></span></code></pre></div>
@@ -260,10 +245,8 @@ eighty-three percent.</p>
 <div class="section level2">
 <h2 id="bars-with-the-gridlines-erased">Bars with the gridlines erased<a class="anchor" aria-label="anchor" href="#bars-with-the-gridlines-erased"></a>
 </h2>
-<p>Bar charts need gridlines, because readers have to recover values
-from bar heights. A gridline crossing a bar, though, is drawn on top of
-ink that already carries that value. Tufte’s redesign erases it there
-instead.</p>
+<p>Gridlines can help readers estimate bar heights. Tufte’s version
+draws them as gaps through the bars. Here’s how that looks.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  crop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Wheat"</span>, <span class="st">"Maize"</span>, <span class="st">"Rice"</span>, <span class="st">"Barley"</span>, <span class="st">"Oats"</span><span class="op">)</span>,</span>
@@ -279,8 +262,8 @@ instead.</p>
 <div class="section level2">
 <h2 id="box-plots-without-the-box">Box plots without the box<a class="anchor" aria-label="anchor" href="#box-plots-without-the-box"></a>
 </h2>
-<p>The box in a box plot holds four numbers, and a line and a dot can
-hold them just as well.</p>
+<p>This version uses whisker lines and a median dot, with a gap for the
+interquartile range.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">cyl</span><span class="op">)</span>, <span class="va">mpg</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_tufteboxplot.html">geom_tufteboxplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -288,16 +271,15 @@ hold them just as well.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Cylinders"</span>, y <span class="op">=</span> <span class="st">"Miles per gallon"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/theme_tufte.html">theme_tufte</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tufter_files/figure-html/boxplot-1.png" class="r-plt" alt="" width="100%"></p>
-<p><code>type = "line"</code> and <code>type = "offset"</code> keep
-progressively more, for when the whiskers are short and the
-interquartile range needs its own mark.</p>
+<p>Try <code>type = "line"</code> or <code>type = "offset"</code> if the
+interquartile range needs a more visible mark.</p>
 </div>
 <div class="section level2">
-<h2 id="labels-on-the-data-not-in-a-legend">Labels on the data, not in a legend<a class="anchor" aria-label="anchor" href="#labels-on-the-data-not-in-a-legend"></a>
+<h2 id="labels-on-the-data">Labels on the data<a class="anchor" aria-label="anchor" href="#labels-on-the-data"></a>
 </h2>
-<p>A legend makes the reader look away, hold a colour in memory, look
-back and match it up. <code><a href="../reference/geom_text_last.html">geom_text_last()</a></code> puts the name where
-the eye already is.</p>
+<p>I often prefer putting a series name beside its line.
+<code><a href="../reference/geom_text_last.html">geom_text_last()</a></code> labels the final point so readers don’t
+have to look up a legend.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">series</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">2000</span><span class="op">:</span><span class="fl">2015</span>, <span class="fl">3</span><span class="op">)</span>,</span>
@@ -317,9 +299,8 @@ the eye already is.</p>
 <div class="section level2">
 <h2 id="slopegraphs">Slopegraphs<a class="anchor" aria-label="anchor" href="#slopegraphs"></a>
 </h2>
-<p>A slopegraph shows before-and-after for many units at once. Every
-number gets printed on the graphic, which makes the y axis redundant, so
-it goes. The table and the figure end up being the same object.</p>
+<p>A slopegraph compares two periods. The lines show changes in values
+and rank, and labels give the numbers at each end.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  country <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Sweden"</span>, <span class="st">"Japan"</span>, <span class="st">"Chile"</span>, <span class="st">"Canada"</span>, <span class="st">"Greece"</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
@@ -334,9 +315,9 @@ it goes. The table and the figure end up being the same object.</p>
 <div class="section level2">
 <h2 id="sparklines">Sparklines<a class="anchor" aria-label="anchor" href="#sparklines"></a>
 </h2>
-<p>A sparkline is word-sized: small enough to sit inside a sentence,
-with the normal range as a grey band, dots at the extremes, and the
-final value printed at the end.</p>
+<p>Sparklines show a series in a small space. Here the grey band marks
+the interquartile range, dots identify the extremes, and a label gives
+the final value.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  month <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">60</span>, <span class="fl">4</span><span class="op">)</span>,</span>
@@ -351,10 +332,10 @@ final value printed at the end.</p>
 <div class="section level2">
 <h2 id="small-multiples">Small multiples<a class="anchor" aria-label="anchor" href="#small-multiples"></a>
 </h2>
-<p>The answer to multivariate data is repetition rather than
-complication: the same graphic, at the same scale, once per condition.
-<code><a href="../reference/facet_tufte.html">facet_tufte()</a></code> fixes the scales, because free scales destroy
-the comparison the design exists to make.</p>
+<p>Use one panel per group when you want readers to make the same
+comparison several times. <code><a href="../reference/facet_tufte.html">facet_tufte()</a></code> keeps the scales
+fixed so levels can be compared across panels. It warns if you request
+free scales.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">wt</span>, <span class="va">mpg</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
@@ -366,10 +347,11 @@ the comparison the design exists to make.</p>
 <div class="section level2">
 <h2 id="before-you-save">Before you save<a class="anchor" aria-label="anchor" href="#before-you-save"></a>
 </h2>
-<p>Design a figure carefully, save it at the wrong size, and you get a
-truncated subtitle. <code>ggplot2</code> clips long text rather than
-wrapping it. <code><a href="../reference/check_labels_fit.html">check_labels_fit()</a></code> renders at the size you
-mean to print and measures what fits.</p>
+<p>Check the figure at the dimensions you’ll use. A long subtitle can
+fit in a preview and still be cut off in the saved file.
+<code><a href="../reference/check_labels_fit.html">check_labels_fit()</a></code> estimates the space needed by titles,
+axes, legends and facet strips. It doesn’t check text placed inside the
+panel.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">wordy</span> <span class="op">&lt;-</span> <span class="va">lean</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"A subtitle that runs on rather too long"</span>, <span class="fl">4</span><span class="op">)</span>,</span>
@@ -389,19 +371,19 @@ mean to print and measures what fits.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> y axis title                       0.333         3.18 TRUE </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> x axis labels (side by side)       0.333         5.89 TRUE </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> y axis labels (stacked)            0.667         3.18 TRUE</span></span></code></pre></div>
-<p><code><a href="../reference/save_tufte.html">save_tufte()</a></code> runs that check before it writes, so the
-warning shows up while you can still do something about it. It defaults
-to 6.5 inches wide and uses <code>cairo_pdf</code> for PDF output.</p>
+<p><code><a href="../reference/save_tufte.html">save_tufte()</a></code> runs that check before saving. It defaults
+to a width of 6.5 inches and uses <code>cairo_pdf</code> for PDF output.
+Set <code>strict = TRUE</code> if a label that doesn’t fit, or a check
+that can’t run, should stop the save.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/save_tufte.html">save_tufte</a></span><span class="op">(</span><span class="st">"figure-1.pdf"</span>, <span class="va">lean</span>, width <span class="op">=</span> <span class="fl">6.5</span>, height <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="what-the-package-cant-do">What the package can’t do<a class="anchor" aria-label="anchor" href="#what-the-package-cant-do"></a>
 </h2>
-<p><code><a href="../reference/tufte_principles.html">tufte_principles()</a></code> lists every principle, the book it
-comes from, and the function that implements it. The
-<code>audited</code> column is the honest part. It marks which
-principles a function can check and which ones it can’t.</p>
+<p><code><a href="../reference/tufte_principles.html">tufte_principles()</a></code> lists the principles and their
+sources. The <code>audited</code> column identifies which ones the
+package can check.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tufte_principles.html">tufte_principles</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">p</span><span class="op">[</span><span class="op">!</span><span class="va">p</span><span class="op">$</span><span class="va">audited</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"principle"</span>, <span class="st">"implemented_by"</span><span class="op">)</span><span class="op">]</span></span>
@@ -419,9 +401,9 @@ principles a function can check and which ones it can’t.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Show multivariate data       facet_tufte(), sparklines()                </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Sparklines                   sparkline(), sparklines(), sparkline_grob()</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> Content counts most of all   <span style="color: #BB0000;">NA</span></span></span></code></pre></div>
-<p>Showing causality, showing comparisons, content counting most of all:
-a package can’t verify any of that. I think it’s what the figure is
-for.</p>
+<p>Whether a figure supports a causal claim or presents a useful
+comparison still requires judgement. I use the audit to catch specific
+problems while reviewing those larger questions myself.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

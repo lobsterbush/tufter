@@ -22,23 +22,18 @@ A tibble with columns \code{principle}, \code{source},
   what it only measures.
 }
 \description{
-Returns the table this package is built around: each principle, the book it
-comes from, the function that puts it into practice, whether
-\code{\link{tufte_audit}()} can check it, and whether Tufte states a
-criterion a graphic either meets or doesn't.
+Look up each principle, its source, and the functions that implement it.
+The table also records whether \code{\link{tufte_audit}()} can check it.
 }
 \details{
-The \code{criterion} column is the important one. Tufte gives a testable
-line for some principles: bars are measured from zero, the lie factor lies
-between 0.95 and 1.05, graphics are wider than they're tall. For others he
-gives only a direction, asking that the data-ink ratio be maximised "within
-reason" and that data density be increased, and names no threshold. The audit
-grades the first kind and merely measures the second, because any line drawn
-across the second kind would be the package author's and not Tufte's.
+The \code{criterion} column identifies principles with a stated rule, such
+as a zero baseline for bars or a lie factor between 0.95 and 1.05. Tufte asks
+that data-ink be maximised "within reason" and that data density increase,
+but doesn't give them numerical targets. The audit reports those measurements
+without grading them.
 
-Principles no function can reach are listed too, with \code{audited} set to
-\code{FALSE}, because the honest version of "implements all of Tufte's
-principles" says which ones it can't.
+Principles the package can't check are included with \code{audited = FALSE}.
+I've kept them in the table so the limits of the audit are visible.
 }
 \examples{
 tufte_principles()

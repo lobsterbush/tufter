@@ -1,10 +1,9 @@
 # Examples with live API data
 
-The [other
-gallery](https://lobsterbush.github.io/tufter/articles/simulated-examples.md)
-uses simulated data, which is handy because you can regenerate it
-anywhere. This one uses real numbers from four public APIs, none of
-which need a key or a login:
+Here I use a saved snapshot from four public APIs. The [simulated
+examples](https://lobsterbush.github.io/tufter/articles/simulated-examples.md)
+are useful for controlled comparisons; these data show how the tools
+handle less tidy distributions.
 
 | Source | What it gives | Endpoint |
 |----|----|----|
@@ -13,22 +12,14 @@ which need a key or a login:
 | Open-Meteo ERA5 archive | daily temperature anywhere, back to 1940 | `archive-api.open-meteo.com` |
 | Wikimedia REST API | daily pageviews per article | `wikimedia.org` |
 
-I picked these because real data misbehaves in ways simulated data
-doesn’t, and the measurements in this package are more interesting when
-they’re pointed at something messy.
-
 ## How the fetching works
 
-The article reads a cached snapshot rather than calling the APIs while
-the page builds. Four API calls on every documentation build would be
-slow, impolite to whoever runs them, and would break the build on the
-day one of them is down. The fetching lives in
-[`data-raw/fetch_live_examples.R`](https://github.com/lobsterbush/tufter/blob/main/data-raw/fetch_live_examples.R),
-which you can run yourself to refresh everything.
+The page reads the saved snapshot, so a documentation build doesn’t
+depend on the APIs being available. To refresh it, run
+[`data-raw/fetch_live_examples.R`](https://github.com/lobsterbush/tufter/blob/main/data-raw/fetch_live_examples.R).
+The APIs used here don’t require authentication.
 
-Here’s the shape of it. Each call is one URL and one
-[`fromJSON()`](https://jeroen.r-universe.dev/jsonlite/reference/fromJSON.html),
-with no authentication anywhere.
+Here’s an example of the requests.
 
 ``` r
 library(jsonlite)
@@ -60,7 +51,8 @@ fromJSON(paste0(
 ))$items
 ```
 
-The snapshot ships with the package, so everything below runs offline.
+The cached snapshot is included in the repository, so these examples can
+be built offline once the required packages are installed.
 
 ``` r
 live <- readRDS("../../data-raw/live-examples.rds")
@@ -74,16 +66,13 @@ vapply(live[c("cran", "quakes", "climate", "pageviews")], nrow, integer(1))
 
 ## Sparklines: CRAN downloads
 
-Five packages, daily downloads, six months each. Sparklines are the
-right form here because each series has its own scale and I only want
-the shape. `targets` gets a few hundred downloads a day and `ggplot2`
-gets tens of thousands, so plotting them on shared axes would flatten
-four of the five into a line along the bottom.
+These are six months of daily downloads for five packages. I’ve given
+each series its own scale so its pattern is visible. That means heights
+can’t be compared across rows.
 
-The grey band is the interquartile range, the blue and red dots are the
-minimum and maximum, and the number at the right is the last value.
-`accuracy = 1` rounds those to whole downloads, since a tenth of a
-download would be an odd thing to print.
+The grey band marks the interquartile range. Dots identify the extremes
+and the label gives the final value. `accuracy = 1` rounds downloads to
+whole numbers.
 
 ``` r
 sparklines(live$cran, day, downloads, package, accuracy = 1)
@@ -91,19 +80,16 @@ sparklines(live$cran, day, downloads, package, accuracy = 1)
 
 ![](live-data_files/figure-html/cran-sparklines-1.png)
 
-The spike in `ggplot2` is real. It hits 264,504 downloads in a day
-against a median of 74,340, which is the kind of thing you notice in a
-sparkline and would miss in a table. I don’t know what caused it. A
-release, a mirror re-syncing, or a large CI fleet would all look like
-this from the outside.
+The largest `ggplot2` spike reaches 264,504 downloads in a day, compared
+with a median of 74,340. I don’t know what caused it. These counts alone
+can’t distinguish a change in demand from automated downloading.
 
 ## Banking: how tall should that panel be?
 
-Take one of those series on its own. The shape you see depends on how
-tall you draw it, and
+For a single series,
 [`bank_to_45()`](https://lobsterbush.github.io/tufter/reference/bank_to_45.md)
-picks the height that puts the median slope nearest 45 degrees, where
-Cleveland found we judge slope most accurately.
+suggests a panel height using Cleveland’s approach to bringing the
+median absolute slope near 45 degrees.
 
 ``` r
 gg <- subset(live$cran, package == "ggplot2")
@@ -122,11 +108,8 @@ bank_to_45(series, width = 6.5)
 #> titles.
 ```
 
-That height is for the panel. A saved figure needs room on top of it for
-the axis labels and the y title, and at the banked height exactly the y
-title runs off the top.
-[`check_labels_fit()`](https://lobsterbush.github.io/tufter/reference/check_labels_fit.md)
-measures that.
+The suggested height is for the panel. Titles and axis labels need extra
+space, which the following label check helps estimate.
 
 ``` r
 check_labels_fit(series, width = 6.5, height = 1.3)
@@ -143,8 +126,7 @@ check_labels_fit(series, width = 6.5, height = 1.3)
 #> 5 y axis labels (stacked)            0.222         0.92 TRUE
 ```
 
-So give it a little more room. The panel stays close to banked and the
-title fits.
+I’ll add some height to give the labels room, then inspect the figure.
 
 ``` r
 series
@@ -152,18 +134,14 @@ series
 
 ![](live-data_files/figure-html/banked-1.png)
 
-The weekly cycle is the obvious feature once the panel is short.
-Downloads fall at weekends, which you can see as a regular beat rather
-than having to be told. The three tall spikes and the early plateau stay
-visible, which is the point of banking: the routine variation reads as
-slope instead of as a solid band, so the unusual days stand out against
-it.
+The shorter panel makes the recurring variation easy to see while
+keeping the large spikes visible. I’d compare this with a taller version
+if the individual daily changes were the focus.
 
 ## Slopegraphs: two decades of temperature
 
-Six cities around the Pacific, mean daily temperature averaged over 1975
-to 1984 and again over 2015 to 2024. Every number gets printed on the
-graphic, so the y axis is redundant and goes.
+This compares mean daily temperature in six Pacific-region cities for
+1975 to 1984 and 2015 to 2024. Each endpoint is a ten-year average.
 
 ``` r
 slopegraph(live$climate, period, mean_temp, city, accuracy = 0.1) +
@@ -176,38 +154,28 @@ slopegraph(live$climate, period, mean_temp, city, accuracy = 0.1) +
 
 ![](live-data_files/figure-html/slopegraph-1.png)
 
-All six rise, by between 0.4 and 1.8 degrees. I want to be careful about
-what that does and doesn’t show. These are single grid points from a
-reanalysis product, so a city with a lot of building between the two
-windows picks up its own heat island along with everything else, and two
-decades isn’t long enough to separate the two. It’s a real comparison of
-two real averages, and it isn’t a climate attribution.
+All six averages increase, by between 0.4 and 1.8 degrees. These are
+selected grid points from a reanalysis product. The comparison doesn’t
+identify the causes of the changes.
 
-What the slopegraph does well here is the ordering and the one place it
-changes. Singapore is the warmest and moved least, at 0.4 degrees. Tokyo
-started second-coolest of the six and moved most, and it’s the only line
-that crosses another: it begins below Melbourne and ends above it. That
-crossing is the sort of thing a slopegraph is for, and the sort of thing
-a pair of bar charts would bury.
+The crossing between Tokyo and Melbourne is easy to see: Tokyo starts
+below Melbourne and ends above it. Singapore has the highest average in
+both periods.
 
 ## Distributions: earthquakes
 
-7,909 earthquakes at magnitude 4.5 or above in the last year, with
-magnitude against depth. A quartile frame breaks the axis at the
-five-number summary, so the frame reports the distribution instead of
-boxing the panel.
+The snapshot contains 7,909 earthquakes at magnitude 4.5 or above during
+its one-year collection window. Here’s magnitude against depth, with a
+quartile frame on magnitude.
 
 ``` r
 q <- live$quakes
 ```
 
-I’ve used one on magnitude and a plain range frame on depth, and the
-reason is worth spelling out. Depth is badly skewed: the median is 18 km
-against a maximum of 676, so four of its five quartile marks pile up in
-the first tenth of the axis and the labels sit on top of each other. The
-crowding is real information, since it’s telling you the distribution is
-skewed, and it also makes for an axis nobody can read. On a variable
-like that I’d rather use a range frame and let the points show the skew.
+I’ve used a plain range frame on depth because the distribution is
+strongly skewed. The median is 18 km and the maximum is 676 km. Several
+quartile labels would crowd together. The points still show the
+concentration of shallow events.
 
 ``` r
 ggplot(q, aes(depth_km, magnitude)) +
@@ -222,13 +190,11 @@ ggplot(q, aes(depth_km, magnitude)) +
 
 ![](live-data_files/figure-html/quakes-frame-1.png)
 
-Magnitude is skewed too, and there the frame handles it well. The breaks
-sit at 4.5, 4.7, 5, 7.8, so three quarters of the events fall in the
-bottom sixth of the axis and the long empty stretch above 5 is the whole
-story about how rare big earthquakes are.
+The magnitude breaks are 4.5, 4.7, 5, 7.8. Here the labels have enough
+room. Most events are near the lower end of the recorded range.
 
-Split by the standard depth classes and the minimal box plot does the
-comparison.
+Next I’ll compare magnitude across depth classes using minimal box
+plots.
 
 ``` r
 q$zone <- cut(
@@ -246,33 +212,19 @@ ggplot(q, aes(zone, magnitude)) +
 
 ![](live-data_files/figure-html/quakes-box-1.png)
 
-Two things about that figure.
+There are 289 deep events and 6,272 shallow events. Their median
+magnitudes are 4.6 and 4.7, respectively. Those differences should be
+read in the context of the catalogue’s 4.5-magnitude cutoff.
 
-The three distributions are nearly identical. Deep events are much
-rarer, 289 against 6,272 shallow ones, and their median magnitude is 4.6
-against 4.7 for shallow. A tenth of a magnitude unit in a catalogue
-censored at 4.5 is not worth much.
-
-The outlying points are off. Earthquake magnitudes follow roughly an
-exponential distribution, so the usual rule of 1.5 times the
-interquartile range flags between four and eleven percent of events
-depending on the class. Those are the ordinary tail rather than
-anomalies, and drawing three hundred of them buries the summary the box
-plot exists to show. The scatterplot above shows every one.
-
-The lower whiskers are worth reading carefully too. They stop at 4.5
-because that’s what I asked the API for, so they’re an artefact of the
-query rather than of the earth. That belongs on the figure rather than
-in a reader’s head, which is what the note in
-[`label_source()`](https://lobsterbush.github.io/tufter/reference/label_source.md)
-is doing.
+I’ve hidden the outlying points in this summary because the scatterplot
+above already shows them. The lower whiskers stop at the query cutoff;
+that limit is stated in the figure’s source note.
 
 ## Dot plots: Wikipedia pageviews
 
-Five articles, total views over four months. A dot plot suits this
-better than bars, because zero is a long way below the smallest value
-and starting there would waste most of the panel. A dot encodes its
-value by position, so it reads honestly on a scale that excludes zero.
+These are total views of five articles over the snapshot’s four-month
+window. A dot plot lets us compare their positions without using bars
+that start far below the smallest value.
 
 ``` r
 totals <- aggregate(views ~ article, live$pageviews, sum)
@@ -287,18 +239,13 @@ ggplot(totals, aes(views, stats::reorder(article, views))) +
 
 ![](live-data_files/figure-html/pageviews-dot-1.png)
 
-Histogram beats the other four put together, which I didn’t expect and
-which I think says more about homework than about interest in graphical
-design.
-
-Sort before you plot. An alphabetical dot plot throws away the main
-advantage of the form, which is that you can read rank straight off it.
+The Histogram article has the most views. I don’t know what explains the
+difference. Sorting by the totals makes the ordering easy to read.
 
 ## Small multiples
 
-The same five series again, this time at a fixed scale so the levels are
-comparable. That’s what small multiples are for, and it’s the opposite
-choice from the sparklines at the top of this page.
+Here are the same series over time, with a fixed scale across panels so
+readers can compare their levels.
 
 ``` r
 ggplot(live$pageviews, aes(date, views)) +
@@ -314,15 +261,13 @@ ggplot(live$pageviews, aes(date, views)) +
 
 ![](live-data_files/figure-html/pageviews-multiples-1.png)
 
-At a fixed scale you can see that four of the five are quiet and one
-isn’t. The sparklines told you the shape of each series and hid that
-comparison; this tells you the comparison and hides most of the shape.
-Both are honest and they answer different questions.
+The shared scale makes differences in levels visible, though smaller
+fluctuations are harder to see. The sparklines above are more useful for
+examining each series’ pattern.
 
 ## Auditing a real figure
 
-Everything above can be measured. Here’s the earthquake figure, audited
-at the size I’d print it.
+Here’s the earthquake figure checked at the size I’d print it.
 
 ``` r
 quake_figure <- ggplot(q, aes(depth_km, magnitude)) +
@@ -339,23 +284,21 @@ tufte_audit(quake_figure, width = 6.5, height = 4)
 #> At 6.5in x 4in: 1 stated criterion not met.
 #> 
 #> ── Not met
-#> ✖ data mark #D8D8D8 sits at contrast 1.4 against the background, below the
-#>   published minimum of 3.0. This isn't one of Tufte's criteria. It's the limit
-#>   past which erasing ink stops being economy and starts being an unreadable
-#>   figure.
+#> ✖ data mark #D8D8D8 has contrast 1.4 against the background, below the
+#>   published minimum of 3.0. Try a colour with greater contrast and inspect the
+#>   result.
 #> Legibility - WCAG 2.1, not Tufte
 #> 
 #> ── Measured, not graded
 #> Tufte states a direction for these rather than a threshold. Read them against
 #> another draft of the same figure.
-#> • Data-ink ratio 0.81: 81% of the ink varies with the data. Tufte asks that
-#>   this be maximised within reason and names no threshold, so read it against
-#>   another draft of this figure rather than against a target.
-#> • Data density 824.7 numbers per square inch: 15818 entries over 19.2 square
-#>   inches. Tufte ranks published graphics by this and sets no minimum.
-#> • 1 distinct colour in use. Tufte's advice on colour is qualitative, so this is
-#>   a count and not a verdict.
-#> • One series in one panel, so there is nothing to separate into small
+#> • Data-ink ratio 0.81: an estimated 81% of the ink comes from data layers.
+#>   Compare drafts at the same dimensions; there's no target value.
+#> • Data density 824.7 entries per square inch: 15818 estimated entries over 19.2
+#>   square inches. Read this alongside the figure and entry count.
+#> • 1 distinct colour in use. This is a count, not a verdict on whether the
+#>   colours help readers.
+#> • One series in one panel. There's no series grouping to separate into small
 #>   multiples.
 #> 
 #> ── Met
@@ -371,33 +314,22 @@ tufte_audit(quake_figure, width = 6.5, height = 4)
 #> • Measured labels fit at the printed size
 ```
 
-Both measurements are worth a look. The data density comes out at 825
-numbers per square inch, against about three for the mtcars scatterplot
-in the [measuring
-article](https://lobsterbush.github.io/tufter/articles/measuring.md).
-7,909 events over 2 mapped variables will do that, and comparing figures
-against each other is exactly what Tufte uses this quantity for. He
-never sets a minimum.
+The estimated data density is 825 entries per square inch, using 7,909
+rows and 2 mapped variables. The [measuring
+article](https://lobsterbush.github.io/tufter/articles/measuring.md)
+explains how those counts are constructed.
 
-The data-ink ratio comes out at 0.81, far above anything else in these
-docs, which makes sense once you look at what’s on the page. Eight
-thousand marks is a lot of ink, and the frame it sits inside is three
-hairlines and some text. If anything the true figure is higher still,
-because overlapping points get counted once and this plot has a great
-many piled up near the origin. The measuring article works through that
-bias.
-
-Both numbers are written into the sentence by inline R code, so
-refreshing the data refreshes the prose with it.
+The estimated data-ink ratio is 0.81. Many points overlap here, so their
+combined ink is counted once. I’d interpret the ratio with that limit in
+mind.
 
 ## Contrast, on a figure drawn faintly on purpose
 
-Those points are drawn at 15 percent opacity, which is the right call
-for overplotting and a bad one for anyone reading the figure on a
-projector.
+The points use 15 percent opacity to show where observations overlap.
 [`check_contrast()`](https://lobsterbush.github.io/tufter/reference/check_contrast.md)
-composites the transparency first, so it measures what the reader
-actually sees.
+checks the composited colour of an individual mark against the
+background. It doesn’t model the darker areas created by overlapping
+marks.
 
 ``` r
 check_contrast(quake_figure)
@@ -411,12 +343,10 @@ check_contrast(quake_figure)
 #> 5 axis title black   21          4.5 TRUE
 ```
 
-Black at 15 percent opacity composites to `#D8D8D8`, which comes out at
-1.4 against white and sits well below the minimum of 3. In a scatterplot
-I think that’s a defensible trade, since the shape of the cloud carries
-the message and no individual point matters. I’d still rather know than
-not. If this were going on a slide I’d raise the alpha and shrink the
-points instead.
+An isolated black point at this opacity has a contrast ratio of about
+1.4 against white, below the default minimum of 3. That makes individual
+points hard to distinguish. I’d increase opacity if identifying those
+points were important, and check a projected version separately.
 
 ## Refreshing the data
 
@@ -424,6 +354,6 @@ points instead.
 Rscript data-raw/fetch_live_examples.R
 ```
 
-That rewrites `data-raw/live-examples.rds`, and this page picks up the
-new numbers on the next build. Every value quoted in the prose is inline
-R code, so it moves with the data.
+The script refreshes `data-raw/live-examples.rds`. Rebuild this page to
+use the new snapshot, then inspect the figures and their interpretation
+again. Values inserted with inline R update automatically.

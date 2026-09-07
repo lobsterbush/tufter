@@ -1,11 +1,10 @@
 # Bank the aspect ratio to 45 degrees
 
-Tufte's advice on shape, that graphics should tend toward the
-horizontal, is the informal version of a result Cleveland made precise:
-the slope of a line is judged most accurately when it sits near 45
-degrees, and the aspect ratio of the panel is what puts it there.
-Banking chooses the height, for a given width, that brings the slopes in
-the data closest to 45 degrees.
+Changing a panel's height changes how steep a line looks. Banking
+chooses a height, for a given width, that brings the slopes closer to 45
+degrees. This implements Cleveland's approach to comparing slopes and
+relates to Tufte's advice that graphics should tend toward the
+horizontal.
 
 ## Usage
 
@@ -53,20 +52,14 @@ and check the result with
 
 ## Details
 
-The same series can look like a gentle drift or a cliff depending only
-on how tall the panel is, and neither reading is the data's fault.
-Banking replaces that choice with a rule.
+The default, `"median_slope"`, makes the median absolute slope 45
+degrees. It's less sensitive to unusually steep segments.
+`"average_orientation"` makes the mean absolute orientation 45 degrees
+and can weight segments by length.
 
-Two methods are offered. `"median_slope"` is Cleveland's original: pick
-the aspect ratio that makes the median absolute slope exactly 45
-degrees. It resists outliers and is the default. `"average_orientation"`
-instead makes the mean absolute orientation 45 degrees, optionally
-weighting by its length so that long segments count for more, which is
-closer to what the eye does with a line that varies in density.
-
-Only line-like layers are read: lines, paths, steps and smooths. A plot
-with no such layer has no slopes to bank, and the function says so
-rather than guessing.
+The function reads lines, paths and smooths. It rejects step charts and
+plots without line-like layers. I treat the height as a starting point:
+check whether it helps readers see the change you're interested in.
 
 ## See also
 
