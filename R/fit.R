@@ -88,7 +88,14 @@ check_labels_fit <- function(plot, width = 6.5, height = 4) {
   )
   for (spec in titles) {
     req <- .max_extent(gt, spec[2], spec[3], "width")
-    add(spec[1], req, width)
+    cell <- which(grepl(spec[2], gt$layout$name))[1]
+    available <- width
+    if (!is.na(cell)) {
+      span <- gt$layout$l[cell]:gt$layout$r[cell]
+      outside <- setdiff(seq_along(gt$widths), span)
+      available <- width - .safe_sum_widths(gt$widths[outside])
+    }
+    add(spec[1], req, available)
   }
 
   add("x axis title", .max_extent(gt, "^xlab-", "max", "width"), panel_w_all)
@@ -115,7 +122,11 @@ check_labels_fit <- function(plot, width = 6.5, height = 4) {
   add("y axis labels (right)",
       .max_extent(gt, "^axis-r", "sum", "height"), panel_h)
   add("strip label (side)",
-      .max_extent(gt, "^strip-r", "max", "width", unrotate = TRUE), panel_w)
+      .max_extent(gt, "^strip-r", "max", "width", unrotate = TRUE), panel_h)
+  add("strip label (left)",
+      .max_extent(gt, "^strip-l", "max", "height"), panel_h)
+  add("strip label (bottom)",
+      .max_extent(gt, "^strip-b", "max", "width"), panel_w)
 
   if (length(rows) == 0) {
     return(tibble::tibble(

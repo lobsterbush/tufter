@@ -44,7 +44,11 @@ figure that clears them can still be hard work in a badly lit lecture
 theatre.
 
 Colours drawn with transparency are measured as if composited onto the
-background, since that's what the reader sees.
+background, since that's what the reader sees. Theme text is read from
+the rendered grobs, including axis-specific styles and legend labels.
+This is a colour screening tool, not a complete accessibility
+assessment: it does not resolve overlapping marks, text on filled
+labels, or contrasting legend and strip backgrounds.
 
 ## Examples
 
@@ -52,19 +56,21 @@ background, since that's what the reader sees.
 library(ggplot2)
 p <- ggplot(mtcars, aes(wt, mpg)) + geom_point() + theme_tufte()
 check_contrast(p)
-#> # A tibble: 2 × 5
-#>   role      colour ratio threshold passes
-#>   <chr>     <chr>  <dbl>     <dbl> <lgl> 
-#> 1 axis text grey20  12.6       4.5 TRUE  
-#> 2 data mark black   21         3   TRUE  
+#> # A tibble: 3 × 5
+#>   role       colour ratio threshold passes
+#>   <chr>      <chr>  <dbl>     <dbl> <lgl> 
+#> 1 axis text  grey20  12.6       4.5 TRUE  
+#> 2 data mark  black   21         3   TRUE  
+#> 3 axis title black   21         4.5 TRUE  
 
 # A figure drawn too faintly to read.
 check_contrast(
   ggplot(mtcars, aes(wt, mpg)) + geom_point(colour = "grey85") + theme_tufte()
 )
-#> # A tibble: 2 × 5
-#>   role      colour ratio threshold passes
-#>   <chr>     <chr>  <dbl>     <dbl> <lgl> 
-#> 1 data mark grey85  1.41       3   FALSE 
-#> 2 axis text grey20 12.6        4.5 TRUE  
+#> # A tibble: 3 × 5
+#>   role       colour ratio threshold passes
+#>   <chr>      <chr>  <dbl>     <dbl> <lgl> 
+#> 1 data mark  grey85  1.41       3   FALSE 
+#> 2 axis text  grey20 12.6        4.5 TRUE  
+#> 3 axis title black  21          4.5 TRUE  
 ```

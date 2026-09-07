@@ -267,14 +267,14 @@ wordy <- lean + labs(
 
 check_labels_fit(wordy, width = 6.5, height = 4)
 #> Warning in check_labels_fit(wordy, width = 6.5, height = 4): 1 element will be clipped at 6.5in x 4in.
-#> ✖ subtitle needs 10.18in but has 6.50in.
+#> ✖ subtitle needs 10.18in but has 6.33in.
 #> ℹ Hard-wrap the text, widen the canvas, or reduce the font size.
 #> # A tibble: 7 × 4
 #>   element                      required_in available_in fits 
 #>   <chr>                              <dbl>        <dbl> <lgl>
 #> 1 layout (non-panel width)           0.609         6.5  TRUE 
 #> 2 layout (non-panel height)          0.809         4    TRUE 
-#> 3 subtitle                          10.2           6.5  FALSE
+#> 3 subtitle                          10.2           6.33 FALSE
 #> 4 x axis title                       1.49          5.89 TRUE 
 #> 5 y axis title                       0.681         3.19 TRUE 
 #> 6 x axis labels (side by side)       0.667         5.89 TRUE 
@@ -373,7 +373,7 @@ suppressWarnings(tufte_audit(bad, width = 6.5, height = 4))
 #> • Bars measured from zero
 #> • Lie factor within Tufte's band
 #> • Wider than it is tall
-#> • Nothing is clipped at the printed size
+#> • Measured labels fit at the printed size
 ```
 
 Several stated criteria not met, each named with the principle it comes
@@ -418,7 +418,7 @@ tufte_audit(good, width = 6.5, height = 4)
 #> • The figure names its source
 #> • Wider than it is tall
 #> • Ink clears the WCAG contrast minimum
-#> • Nothing is clipped at the printed size
+#> • Measured labels fit at the printed size
 ```
 
 ## Every figure in the paper at once
@@ -447,7 +447,7 @@ suppressWarnings(audit_figures(figures, measure = FALSE))
 #> faint (1 not met)
 #> Ink clears the WCAG contrast minimum
 #> 
-#> ── Meeting every stated criterion
+#> ── No failures among completed checks
 #> • scatter
 #> 
 #> ℹ Full detail for any one figure: `attr(x, "audits")[["<name>"]]`
@@ -458,6 +458,21 @@ in one call if the figures were saved with
 [`saveRDS()`](https://rdrr.io/r/base/readRDS.html).
 
 ## Why there’s no score
+
+The checks have a defined scope. Label fitting estimates the space
+available to titles, axes, legends and facet strips; it does not certify
+panel text, label collisions, or every font and output device. Inspect
+the saved figure as well. Contrast checking screens colours and drawn
+theme text, including axis and legend overrides. It does not resolve
+overlapping marks or text on separately coloured label, legend and strip
+backgrounds.
+
+Data density pools rows and mapped variables, so layers using different
+data sources or statistical summaries need manual interpretation.
+Numeric lie factors support Cartesian bar comparisons; transformed or
+truncated stacked and floating bars can be unavailable. An unavailable
+measurement is not evidence that a graphic is sound. Batch reports
+include a `skipped` count for checks that fail to run.
 
 Tufte gives a testable line for some principles and only a direction for
 others, so a pass or fail on the second kind could only come from me.

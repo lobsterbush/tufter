@@ -206,7 +206,10 @@ print.tufte_data_ink <- function(x, ...) {
 #' @param ... Unused.
 #' @return A numeric lie factor, or \code{NA} when there's nothing to compare.
 #'   The \code{ggplot} method returns \code{1} for a plot with no bars or with
-#'   a zero baseline.
+#'   a zero baseline. For supported Cartesian bars it checks each panel and
+#'   returns the largest distortion, including negative and reversed axes.
+#'   Nonlinear coordinates and truncated stacked or floating bars return
+#'   \code{NA} when no supported comparison is available.
 #' @export
 #' @examples
 #' # Tufte's fuel-economy example: an 18 percent change drawn as 783 percent.
@@ -257,38 +260,36 @@ lie_factor.ggplot <- function(x, ...) {
   bar_layers <- which(geoms %in% c("Bar", "Col", "ColTufte"))
   if (length(bar_layers) == 0) return(1)
 
-  ranges <- built$layout$panel_params
-  out <- vapply(bar_layers, function(i) {
+  if (!inherits(built$layout$coord, "CoordCartesian")) return(NA_real_)
+  out <- unlist(lapply(bar_layers, function(i) {
     d <- built$data[[i]]
-    ax <- .bar_axes(d, built$plot$coordinates)
+    ax <- .bar_axes(d, built$layout$coord)
     if (!all(c(ax$lo, ax$hi) %in% names(d))) return(NA_real_)
-
-    # On a transformed scale a bar's length is no longer proportional to
-    # anything the reader can recover, and there is no single number that
-    # describes the distortion. Returning 1 would read as a clean bill of
-    # health for one of the more misleading things you can do to a bar chart.
     if (.nonlinear_position_scale(built, ax$data)) return(NA_real_)
-
-    values <- d[[ax$hi]]
-    if (length(values) < 2 || !is.finite(diff(range(values)))) return(NA_real_)
-
-    baseline <- suppressWarnings(min(unlist(lapply(ranges, function(pp) {
-      r <- .panel_range_of(pp)[[ax$panel]]
-      if (is.null(r)) NA_real_ else r[1]
-    })), na.rm = TRUE))
-    if (!is.finite(baseline) || baseline <= 0) return(1)
-
-    lo <- min(values); hi <- max(values)
-    data_effect <- .proportional_change(c(lo, hi))
-    graphic_effect <- .proportional_change(c(lo - baseline, hi - baseline))
-    if (!is.finite(data_effect) || data_effect == 0) return(NA_real_)
-    graphic_effect / data_effect
-  }, numeric(1))
-
+    vapply(split(d, d$PANEL, drop = TRUE), function(part) {
+      pp <- built$layout$panel_params[[as.integer(part$PANEL[1])]]
+      limits <- sort(.panel_range_of(pp)[[ax$panel]])
+      if (length(limits) != 2L || any(!is.finite(limits))) return(NA_real_)
+      if (limits[1] <= 0 && limits[2] >= 0) return(1)
+      # Floating/stacked intervals do not encode their values as lengths from
+      # zero. Decline an unsupported numeric claim instead of using endpoints.
+      if (any(part[[ax$lo]] != 0 & part[[ax$hi]] != 0)) return(NA_real_)
+      values <- pmax(abs(part[[ax$lo]]), abs(part[[ax$hi]]))
+      values <- values[is.finite(values)]
+      if (length(values) < 2) return(NA_real_)
+      baseline <- min(abs(limits))
+      lo <- min(values); hi <- max(values)
+      if (lo <= baseline) return(NA_real_)
+      data_effect <- .proportional_change(c(lo, hi))
+      graphic_effect <- .proportional_change(c(lo - baseline, hi - baseline))
+      if (!is.finite(data_effect) || data_effect == 0) return(NA_real_)
+      graphic_effect / data_effect
+    }, numeric(1))
+  }))
   out <- out[is.finite(out)]
   if (length(out) == 0) return(NA_real_)
   # Report the worst offender.
-  out[which.max(abs(log(out)))]
+  unname(out[which.max(abs(log(out)))])
 }
 
 # Which axis carries a bar's length, in three different senses.
@@ -327,6 +328,10 @@ lie_factor.default <- function(x, ...) {
 #' The data matrix here is counted as the number of rows drawn, times the number
 #' of distinct variables mapped to aesthetics. Positional aesthetics count;
 #' constants set outside \code{aes()} don't, because they carry no data.
+#' This is an estimate, especially for statistical layers and plots combining
+#' different data sources: it multiplies a pooled row count by the union of
+#' mapped variables rather than reconstructing each displayed data matrix.
+#' If panel area cannot be estimated, the whole canvas area is used.
 #'
 #' @param plot A \code{ggplot} object.
 #' @param width,height Intended printed size in inches. Defaults to 6.5 by 4.

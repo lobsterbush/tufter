@@ -8,7 +8,7 @@ description: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE, comment = "#>",
-  fig.width = 6.5, fig.height = 4, dpi = 150, out.width = "100%",
+  fig.width = 6.5, fig.height = 4, dpi = 300, out.width = "100%",
   fig.align = "center", dev = "png"
 )
 library(ggplot2)
@@ -303,6 +303,20 @@ It also takes a directory, so you can check a whole replication package in one
 call if the figures were saved with `saveRDS()`.
 
 ## Why there's no score
+
+The checks have a defined scope. Label fitting estimates the space available to
+titles, axes, legends and facet strips; it does not certify panel text, label
+collisions, or every font and output device. Inspect the saved figure as well.
+Contrast checking screens colours and drawn theme text, including axis and
+legend overrides. It does not resolve overlapping marks or text on separately
+coloured label, legend and strip backgrounds.
+
+Data density pools rows and mapped variables, so layers using different data
+sources or statistical summaries need manual interpretation. Numeric lie
+factors support Cartesian bar comparisons; transformed or truncated stacked
+and floating bars can be unavailable. An unavailable measurement is not evidence
+that a graphic is sound. Batch reports include a `skipped` count for checks
+that fail to run.
 
 Tufte gives a testable line for some principles and only a direction for others,
 so a pass or fail on the second kind could only come from me. The audit grades

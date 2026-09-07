@@ -34,7 +34,11 @@ for people with moderately low vision rather than targets, and a figure
 that clears them can still be hard work in a badly lit lecture theatre.
 
 Colours drawn with transparency are measured as if composited onto the
-background, since that's what the reader sees.
+background, since that's what the reader sees. Theme text is read from
+the rendered grobs, including axis-specific styles and legend labels.
+This is a colour screening tool, not a complete accessibility assessment:
+it does not resolve overlapping marks, text on filled labels, or contrasting
+legend and strip backgrounds.
 }
 \examples{
 library(ggplot2)

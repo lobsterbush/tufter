@@ -21,7 +21,8 @@ way and roughly twice as fast to get.}
 }
 \value{
 An object of class \code{tufte_audit_batch}: a tibble with one row
-  per figure, giving \code{figure}, \code{violations}, \code{met} and
+  per figure, giving \code{figure}, \code{violations}, \code{met},
+  \code{skipped} (checks that could not run), and
   \code{failing}, a comma-separated list of the criteria not met. The full
   audits are attached as the \code{"audits"} attribute, named by figure.
 }

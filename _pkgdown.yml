@@ -2,92 +2,18 @@ url: https://lobsterbush.github.io/tufter/
 
 template:
   bootstrap: 5
-  # Soft gate over the whole site while the package is unreleased. This keeps
-  # casual visitors and search engines out. It is NOT access control: every
-  # page and image remains a public static file that can be fetched directly.
-  # See data-raw/build_site.R for how to take the site down properly.
-  includes:
-    in_header: |
-      <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
-      <script>
-      (function () {
-        var KEY = "tufter-gate-v1";
-        var HASH = "b0df6b7092f74262b9b24590e8cc2c9f601b48a73194c7d18042dc140d0e27ca";
-        try {
-          if (window.sessionStorage && sessionStorage.getItem(KEY) === HASH) return;
-        } catch (e) { /* storage blocked; fall through to the prompt */ }
-
-        var hide = document.createElement("style");
-        hide.textContent = "html{visibility:hidden!important}";
-        document.head.appendChild(hide);
-
-        function digest(text) {
-          var bytes = new TextEncoder().encode(text);
-          return crypto.subtle.digest("SHA-256", bytes).then(function (buf) {
-            return Array.prototype.map.call(new Uint8Array(buf), function (b) {
-              return b.toString(16).padStart(2, "0");
-            }).join("");
-          });
-        }
-
-        function gate() {
-          document.title = "tufter";
-          document.body.innerHTML =
-            '<div style="min-height:100vh;display:flex;align-items:center;' +
-            'justify-content:center;background:#FBFAF7;color:#22262F;' +
-            'font-family:\'IBM Plex Sans\',system-ui,sans-serif">' +
-            '<form id="g" style="max-width:24rem;width:100%;padding:2rem">' +
-            '<h1 style="font-family:Newsreader,Georgia,serif;font-size:1.75rem;' +
-            'font-weight:600;letter-spacing:-.015em;margin:0 0 .5rem">tufter</h1>' +
-            '<p style="color:#5B6478;margin:0 0 1.5rem;line-height:1.6;font-size:.95rem">' +
-            'Documentation for an unreleased R package. Enter the password to continue.</p>' +
-            '<input id="p" type="password" autocomplete="current-password" ' +
-            'autofocus aria-label="Password" style="width:100%;padding:.6rem .7rem;' +
-            'border:1px solid #E4E6EB;border-radius:0;font-size:1rem;background:#fff;' +
-            'color:inherit;font-family:inherit;box-sizing:border-box">' +
-            '<p id="e" role="alert" style="color:#8A3B2E;min-height:1.4em;margin:.5rem 0 0;' +
-            'font-size:.875rem"></p>' +
-            '<button type="submit" style="margin-top:.5rem;width:100%;padding:.65rem;' +
-            'border:0;border-radius:0;background:#1C3A5E;color:#fff;font-size:.95rem;' +
-            'font-family:inherit;cursor:pointer">Continue</button>' +
-            '</form></div>';
-          hide.remove();
-
-          document.getElementById("g").addEventListener("submit", function (ev) {
-            ev.preventDefault();
-            var err = document.getElementById("e");
-            err.textContent = "";
-            digest(document.getElementById("p").value).then(function (h) {
-              if (h === HASH) {
-                try { sessionStorage.setItem(KEY, HASH); } catch (e) {}
-                location.reload();
-              } else {
-                err.textContent = "Not that one.";
-                document.getElementById("p").select();
-              }
-            });
-          });
-        }
-
-        if (document.readyState === "loading") {
-          document.addEventListener("DOMContentLoaded", gate);
-        } else {
-          gate();
-        }
-      })();
-      </script>
   bslib:
-    base_font: {google: "IBM Plex Sans"}
-    heading_font: {google: "Newsreader"}
+    base_font: {google: "Barlow"}
+    heading_font: {google: "Cormorant Garamond"}
     code_font: {google: "JetBrains Mono"}
-    primary: "#1C3A5E"
-    link-color: "#1C3A5E"
+    primary: "#143a63"
+    link-color: "#143a63"
     headings-font-weight: 600
     border-radius: "0"
     border-radius-sm: "0"
     border-radius-lg: "0"
-    body-bg: "#FBFAF7"
-    body-color: "#22262F"
+    body-bg: "#ffffff"
+    body-color: "#0c0c12"
 
 home:
   title: Tufte's design principles as R code
@@ -98,8 +24,11 @@ home:
 navbar:
   structure:
     left: [intro, articles, reference, news]
-    right: [search, github]
+    right: [website, search, github]
   components:
+    website:
+      text: Charles Crabtree
+      href: https://charlescrabtree.org
     articles:
       text: Articles
       menu:
@@ -126,7 +55,8 @@ footer:
       [charles.crabtree@monash.edu](mailto:charles.crabtree@monash.edu) ·
       [charlescrabtree.org](https://charlescrabtree.org)
     legal: >
-      MIT licensed · built with [pkgdown](https://pkgdown.r-lib.org/)
+      MIT licensed · built with [pkgdown](https://pkgdown.r-lib.org/)<br>
+      [AI – Human (editor) · 🤖✏️👤](https://thelatentreview.com/provenance/)
 
 reference:
 - title: Drawing

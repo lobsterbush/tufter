@@ -8,9 +8,9 @@
 <title>Tufte's design principles as R code • tufter</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/IBM_Plex_Sans-0.4.10/font.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/Barlow-0.4.10/font.css" rel="stylesheet">
 <link href="deps/JetBrains_Mono-0.4.10/font.css" rel="stylesheet">
-<link href="deps/Newsreader-0.4.10/font.css" rel="stylesheet">
+<link href="deps/Cormorant_Garamond-0.4.10/font.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Tufte's design principles as R code">
@@ -18,74 +18,6 @@
 ">
 <meta property="og:description" content="Edward Tufte's principles of graphical design, as working ggplot2 code and as measurements you can apply to a figure you have already drawn.
 ">
-<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
-<script>
-(function () {
-  var KEY = "tufter-gate-v1";
-  var HASH = "b0df6b7092f74262b9b24590e8cc2c9f601b48a73194c7d18042dc140d0e27ca";
-  try {
-    if (window.sessionStorage && sessionStorage.getItem(KEY) === HASH) return;
-  } catch (e) { /* storage blocked; fall through to the prompt */ }
-
-  var hide = document.createElement("style");
-  hide.textContent = "html{visibility:hidden!important}";
-  document.head.appendChild(hide);
-
-  function digest(text) {
-    var bytes = new TextEncoder().encode(text);
-    return crypto.subtle.digest("SHA-256", bytes).then(function (buf) {
-      return Array.prototype.map.call(new Uint8Array(buf), function (b) {
-        return b.toString(16).padStart(2, "0");
-      }).join("");
-    });
-  }
-
-  function gate() {
-    document.title = "tufter";
-    document.body.innerHTML =
-      '<div style="min-height:100vh;display:flex;align-items:center;' +
-      'justify-content:center;background:#FBFAF7;color:#22262F;' +
-      'font-family:\'IBM Plex Sans\',system-ui,sans-serif">' +
-      '<form id="g" style="max-width:24rem;width:100%;padding:2rem">' +
-      '<h1 style="font-family:Newsreader,Georgia,serif;font-size:1.75rem;' +
-      'font-weight:600;letter-spacing:-.015em;margin:0 0 .5rem">tufter</h1>' +
-      '<p style="color:#5B6478;margin:0 0 1.5rem;line-height:1.6;font-size:.95rem">' +
-      'Documentation for an unreleased R package. Enter the password to continue.</p>' +
-      '<input id="p" type="password" autocomplete="current-password" ' +
-      'autofocus aria-label="Password" style="width:100%;padding:.6rem .7rem;' +
-      'border:1px solid #E4E6EB;border-radius:0;font-size:1rem;background:#fff;' +
-      'color:inherit;font-family:inherit;box-sizing:border-box">' +
-      '<p id="e" role="alert" style="color:#8A3B2E;min-height:1.4em;margin:.5rem 0 0;' +
-      'font-size:.875rem"></p>' +
-      '<button type="submit" style="margin-top:.5rem;width:100%;padding:.65rem;' +
-      'border:0;border-radius:0;background:#1C3A5E;color:#fff;font-size:.95rem;' +
-      'font-family:inherit;cursor:pointer">Continue</button>' +
-      '</form></div>';
-    hide.remove();
-
-    document.getElementById("g").addEventListener("submit", function (ev) {
-      ev.preventDefault();
-      var err = document.getElementById("e");
-      err.textContent = "";
-      digest(document.getElementById("p").value).then(function (h) {
-        if (h === HASH) {
-          try { sessionStorage.setItem(KEY, HASH); } catch (e) {}
-          location.reload();
-        } else {
-          err.textContent = "Not that one.";
-          document.getElementById("p").select();
-        }
-      });
-    });
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", gate);
-  } else {
-    gate();
-  }
-})();
-</script>
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -95,7 +27,7 @@
 
     <a class="navbar-brand me-2" href="index.html">tufter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -118,6 +50,7 @@
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
+<li class="nav-item"><a class="external-link nav-link" href="https://charlescrabtree.org">Charles Crabtree</a></li>
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
@@ -130,8 +63,14 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="tuftes-design-principles-as-r-code">Tufte’s design principles as R code<a class="anchor" aria-label="anchor" href="#tuftes-design-principles-as-r-code"></a>
+<div class="page-header"><h1 id="tufter">tufter<a class="anchor" aria-label="anchor" href="#tufter"></a>
 </h1></div>
+<div class="package-kicker">
+R tools · Charles Crabtree
+</div>
+<p class="package-lead">
+Draw with purpose.<br>Measure what the ink says.
+</p>
 <p>Edward Tufte’s principles of graphical design, as working <code>ggplot2</code> code and as measurements you can apply to a figure you’ve already drawn.</p>
 <p>Most Tufte packages give you a theme. That’s one principle out of about twenty, and I think it’s the easiest one. His real argument is that statistical graphics can be <em>evaluated</em>, and he hands you the quantities to do it with: the data-ink ratio, the lie factor, data density. This package does both halves.</p>
 <div class="float">
@@ -145,6 +84,7 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
+<p>Requires R 4.1 or later and ggplot2 4.0.0 or later. This is a development release preparing for its first CRAN submission.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"lobsterbush/tufter"</span><span class="op">)</span></span></code></pre></div>
@@ -345,7 +285,7 @@
 <span><span class="co">#&gt; • No variable encoded twice</span></span>
 <span><span class="co">#&gt; • Wider than it is tall</span></span>
 <span><span class="co">#&gt; • Ink clears the WCAG contrast minimum</span></span>
-<span><span class="co">#&gt; • Nothing is clipped at the printed size</span></span></code></pre></div>
+<span><span class="co">#&gt; • Measured labels fit at the printed size</span></span></code></pre></div>
 <!-- readme-audit:end -->
 <p>There’s no score. Tufte says two different kinds of thing. Sometimes he gives a criterion a graphic either meets or doesn’t: bars measured from zero, a lie factor between 0.95 and 1.05, graphics wider than they’re tall, non-data ink off the page. Those get graded. Other times he gives only a direction, asking that the data-ink ratio be maximised “within reason” and that data density go up without saying how much is enough. Those get measured, and the judgement stays with you. A threshold on the second kind would be mine rather than his, and a single number would need a weighting between a pie chart and a missing source note that he never offers. <code><a href="reference/tufte_principles.html">tufte_principles()</a></code> marks which is which in its <code>criterion</code> column.</p>
 <p>For a whole paper at once, <code><a href="reference/audit_figures.html">audit_figures()</a></code> orders figures by how many stated criteria each one fails. That’s a count rather than a proportion, so it’s comparable across figures. A percentage would divide by a denominator that shifts with the plot type.</p>
@@ -377,12 +317,37 @@
 <p>The measurement half is why this package exists. The drawing half is partly convenience and partly consolidation.</p>
 </div>
 <div class="section level2">
-<h2 id="ai-usage-disclosure">AI usage disclosure<a class="anchor" aria-label="anchor" href="#ai-usage-disclosure"></a>
+<h2 id="provenance">Provenance<a class="anchor" aria-label="anchor" href="#provenance"></a>
 </h2>
-<p>Anthropic’s Claude, run through Claude Code, wrote most of the R source, the tests, the documentation and the vignettes. I specified the design, reviewed the code and the prose, and ran the checks.</p>
-<p>Verified: 431 tests pass, <code>R CMD check --as-cran</code> returns two notes of which one is “New submission”, the tarball installs into a clean library and runs, and every figure in the documentation was rendered and inspected.</p>
-<p>Not verified: the DOIs of the empirical citations in the <a href="https://lobsterbush.github.io/tufter/articles/measuring.html#and-a-larger-caveat-the-principle-itself-is-contested">measuring article</a>, so check them before carrying them into a paper. The claim that no other package computes these quantities rests on a search of CRAN titles and descriptions, which can’t rule out an implementation that describes itself differently.</p>
-<p>Errors are mine. Please <a href="https://github.com/lobsterbush/tufter/issues" class="external-link">open an issue</a> rather than trust a measurement because a computer produced it.</p>
+<table class="table">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<thead><tr>
+<th align="left">Declaration</th>
+<th align="left">Mark and standard</th>
+</tr></thead>
+<tbody><tr>
+<td align="left">AI – Human (editor)</td>
+<td align="left">🤖✏️👤 · <a href="https://thelatentreview.com/provenance/" class="external-link">The Latent Review provenance standard</a>
+</td>
+</tr></tbody>
+</table>
+<p>Charles Crabtree is the human editor and maintainer. Anthropic’s Claude, run through Claude Code, wrote most of the original R source, tests, documentation, and vignettes. OpenAI’s Codex assisted with the release audit, fixes, and site redesign. Charles specified the design and retains editorial responsibility.</p>
+<p>Check results and remaining submission requirements are recorded in <a href="https://github.com/lobsterbush/tufter/blob/main/cran-comments.md" class="external-link">cran-comments.md</a>. The measurements are estimates with the limitations described in the <a href="https://lobsterbush.github.io/tufter/articles/measuring.html">measurement guide</a>.</p>
+</div>
+<div class="section level2">
+<h2 id="development-and-replication">Development and replication<a class="anchor" aria-label="anchor" href="#development-and-replication"></a>
+</h2>
+<p>From a clone of the repository, install the development tools and dependencies:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"devtools"</span>, <span class="st">"pkgdown"</span>, <span class="st">"here"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/install_deps.html" class="external-link">install_deps</a></span><span class="op">(</span>dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/document.html" class="external-link">document</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/test.html" class="external-link">test</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/check.html" class="external-link">check</a></span><span class="op">(</span>args <span class="op">=</span> <span class="st">"--as-cran"</span><span class="op">)</span></span></code></pre></div>
+<p>Rebuild the documentation with <code>Rscript data-raw/build_site.R</code>. The live-data article uses the bundled snapshot; fetching new data is a separate manual step. Regenerate the README illustrations with <code>Rscript data-raw/make_readme_figures.R</code> and its console output with <code>Rscript data-raw/make_readme_output.R</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="sources">Sources<a class="anchor" aria-label="anchor" href="#sources"></a>
@@ -445,7 +410,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>MIT licensed · built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a></p>
+  <p>MIT licensed · built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a><br><a href="https://thelatentreview.com/provenance/" class="external-link">AI – Human (editor) · 🤖✏️👤</a></p>
 </div>
 
     </footer>

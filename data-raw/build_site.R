@@ -1,94 +1,49 @@
-# Builds the pkgdown site into docs/.
-#
-# The GitHub repository is private but GitHub Pages on this plan is not, so
-# anything landing in docs/ is world-readable. pkgdown renders every markdown
-# file it finds at the repository root, which would put WARP.md, internal
-# project context, on a public site. Rather than scrub the built output, which
-# leaves entries behind in the search index and the sitemap, the file is moved
-# aside for the duration of the build and put back afterwards.
-#
-# The work happens inside a function so that on.exit actually fires; registered
-# at the top level of a script it does not, and the file would stay moved.
-#
-# Run from the package root:  Rscript data-raw/build_site.R
+# Build public documentation from an isolated copy; run from the package root.
+# Existing docs are backed up before replacement. Internal project notes and
+# release checks never enter the site, its search index, or its sitemap.
 
-build_private_site <- function(private_files = "WARP.md") {
-  present <- private_files[file.exists(private_files)]
-
-  if (length(present)) {
-    stash <- file.path(tempdir(), paste0(basename(present), ".held"))
-    if (!all(file.copy(present, stash, overwrite = TRUE))) {
-      stop("could not stash ", paste(present, collapse = ", "), "; aborting")
-    }
-    unlink(present)
-    on.exit({
-      file.copy(stash, present, overwrite = TRUE)
-      unlink(stash)
-      message("restored: ", paste(present, collapse = ", "))
-    }, add = TRUE)
-    message("held back from the public site: ", paste(present, collapse = ", "))
+build_public_site <- function() {
+  root <- here::here()
+  stage <- tempfile("tufter-site-")
+  dir.create(stage)
+  on.exit(unlink(stage, recursive = TRUE), add = TRUE)
+  inputs <- c("DESCRIPTION", "NAMESPACE", "LICENSE", "README.md", "NEWS.md",
+              "_pkgdown.yml", "R", "man", "inst", "vignettes", "pkgdown",
+              "data-raw", ".Rbuildignore")
+  stopifnot(all(file.copy(file.path(root, inputs), stage, recursive = TRUE)))
+  pkgdown::build_site(pkg = stage, preview = FALSE, install = TRUE)
+  output <- file.path(stage, "docs")
+  stopifnot(file.exists(file.path(output, "index.html")))
+  # pkgdown 2.2.0 awaits the Fuse object before its asynchronous fetch has
+  # assigned it. A pasted query can therefore run against an empty index.
+  # Await the actual loading promise; keep the fix in the reproducible build.
+  search_file <- file.path(output, "pkgdown.js")
+  js <- paste(readLines(search_file, warn = FALSE), collapse = "\n")
+  if (grepl("await fuse;", js, fixed = TRUE)) {
+    js <- sub("var fuse;", "var fuse;\n    var fusePromise;", js, fixed = TRUE)
+    js <- sub('$("#search-input").focus(async function (e) {',
+      '$("#search-input").focus(function (e) {\n      if (fusePromise) return;\n      fusePromise = (async function () {', js, fixed = TRUE)
+    js <- sub('$(e.target).removeClass("loading");\n    });',
+      '$(e.target).removeClass("loading");\n      })();\n    });', js, fixed = TRUE)
+    js <- sub("await fuse;", "await fusePromise;", js, fixed = TRUE)
+    writeLines(js, search_file)
   }
-
-  pkgdown::build_site(preview = FALSE, install = TRUE)
-  strip_hidden_comments()
-  drop_unused_deps()
-
-  leaked <- list.files("docs", pattern = "^WARP", recursive = TRUE)
-  if (length(leaked)) {
-    warning("internal files reached docs/: ", paste(leaked, collapse = ", "))
-  } else {
-    message("site built into docs/; no internal files present")
+  forbidden <- list.files(output, pattern = "WARP|cran-comments|release_audit",
+                          recursive = TRUE)
+  if (length(forbidden)) stop("Internal files reached the site: ", paste(forbidden, collapse = ", "))
+  destination <- here::here("docs")
+  if (dir.exists(destination)) {
+    backup_root <- here::here(".dev", "site-backups")
+    dir.create(backup_root, recursive = TRUE, showWarnings = FALSE)
+    backup <- tempfile("tufter-docs-", tmpdir = backup_root)
+    if (!file.rename(destination, backup)) stop("Could not back up existing docs")
+    message("Previous documentation backed up to ", backup)
   }
-  invisible(TRUE)
+  if (!file.copy(output, root, recursive = TRUE)) {
+    if (exists("backup")) file.rename(backup, destination)
+    stop("Could not publish the built documentation")
+  }
+  message("Public documentation built into docs/")
 }
 
-# pkgdown writes each dependency into its own directory under docs/deps/ and
-# never removes one it has stopped using, so a font swap leaves the old family
-# behind, still published. Anything under deps/ that no built page mentions is
-# dead weight and goes.
-drop_unused_deps <- function() {
-  deps <- list.dirs("docs/deps", recursive = FALSE)
-  if (!length(deps)) return(invisible(0L))
-
-  pages <- list.files("docs", pattern = "\\.(html|css|js)$", recursive = TRUE,
-                      full.names = TRUE)
-  pages <- pages[!startsWith(pages, "docs/deps/")]
-  refs <- paste(unlist(lapply(pages, readLines, warn = FALSE)), collapse = "\n")
-
-  unused <- deps[!vapply(basename(deps),
-                         function(d) grepl(d, refs, fixed = TRUE), logical(1))]
-  if (length(unused)) {
-    unlink(unused, recursive = TRUE)
-    message("removed unused dependencies: ",
-            paste(basename(unused), collapse = ", "))
-  }
-  invisible(length(unused))
-}
-
-# Markdown passes HTML comments straight through to the built page, so a
-# section commented out in README.md is invisible to a reader but still sitting
-# in the page source for anyone who looks. Sections marked HIDDEN FOR NOW are
-# removed from the built HTML entirely; they stay in the repository source, so
-# uncommenting them there brings them back on the next build.
-strip_hidden_comments <- function() {
-  pattern <- "<!--\\s*HIDDEN FOR NOW.*?END OF HIDDEN SECTION\\s*-->"
-  files <- list.files("docs", pattern = "\\.(html|md)$", recursive = TRUE,
-                      full.names = TRUE)
-  n <- 0L
-  for (f in files) {
-    txt <- paste(readLines(f, warn = FALSE), collapse = "\n")
-    if (!grepl("HIDDEN FOR NOW", txt, fixed = TRUE)) next
-    out <- gsub(pattern, "", txt)
-    if (grepl("HIDDEN FOR NOW", out, fixed = TRUE)) {
-      warning("unmatched HIDDEN FOR NOW marker left in ", f)
-    }
-    writeLines(out, f)
-    n <- n + 1L
-  }
-  if (n) message("stripped hidden sections from ", n, " built file(s)")
-  invisible(n)
-}
-
-build_private_site()
-
-stopifnot("WARP.md was not restored" = file.exists("WARP.md"))
+build_public_site()

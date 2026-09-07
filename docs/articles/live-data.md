@@ -304,7 +304,7 @@ choice from the sparklines at the top of this page.
 ggplot(live$pageviews, aes(date, views)) +
   geom_line(linewidth = 0.25, colour = "grey30") +
   geom_rangeframe(sides = "l") +
-  facet_tufte(~ article, ncol = 5) +
+  facet_tufte(~ article, ncol = 5, labeller = label_wrap_gen(width = 12)) +
   scale_y_continuous(labels = scales::label_comma()) +
   labs(x = NULL, y = "Daily views") +
   theme_tufte() +
@@ -368,7 +368,7 @@ tufte_audit(quake_figure, width = 6.5, height = 4)
 #> • No variable encoded twice
 #> • The figure names its source
 #> • Wider than it is tall
-#> • Nothing is clipped at the printed size
+#> • Measured labels fit at the printed size
 ```
 
 Both measurements are worth a look. The data density comes out at 825
@@ -401,13 +401,14 @@ actually sees.
 
 ``` r
 check_contrast(quake_figure)
-#> # A tibble: 4 × 5
-#>   role      colour  ratio threshold passes
-#>   <chr>     <chr>   <dbl>     <dbl> <lgl> 
-#> 1 data mark #D8D8D8  1.43       3   FALSE 
-#> 2 caption   grey40   5.74       4.5 TRUE  
-#> 3 axis text grey20  12.6        4.5 TRUE  
-#> 4 data mark black   21          3   TRUE
+#> # A tibble: 5 × 5
+#>   role       colour  ratio threshold passes
+#>   <chr>      <chr>   <dbl>     <dbl> <lgl> 
+#> 1 data mark  #D8D8D8  1.43       3   FALSE 
+#> 2 caption    grey40   5.74       4.5 TRUE  
+#> 3 axis text  grey20  12.6        4.5 TRUE  
+#> 4 data mark  black   21          3   TRUE  
+#> 5 axis title black   21          4.5 TRUE
 ```
 
 Black at 15 percent opacity composites to `#D8D8D8`, which comes out at

@@ -290,29 +290,26 @@ print.tufte_audit <- function(x, ...) {
   # A horizontal bar chart, whether written that way or flipped by the coord,
   # carries its length on the other axis. Naming the wrong one would give the
   # right verdict with an explanation the reader cannot act on.
-  ax <- .bar_axes(ctx$built$data[[bars[1]]], ctx$plot$coordinates)
-  seen <- toupper(ax$panel)
-
-  trans <- .y_transform_name(ctx$built, ax$data)
-  if (!is.na(trans) && !trans %in% c("identity", "reverse")) {
-    return(.row(
-      "Graphical integrity",
-      "Bars measured from zero", "fail",
-      sprintf("The %s axis uses a %s transformation, so a bar's length is no longer proportional to the quantity it represents. Use points on a transformed scale instead of bars.", seen, trans)
-    ))
+  if (!inherits(ctx$built$layout$coord, "CoordCartesian")) {
+    return(.row("Graphical integrity", "Bars measured from zero", "skip",
+                "The baseline check supports Cartesian coordinates only."))
   }
-
-  lo <- suppressWarnings(min(vapply(ctx$built$layout$panel_params, function(pp) {
-    r <- .panel_range_of(pp)[[ax$panel]]
-    if (is.null(r)) NA_real_ else r[1]
-  }, numeric(1)), na.rm = TRUE))
-
-  if (is.finite(lo) && lo > 0) {
-    return(.row(
-      "Graphical integrity",
-      "Bars measured from zero", "fail",
-      sprintf("The %s axis starts at %.3g, so bar length isn't proportional to the quantity. Tufte's rule is that the representation of numbers, as physically measured on the graphic, should be directly proportional to the quantities represented.", seen, lo)
-    ))
+  for (i in bars) {
+    d <- ctx$built$data[[i]]
+    ax <- .bar_axes(d, ctx$built$layout$coord)
+    trans <- .y_transform_name(ctx$built, ax$data)
+    if (!is.na(trans) && !trans %in% c("identity", "reverse")) {
+      return(.row("Graphical integrity", "Bars measured from zero", "fail",
+        sprintf("The %s axis uses a %s transformation, so a bar's length is no longer proportional to its value. Use points on a transformed scale instead.", toupper(ax$panel), trans)))
+    }
+    for (pn in unique(d$PANEL)) {
+      limits <- .panel_range_of(ctx$built$layout$panel_params[[as.integer(pn)]])[[ax$panel]]
+      if (length(limits) == 2L && all(is.finite(limits)) &&
+          (min(limits) > 0 || max(limits) < 0)) {
+        return(.row("Graphical integrity", "Bars measured from zero", "fail",
+          sprintf("The %s axis in panel %s excludes zero (range %.3g to %.3g), so bar length is not proportional to the quantity.", toupper(ax$panel), pn, min(limits), max(limits))))
+      }
+    }
   }
   .row("Graphical integrity", "Bars measured from zero", "pass",
        "Bars are measured from zero.")
@@ -482,7 +479,7 @@ print.tufte_audit <- function(x, ...) {
 
 #' @noRd
 .check_contrast <- function(ctx) {
-  cc <- tryCatch(check_contrast(ctx$plot), error = function(e) NULL)
+  cc <- check_contrast(ctx$plot)
   if (is.null(cc) || nrow(cc) == 0) return(NULL)
 
   bad <- cc[!cc$passes, , drop = FALSE]
@@ -508,25 +505,22 @@ print.tufte_audit <- function(x, ...) {
   # Not gated on ctx$measure. This is a stated criterion the figure passes or
   # fails, and dropping it turned a figure with a clipped subtitle into one
   # with no violations at all. Only the ungraded measurements are optional.
-  fits <- tryCatch(
-    suppressWarnings(check_labels_fit(ctx$plot, ctx$width, ctx$height)),
-    error = function(e) NULL
-  )
+  fits <- suppressWarnings(check_labels_fit(ctx$plot, ctx$width, ctx$height))
   if (is.null(fits) || nrow(fits) == 0) return(NULL)
 
   bad <- fits[!fits$fits, , drop = FALSE]
   if (nrow(bad) > 0) {
     return(.row(
       "Revise and edit",
-      "Nothing is clipped at the printed size", "fail",
+      "Measured labels fit at the printed size", "fail",
       sprintf("%s will be clipped at %gin x %gin.",
               paste(bad$element, collapse = ", "), ctx$width, ctx$height)
     ))
   }
   .row(
     "Revise and edit",
-    "Nothing is clipped at the printed size", "pass",
-    "Every text element fits inside the canvas."
+    "Measured labels fit at the printed size", "pass",
+    "Measured titles, axes, legends and strips fit the estimated space. Inspect panel text and the rendered file separately."
   )
 }
 
@@ -535,10 +529,7 @@ print.tufte_audit <- function(x, ...) {
 #' @noRd
 .check_data_ink <- function(ctx) {
   if (!isTRUE(ctx$measure)) return(NULL)
-  di <- tryCatch(
-    data_ink_ratio(ctx$plot, width = ctx$width, height = ctx$height),
-    error = function(e) NULL
-  )
+  di <- data_ink_ratio(ctx$plot, width = ctx$width, height = ctx$height)
   if (is.null(di) || !is.finite(di$ratio)) return(NULL)
 
   .row(
@@ -552,10 +543,7 @@ print.tufte_audit <- function(x, ...) {
 #' @noRd
 .check_density <- function(ctx) {
   if (!isTRUE(ctx$measure)) return(NULL)
-  dd <- tryCatch(
-    data_density(ctx$plot, width = ctx$width, height = ctx$height),
-    error = function(e) NULL
-  )
+  dd <- data_density(ctx$plot, width = ctx$width, height = ctx$height)
   if (is.null(dd) || !is.finite(dd$density)) return(NULL)
 
   .row(

@@ -43,6 +43,9 @@ Before writing the file it runs \code{\link{check_labels_fit}()} at the size
 you asked for, because a subtitle that fits on screen at the default device
 size isn't a subtitle that fits in the saved file. Clipping is reported as a
 warning; set \code{strict = TRUE} to make it an error instead.
+A failed check also warns, or errors in strict mode. Dimensions are always
+in inches; \code{units} and \code{scale} cannot be overridden through
+\code{...}, so the checked size is the saved size.
 }
 \examples{
 library(ggplot2)

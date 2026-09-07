@@ -476,7 +476,7 @@ test_that("measure = FALSE does not change any figure's verdict", {
   fast_checks <- suppressWarnings(
     tufte_audit(clean, width = 6.5, height = 4, measure = FALSE))$check
   expect_false("Data-ink ratio" %in% fast_checks)
-  expect_true("Nothing is clipped at the printed size" %in% fast_checks)
+  expect_true("Measured labels fit at the printed size" %in% fast_checks)
 })
 
 test_that("the accent palette always contains its accent", {

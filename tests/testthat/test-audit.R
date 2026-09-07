@@ -141,7 +141,11 @@ test_that("no check silently disappears", {
   for (p in plots) {
     a <- tufte_audit(p, measure = FALSE)
     expect_false(any(is.na(a$check)))
-    expect_false(any(a$status == "skip"))
+    if (inherits(p$coordinates, "CoordPolar")) {
+      expect_equal(a$check[a$status == "skip"], "Bars measured from zero")
+    } else {
+      expect_false(any(a$status == "skip"))
+    }
   }
 })
 

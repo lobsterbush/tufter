@@ -63,7 +63,9 @@ Before writing the file it runs
 at the size you asked for, because a subtitle that fits on screen at the
 default device size isn't a subtitle that fits in the saved file.
 Clipping is reported as a warning; set `strict = TRUE` to make it an
-error instead.
+error instead. A failed check also warns, or errors in strict mode.
+Dimensions are always in inches; `units` and `scale` cannot be
+overridden through `...`, so the checked size is the saved size.
 
 ## Examples
 

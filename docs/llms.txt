@@ -1,4 +1,9 @@
-# Tufte’s design principles as R code
+# tufter
+
+R tools · Charles Crabtree
+
+Draw with purpose.  
+Measure what the ink says.
 
 Edward Tufte’s principles of graphical design, as working `ggplot2` code
 and as measurements you can apply to a figure you’ve already drawn.
@@ -32,6 +37,9 @@ through [what each measurement actually
 computes](https://lobsterbush.github.io/tufter/articles/measuring.html).
 
 ## Installation
+
+Requires R 4.1 or later and ggplot2 4.0.0 or later. This is a
+development release preparing for its first CRAN submission.
 
 ``` r
 # install.packages("remotes")
@@ -143,7 +151,7 @@ tufte_audit(base)
 #> • No variable encoded twice
 #> • Wider than it is tall
 #> • Ink clears the WCAG contrast minimum
-#> • Nothing is clipped at the printed size
+#> • Measured labels fit at the printed size
 ```
 
 There’s no score. Tufte says two different kinds of thing. Sometimes he
@@ -251,27 +259,42 @@ and Ptol palettes, but nothing from Tufte.
 The measurement half is why this package exists. The drawing half is
 partly convenience and partly consolidation.
 
-## AI usage disclosure
+## Provenance
 
-Anthropic’s Claude, run through Claude Code, wrote most of the R source,
-the tests, the documentation and the vignettes. I specified the design,
-reviewed the code and the prose, and ran the checks.
+| Declaration | Mark and standard |
+|:---|:---|
+| AI – Human (editor) | 🤖✏️👤 · [The Latent Review provenance standard](https://thelatentreview.com/provenance/) |
 
-Verified: 431 tests pass, `R CMD check --as-cran` returns two notes of
-which one is “New submission”, the tarball installs into a clean library
-and runs, and every figure in the documentation was rendered and
-inspected.
+Charles Crabtree is the human editor and maintainer. Anthropic’s Claude,
+run through Claude Code, wrote most of the original R source, tests,
+documentation, and vignettes. OpenAI’s Codex assisted with the release
+audit, fixes, and site redesign. Charles specified the design and
+retains editorial responsibility.
 
-Not verified: the DOIs of the empirical citations in the [measuring
-article](https://lobsterbush.github.io/tufter/articles/measuring.html#and-a-larger-caveat-the-principle-itself-is-contested),
-so check them before carrying them into a paper. The claim that no other
-package computes these quantities rests on a search of CRAN titles and
-descriptions, which can’t rule out an implementation that describes
-itself differently.
+Check results and remaining submission requirements are recorded in
+[cran-comments.md](https://github.com/lobsterbush/tufter/blob/main/cran-comments.md).
+The measurements are estimates with the limitations described in the
+[measurement
+guide](https://lobsterbush.github.io/tufter/articles/measuring.html).
 
-Errors are mine. Please [open an
-issue](https://github.com/lobsterbush/tufter/issues) rather than trust a
-measurement because a computer produced it.
+## Development and replication
+
+From a clone of the repository, install the development tools and
+dependencies:
+
+``` r
+install.packages(c("devtools", "pkgdown", "here"))
+devtools::install_deps(dependencies = TRUE)
+devtools::document()
+devtools::test()
+devtools::check(args = "--as-cran")
+```
+
+Rebuild the documentation with `Rscript data-raw/build_site.R`. The
+live-data article uses the bundled snapshot; fetching new data is a
+separate manual step. Regenerate the README illustrations with
+`Rscript data-raw/make_readme_figures.R` and its console output with
+`Rscript data-raw/make_readme_output.R`.
 
 ## Sources
 

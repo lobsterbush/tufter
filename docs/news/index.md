@@ -1,5 +1,29 @@
 # Changelog
 
+## tufter 0.6.4
+
+- Count columns addressed through `.data$x` or `.data[["x"]]` correctly;
+  exclude tidy evaluation pronouns and `.env` constants from data
+  density.
+- Preserve quartile-frame segments on reversed axes.
+- Make failed clipping checks visible and stop strict saves when a check
+  cannot run. Reject unit and scale overrides that would change the
+  checked size.
+- Composite embedded colour transparency and evaluate contrast
+  thresholds before rounding. Resolve transparent panels over their plot
+  background, and inspect drawn axis and legend text, including
+  element-specific overrides.
+- Check truncated bar baselines across facets, negative values, and
+  reversed axes. Limit numeric lie factors to supported Cartesian
+  comparisons.
+- Include failed measurements as skipped audit checks; report incomplete
+  batch audits and reject ambiguous dimension recycling.
+- Account for title margins and additional facet strip positions when
+  checking labels. Clarify that panel text still needs visual
+  inspection.
+- Match the documentation to charlescrabtree.org, open the public
+  documentation, and declare AI – Human (editor) provenance.
+
 ## tufter 0.6.3
 
 - The declared minimum is now `ggplot2 (>= 4.0.0)`.

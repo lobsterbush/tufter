@@ -84,7 +84,10 @@
     /* Adapted from https://github.com/rstudio/bookdown/blob/2d692ba4b61f1e466c92e78fd712b0ab08c11d31/inst/resources/bs4_book/bs4_book.js#L25 */
     // Initialise search index on focus
     var fuse;
-    $("#search-input").focus(async function (e) {
+    var fusePromise;
+    $("#search-input").focus(function (e) {
+      if (fusePromise) return;
+      fusePromise = (async function () {
       if (fuse) {
         return;
       }
@@ -103,6 +106,7 @@
       fuse = new Fuse(data, options);
 
       $(e.target).removeClass("loading");
+      })();
     });
 
     // Use algolia autocomplete
@@ -114,7 +118,7 @@
     };
     var q;
     async function searchFuse(query, callback) {
-      await fuse;
+      await fusePromise;
 
       var items;
       if (!fuse) {

@@ -55,14 +55,14 @@ p <- ggplot(mtcars, aes(wt, mpg)) +
   labs(subtitle = paste(rep("A very long subtitle indeed", 6), collapse = " "))
 check_labels_fit(p, width = 6.5, height = 4)
 #> Warning: 1 element will be clipped at 6.5in x 4in.
-#> ✖ subtitle needs 10.79in but has 6.50in.
+#> ✖ subtitle needs 10.79in but has 5.97in.
 #> ℹ Hard-wrap the text, widen the canvas, or reduce the font size.
 #> # A tibble: 7 × 4
 #>   element                      required_in available_in fits 
 #>   <chr>                              <dbl>        <dbl> <lgl>
 #> 1 layout (non-panel width)           0.533         6.5  TRUE 
 #> 2 layout (non-panel height)          0.724         4    TRUE 
-#> 3 subtitle                          10.8           6.5  FALSE
+#> 3 subtitle                          10.8           5.97 FALSE
 #> 4 x axis title                       0.153         5.97 TRUE 
 #> 5 y axis title                       0.292         3.28 TRUE 
 #> 6 x axis labels (side by side)       0.278         5.97 TRUE 

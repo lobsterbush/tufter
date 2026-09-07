@@ -12,7 +12,7 @@ have <- requireNamespace("gapminder", quietly = TRUE) &&
   requireNamespace("palmerpenguins", quietly = TRUE)
 knitr::opts_chunk$set(
   collapse = TRUE, comment = "#>", eval = have,
-  fig.width = 6.5, fig.height = 4, dpi = 150, out.width = "100%"
+  fig.width = 6.5, fig.height = 4, dpi = 300, out.width = "100%"
 )
 library(ggplot2)
 library(tufter)
@@ -157,7 +157,7 @@ ggplot(recent, aes(gdpPercap, lifeExp)) +
   geom_point(alpha = 0.25, size = 0.7) +
   geom_rangeframe() +
   facet_tufte(~ continent, ncol = 4) +
-  scale_x_log10(labels = scales::label_comma()) +
+  scale_x_log10(breaks = c(1000, 10000), labels = c("1,000", "10,000")) +
   labs(x = "GDP per capita (log scale)", y = "Life expectancy") +
   theme_tufte() +
   label_source("gapminder", note = "1977 onward.")

@@ -27,7 +27,10 @@ giving the sizes drawn in the graphic.}
 \value{
 A numeric lie factor, or \code{NA} when there's nothing to compare.
   The \code{ggplot} method returns \code{1} for a plot with no bars or with
-  a zero baseline.
+  a zero baseline. For supported Cartesian bars it checks each panel and
+  returns the largest distortion, including negative and reversed axes.
+  Nonlinear coordinates and truncated stacked or floating bars return
+  \code{NA} when no supported comparison is available.
 }
 \description{
 Tufte's measure of graphical integrity: the size of the effect shown in the

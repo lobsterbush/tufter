@@ -40,7 +40,10 @@ lie_factor(x, ...)
 
 A numeric lie factor, or `NA` when there's nothing to compare. The
 `ggplot` method returns `1` for a plot with no bars or with a zero
-baseline.
+baseline. For supported Cartesian bars it checks each panel and returns
+the largest distortion, including negative and reversed axes. Nonlinear
+coordinates and truncated stacked or floating bars return `NA` when no
+supported comparison is available.
 
 ## Details
 

@@ -264,11 +264,12 @@ check_contrast(
     geom_point(colour = "grey80", size = 0.8) +
     theme_tufte()
 )
-#> # A tibble: 2 × 5
-#>   role      colour ratio threshold passes
-#>   <chr>     <chr>  <dbl>     <dbl> <lgl> 
-#> 1 data mark grey80  1.61       3   FALSE 
-#> 2 axis text grey20 12.6        4.5 TRUE
+#> # A tibble: 3 × 5
+#>   role       colour ratio threshold passes
+#>   <chr>      <chr>  <dbl>     <dbl> <lgl> 
+#> 1 data mark  grey80  1.61       3   FALSE 
+#> 2 axis text  grey20 12.6        4.5 TRUE  
+#> 3 axis title black  21          4.5 TRUE
 ```
 
 Grey 80 on white is elegant, and for a good number of readers it’s
@@ -317,7 +318,7 @@ ggplot(panel, aes(year, trust, colour = country)) +
   geom_line(linewidth = 0.4) +
   # Labels take a fixed dark grey rather than the line colour: a label in the
   # lightest grey of a sequential palette is legible as a line and not as text.
-  geom_text_last(aes(label = country), size = 3, colour = "grey15") +
+  geom_text_last(aes(label = country, group = country), size = 3, colour = "grey15") +
   geom_rangeframe(sides = "l") +
   scale_x_continuous(expand = expansion(mult = c(0.02, 0.18))) +
   scale_colour_tufte("grey") +
@@ -359,10 +360,14 @@ wave <- data.frame(
 )
 
 slopegraph(wave, wave, value, state) +
+  scale_x_continuous(breaks = 1:2, labels = c("2015", "2025"),
+                     position = "top", expand = expansion(mult = 0.5)) +
   labs(
     title = "Share reporting contact with a migrant neighbour",
     subtitle = "Simulated two-wave panel, percentage points"
   )
+#> Scale for x is already present.
+#> Adding another scale for x, which will replace the existing scale.
 ```
 
 ![](simulated-examples_files/figure-html/slopegraph-1.png)
@@ -371,7 +376,11 @@ slopegraph(wave, wave, value, state) +
 fell. I’d only bother when the direction is the finding.
 
 ``` r
-slopegraph(wave, wave, value, state, direction_colour = TRUE)
+slopegraph(wave, wave, value, state, direction_colour = TRUE) +
+  scale_x_continuous(breaks = 1:2, labels = c("2015", "2025"),
+                     position = "top", expand = expansion(mult = 0.5))
+#> Scale for x is already present.
+#> Adding another scale for x, which will replace the existing scale.
 ```
 
 ![](simulated-examples_files/figure-html/slopegraph-colour-1.png)
@@ -510,7 +519,7 @@ tufte_audit(final, width = 6.5, height = 4)
 #> • The figure names its source
 #> • Wider than it is tall
 #> • Ink clears the WCAG contrast minimum
-#> • Nothing is clipped at the printed size
+#> • Measured labels fit at the printed size
 ```
 
 The [measuring

@@ -184,6 +184,9 @@ GeomQuartileFrame <- ggplot2::ggproto(
     return(data.frame(start = min(v), end = max(v)))
   }
   if (is.null(q)) q <- .five_number(v)
+  # Reversed axes transform ascending data-space quantiles into descending
+  # panel coordinates. Segment endpoints still need increasing coordinates.
+  q <- sort(q)
   half <- gap / 2
   starts <- q[1:4]
   ends <- q[2:5]

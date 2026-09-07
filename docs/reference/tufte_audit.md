@@ -103,5 +103,5 @@ tufte_audit(ggplot(mtcars, aes(wt, mpg)) + geom_point())
 #> • No variable encoded twice
 #> • Wider than it is tall
 #> • Ink clears the WCAG contrast minimum
-#> • Nothing is clipped at the printed size
+#> • Measured labels fit at the printed size
 ```

@@ -35,9 +35,10 @@ audit_figures(plots, width = 6.5, height = 4, measure = TRUE)
 ## Value
 
 An object of class `tufte_audit_batch`: a tibble with one row per
-figure, giving `figure`, `violations`, `met` and `failing`, a
-comma-separated list of the criteria not met. The full audits are
-attached as the `"audits"` attribute, named by figure.
+figure, giving `figure`, `violations`, `met`, `skipped` (checks that
+could not run), and `failing`, a comma-separated list of the criteria
+not met. The full audits are attached as the `"audits"` attribute, named
+by figure.
 
 ## Details
 

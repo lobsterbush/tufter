@@ -8,6 +8,9 @@
 #' you asked for, because a subtitle that fits on screen at the default device
 #' size isn't a subtitle that fits in the saved file. Clipping is reported as a
 #' warning; set \code{strict = TRUE} to make it an error instead.
+#' A failed check also warns, or errors in strict mode. Dimensions are always
+#' in inches; \code{units} and \code{scale} cannot be overridden through
+#' \code{...}, so the checked size is the saved size.
 #'
 #' @param filename Path to write to. The extension sets the device.
 #' @param plot The plot to save. Defaults to the last plot drawn.
@@ -27,10 +30,19 @@
 save_tufte <- function(filename, plot = ggplot2::last_plot(), width = 6.5,
                        height = 4, dpi = 300, check = TRUE, strict = FALSE,
                        ...) {
+  .check_size(width, height)
+  dots <- list(...)
+  if (any(c("units", "scale") %in% names(dots))) {
+    .abort("Set {.arg width} and {.arg height} in inches; {.arg units} and {.arg scale} cannot be overridden.")
+  }
   if (check) {
     fits <- tryCatch(
       suppressWarnings(check_labels_fit(plot, width, height)),
-      error = function(e) NULL
+      error = function(e) {
+        msg <- c("Could not check labels before saving.", x = conditionMessage(e))
+        if (strict) .abort(msg) else .warn(msg)
+        NULL
+      }
     )
     if (!is.null(fits) && nrow(fits) > 0) {
       bad <- fits[!fits$fits, , drop = FALSE]

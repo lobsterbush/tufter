@@ -9,7 +9,7 @@
 #
 # Each block sits between a pair of HTML comment markers in README.md.
 
-devtools::load_all(".", quiet = TRUE)
+devtools::load_all(here::here(), quiet = TRUE)
 library(ggplot2)
 
 # Capture what cli prints, which it signals as conditions rather than writing
@@ -72,7 +72,7 @@ short <- c(
 audit <- c("```r", "tufte_audit(base)",
            transcript(print(tufte_audit(base))), "```")
 
-readme <- readLines("README.md")
+readme <- readLines(here::here("README.md"))
 readme <- replace_block(readme, "readme-short", short)
 readme <- replace_block(readme, "readme-audit", audit)
 writeLines(readme, "README.md")

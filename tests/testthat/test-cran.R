@@ -33,15 +33,15 @@ test_that("measuring leaves the graphics device as it found it", {
 
 test_that("measuring leaves no files behind", {
   dir <- withr::local_tempdir()
-  withr::local_envvar(c(TMPDIR = dir))
+  before <- list.files(tempdir(), pattern = "\\.png$", recursive = TRUE)
   p <- ggplot(mtcars, aes(wt, mpg)) + geom_point() + theme_tufte()
 
   invisible(data_ink_ratio(p, width = 3, height = 2, res = 48))
   invisible(check_labels_fit(p, width = 3, height = 2))
 
   # Whatever the renderers wrote, they must have removed.
-  left <- list.files(dir, pattern = "\\.png$", recursive = TRUE)
-  expect_equal(left, character(0))
+  after <- list.files(tempdir(), pattern = "\\.png$", recursive = TRUE)
+  expect_setequal(after, before)
 })
 
 test_that("an open device belonging to the user survives measurement", {

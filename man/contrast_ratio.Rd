@@ -20,6 +20,10 @@ to 21, for black on white. The guidelines ask for at least 4.5 for body text
 and at least 3 for large text and for graphical objects such as the marks and
 rules on a chart.
 }
+\details{
+Embedded transparency is composited against the background.
+  A transparent background is first composited over white.
+}
 \examples{
 contrast_ratio("black", "white")
 contrast_ratio(c("grey20", "grey50", "grey80"), "white")

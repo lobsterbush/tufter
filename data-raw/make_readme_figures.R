@@ -1,7 +1,7 @@
 # Builds the figures shown in README.md. Run from the package root.
 # Uses grid directly for layout so the package picks up no extra dependency.
 
-devtools::load_all(".")
+devtools::load_all(here::here())
 library(ggplot2)
 library(grid)
 library(palmerpenguins)
@@ -11,7 +11,7 @@ set.seed(1)
 peng <- as.data.frame(penguins[complete.cases(penguins), ])
 gap <- as.data.frame(gapminder)
 
-lay <- function(file, plots, ncol, width, height, res = 200) {
+lay <- function(file, plots, ncol, width, height, res = 300) {
   png(file, width = width, height = height, units = "in", res = res,
       bg = "white", type = if (capabilities("cairo")) "cairo" else NULL)
   grid.newpage()
@@ -47,7 +47,7 @@ after <- after_p +
        subtitle = sprintf("data-ink ratio %.2f",
                           data_ink_ratio(after_p)$ratio))
 
-lay("man/figures/README-before-after.png", list(before, after),
+lay(here::here("man/figures/README-before-after.png"), list(before, after),
     ncol = 2, width = 9, height = 3.4)
 
 # The two ratios are printed inside the figure, so the alt text has to quote
@@ -63,13 +63,13 @@ alt <- sprintf(
          "(man/figures/README-before-after.png)"),
   data_ink_ratio(base)$ratio, data_ink_ratio(after_p)$ratio
 )
-readme <- readLines("README.md")
+readme <- readLines(here::here("README.md"))
 i <- grep("(man/figures/README-before-after.png)", readme, fixed = TRUE)
 if (length(i) != 1) {
   stop("expected exactly one before-after image line in README.md", call. = FALSE)
 }
 readme[i] <- alt
-writeLines(readme, "README.md")
+writeLines(readme, here::here("README.md"))
 message("rewrote the before-and-after alt text")
 
 # --- gallery -----------------------------------------------------------------
@@ -105,5 +105,5 @@ sparks <- sparklines(four, year, gdpPercap, country, accuracy = 1) +
   labs(title = "sparklines()") +
   theme(plot.title = element_text(size = 11, hjust = 0))
 
-lay("man/figures/README-gallery.png", list(boxes, bars, slopes, sparks),
+lay(here::here("man/figures/README-gallery.png"), list(boxes, bars, slopes, sparks),
     ncol = 2, width = 9, height = 6)

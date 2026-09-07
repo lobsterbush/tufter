@@ -13,3 +13,4 @@
 ^vignettes/articles$
 ^doc$
 ^Meta$
+^release_audit\.md$

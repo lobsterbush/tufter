@@ -5,12 +5,12 @@ Guidance for Warp when working in this repository.
 ## Project overview
 
 **Title**: tufter (Tufte's design principles as R code)
-**Status**: Active, v0.6.3, preparing for CRAN
+**Status**: Active, v0.6.4, CRAN release candidate
 **Description**: R package implementing Edward Tufte's principles of graphical
 design as ggplot2 extensions, and as measurements applied to existing figures
 **Authors**: Charles Crabtree, Senior Lecturer, School of Social Sciences,
 Monash University and K-Club Professor, University College, Korea University
-**Last updated**: 2026-08-23
+**Last updated**: 2026-09-07
 
 ## Core architecture
 
@@ -108,7 +108,7 @@ devtools::check()        # Full R CMD check
 ```
 
 The documentation site is styled in `pkgdown/extra.scss`, which sets the house
-tokens (Newsreader, IBM Plex Sans, JetBrains Mono, one navy accent, radius 0)
+tokens (Cormorant Garamond, Barlow, JetBrains Mono, one navy accent, radius 0)
 and reshapes pkgdown's navbar into a masthead. Tables and definition lists are
 ruled the way Tufte rules them: horizontals only, no verticals, no zebra, no
 outer box. Colours are declared once as custom properties at the top of that
@@ -116,7 +116,7 @@ file and nowhere else. Some pkgdown rules need matching specificity to undo,
 `.template-home .page-header` among them.
 
 Site and generated assets are rebuilt from `data-raw/`: `build_site.R` builds
-the pkgdown site behind its password gate, `make_readme_figures.R` and
+the public pkgdown site from an isolated staging copy, `make_readme_figures.R` and
 `make_readme_output.R` regenerate the images and the fenced output blocks in
 `README.md`. The README's output blocks are generated, so edit the script
 rather than the block.
@@ -171,5 +171,16 @@ omitted `stats` and `tools`, which several functions do.
 both masks names. The README says so; don't try to work around it in code.
 
 ### Outstanding before CRAN
-The GitHub repo is private, so the two URLs in `DESCRIPTION` return 404 and
-`--as-cran` flags them. Making the repo public clears the last note.
+The repository and documentation are public with the maintainer's authorization.
+The release audit is recorded in `release_audit.md`; current check details are
+in `cran-comments.md`. Local source checks use R 4.5.2 on macOS ARM64. Checks
+on current R release/devel and Windows remain outstanding before submission.
+No CRAN upload or external check-service email has been sent.
+
+Provenance: AI – Human (editor), 🤖✏️👤, following
+https://thelatentreview.com/provenance/. The original implementation was
+primarily Claude-generated; Codex assisted with this audit and redesign.
+
+`data-raw/build_site.R` keeps old docs in `.dev/site-backups/`, excludes internal
+notes from public HTML, and fixes pkgdown 2.2.0's asynchronous search-index race.
+The R package includes the same provenance declaration in `inst/PROVENANCE`.

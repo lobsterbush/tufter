@@ -33,8 +33,8 @@ data_ink_ratio(base)
 #> 
 #> ── Data-ink ratio
 #> 6% of the ink in this figure varies with the data.
-#> • data ink: 2103 pixel-equivalents
-#> • non-data ink: 35623
+#> • data ink: 2102 pixel-equivalents
+#> • non-data ink: 35581
 #> • measured at 6.5in x 4in, 150 dpi
 ```
 
@@ -130,7 +130,7 @@ tufte_audit(lean, width = 6.5, height = 4)
 #> • No variable encoded twice
 #> • Wider than it is tall
 #> • Ink clears the WCAG contrast minimum
-#> • Nothing is clipped at the printed size
+#> • Measured labels fit at the printed size
 ```
 
 The one that’s left is the one no theme can fix for you. The figure
@@ -169,7 +169,7 @@ tufte_audit(lean + label_source("Motor Trend, 1974"), width = 6.5, height = 4)
 #> • The figure names its source
 #> • Wider than it is tall
 #> • Ink clears the WCAG contrast minimum
-#> • Nothing is clipped at the printed size
+#> • Measured labels fit at the printed size
 ```
 
 The audit never grades the data-ink ratio or the data density. Tufte
@@ -351,14 +351,14 @@ wordy <- lean +
 
 check_labels_fit(wordy, width = 6.5, height = 4)
 #> Warning in check_labels_fit(wordy, width = 6.5, height = 4): 1 element will be clipped at 6.5in x 4in.
-#> ✖ subtitle needs 10.18in but has 6.50in.
+#> ✖ subtitle needs 10.18in but has 6.33in.
 #> ℹ Hard-wrap the text, widen the canvas, or reduce the font size.
 #> # A tibble: 7 × 4
 #>   element                      required_in available_in fits 
 #>   <chr>                              <dbl>        <dbl> <lgl>
 #> 1 layout (non-panel width)           0.611         6.5  TRUE 
-#> 2 layout (non-panel height)          0.818         4    TRUE 
-#> 3 subtitle                          10.2           6.5  FALSE
+#> 2 layout (non-panel height)          0.815         4    TRUE 
+#> 3 subtitle                          10.2           6.33 FALSE
 #> 4 x axis title                       0.167         5.89 TRUE 
 #> 5 y axis title                       0.333         3.18 TRUE 
 #> 6 x axis labels (side by side)       0.333         5.89 TRUE 

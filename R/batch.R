@@ -24,7 +24,8 @@
 #'   which are ungraded, so the ordering by unmet criteria is the same either
 #'   way and roughly twice as fast to get.
 #' @return An object of class \code{tufte_audit_batch}: a tibble with one row
-#'   per figure, giving \code{figure}, \code{violations}, \code{met} and
+#'   per figure, giving \code{figure}, \code{violations}, \code{met},
+#'   \code{skipped} (checks that could not run), and
 #'   \code{failing}, a comma-separated list of the criteria not met. The full
 #'   audits are attached as the \code{"audits"} attribute, named by figure.
 #' @seealso \code{\link{tufte_audit}()} for a single plot.
@@ -40,7 +41,12 @@ audit_figures <- function(plots, width = 6.5, height = 4, measure = TRUE) {
   plots <- .as_plot_list(plots)
   n <- length(plots)
   if (n == 0) .abort("No plots to audit.")
-
+  for (size in list(width = width, height = height)) {
+    if (!is.numeric(size) || !length(size) ||
+        !length(size) %in% c(1L, n) || any(!is.finite(size) | size <= 0)) {
+      .abort("Dimensions must be positive numbers, either one size or one per plot.")
+    }
+  }
   width <- rep_len(width, n)
   height <- rep_len(height, n)
 
@@ -63,6 +69,7 @@ audit_figures <- function(plots, width = 6.5, height = 4, measure = TRUE) {
       audits[i] <- list(NULL)
       rows[[i]] <- data.frame(
         figure = names(plots)[i], violations = NA_integer_, met = NA_integer_,
+        skipped = NA_integer_,
         failing = paste("couldn't be audited:", conditionMessage(a)),
         stringsAsFactors = FALSE
       )
@@ -74,6 +81,7 @@ audit_figures <- function(plots, width = 6.5, height = 4, measure = TRUE) {
       figure = names(plots)[i],
       violations = length(fails),
       met = sum(a$status == "pass"),
+      skipped = sum(a$status == "skip"),
       failing = if (length(fails)) paste(fails, collapse = ", ") else "",
       stringsAsFactors = FALSE
     )
@@ -108,8 +116,13 @@ print.tufte_audit_batch <- function(x, ...) {
     }
   }
   if (nrow(clean) > 0) {
-    cli::cli_h3("Meeting every stated criterion")
+    cli::cli_h3("No failures among completed checks")
     cli::cli_ul(clean$figure)
+  }
+  incomplete <- x[!is.na(x$skipped) & x$skipped > 0, , drop = FALSE]
+  if (nrow(incomplete)) {
+    cli::cli_h3("Incomplete audits")
+    cli::cli_ul(paste0(incomplete$figure, ": ", incomplete$skipped, " skipped checks"))
   }
   if (nrow(broken) > 0) {
     cli::cli_h3("Could not be audited")

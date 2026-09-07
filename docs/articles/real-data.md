@@ -46,7 +46,7 @@ r_default
 #> ── Data-ink ratio
 #> 21% of the ink in this figure varies with the data.
 #> • data ink: 9822 pixel-equivalents
-#> • non-data ink: 36555
+#> • non-data ink: 36512
 #> • measured at 6.5in x 4in, 150 dpi
 ```
 
@@ -169,7 +169,7 @@ ggplot(recent, aes(gdpPercap, lifeExp)) +
   geom_point(alpha = 0.25, size = 0.7) +
   geom_rangeframe() +
   facet_tufte(~ continent, ncol = 4) +
-  scale_x_log10(labels = scales::label_comma()) +
+  scale_x_log10(breaks = c(1000, 10000), labels = c("1,000", "10,000")) +
   labs(x = "GDP per capita (log scale)", y = "Life expectancy") +
   theme_tufte() +
   label_source("gapminder", note = "1977 onward.")
@@ -296,7 +296,7 @@ tufte_audit(lean, width = 6.5, height = 4)
 #> • The figure names its source
 #> • Wider than it is tall
 #> • Ink clears the WCAG contrast minimum
-#> • Nothing is clipped at the printed size
+#> • Measured labels fit at the printed size
 ```
 
 ## A whole paper at once
@@ -319,7 +319,7 @@ audit_figures(figures, measure = FALSE)
 #> Panel carries no background fill, No minor gridlines, Bars measured from zero,
 #> Lie factor within Tufte's band, The figure names its source
 #> 
-#> ── Meeting every stated criterion
+#> ── No failures among completed checks
 #> • fig 1 penguins
 #> • fig 2 species
 #> 

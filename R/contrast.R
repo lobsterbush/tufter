@@ -9,12 +9,17 @@
 #' @param colour,background Colours, in any form \code{\link[grDevices]{col2rgb}}
 #'   accepts. Vectors are recycled against each other.
 #' @return A numeric vector of contrast ratios.
+#' @details Embedded transparency is composited against the background.
+#'   A transparent background is first composited over white.
 #' @seealso \code{\link{check_contrast}()}, which applies this to a whole plot.
 #' @export
 #' @examples
 #' contrast_ratio("black", "white")
 #' contrast_ratio(c("grey20", "grey50", "grey80"), "white")
 contrast_ratio <- function(colour, background = "white") {
+  if (!length(colour) || !length(background)) return(numeric(0))
+  background <- .composite(background, NULL, "white")
+  colour <- .composite(colour, NULL, background)
   l1 <- .relative_luminance(colour)
   l2 <- .relative_luminance(background)
   n <- max(length(l1), length(l2))
@@ -48,7 +53,11 @@ contrast_ratio <- function(colour, background = "white") {
 #' that clears them can still be hard work in a badly lit lecture theatre.
 #'
 #' Colours drawn with transparency are measured as if composited onto the
-#' background, since that's what the reader sees.
+#' background, since that's what the reader sees. Theme text is read from
+#' the rendered grobs, including axis-specific styles and legend labels.
+#' This is a colour screening tool, not a complete accessibility assessment:
+#' it does not resolve overlapping marks, text on filled labels, or contrasting
+#' legend and strip backgrounds.
 #'
 #' @param plot A \code{ggplot} object.
 #' @param background The colour to measure against. By default this is taken
@@ -73,16 +82,17 @@ check_contrast <- function(plot, background = NULL, text_min = 4.5,
   .check_gg(plot)
   built <- ggplot2::ggplot_build(plot)
   theme <- .resolved_theme(plot)
+  override_background <- background
   background <- background %||% .plot_background(theme)
 
   rows <- list()
-  add <- function(role, colour, threshold) {
+  add <- function(role, colour, threshold, bg = background) {
     colour <- unique(colour[!is.na(colour) & nzchar(colour)])
     colour <- colour[!colour %in% c("NA", "transparent")]
     if (length(colour) == 0) return(invisible(NULL))
     rows[[length(rows) + 1]] <<- data.frame(
       role = role, colour = colour,
-      ratio = round(contrast_ratio(colour, background), 2),
+      ratio = contrast_ratio(colour, bg),
       threshold = threshold,
       stringsAsFactors = FALSE
     )
@@ -107,25 +117,21 @@ check_contrast <- function(plot, background = NULL, text_min = 4.5,
   add("data mark", pick("mark"), mark_min)
   add("data label", pick("text"), text_min)
 
-  # Only text the figure actually draws. The theme carries a colour for every
-  # element whether or not the plot uses it, so a styled subtitle colour on a
-  # plot with no subtitle was measured, failed, and counted as a violation.
-  labs <- plot$labels %||% list()
-  drawn <- function(nm) {
-    v <- labs[[nm]]
-    !is.null(v) && !inherits(v, "waiver") && any(nzchar(as.character(v)))
-  }
-  add("axis text", .el_get(theme$axis.text, "colour"), text_min)
-  add("axis title", .el_get(theme$axis.title, "colour"), text_min)
-  if (drawn("title")) add("title", .el_get(theme$plot.title, "colour"), text_min)
-  if (drawn("subtitle")) {
-    add("subtitle", .el_get(theme$plot.subtitle, "colour"), text_min)
-  }
-  if (drawn("caption")) {
-    add("caption", .el_get(theme$plot.caption, "colour"), text_min)
-  }
-  if (!inherits(plot$facet, "FacetNull")) {
-    add("strip text", .el_get(theme$strip.text, "colour"), text_min)
+  # Read rendered text grobs so axis-specific overrides, legend labels and
+  # inherited colours are checked only when the text is actually present.
+  gt <- .grob_of(plot)
+  outer <- override_background %||%
+    .composite(.el_get(theme$plot.background, "fill") %||% "white", NULL, "white")
+  for (i in seq_along(gt$grobs)) {
+    name <- gt$layout$name[i]
+    role <- if (name %in% c("title", "subtitle", "caption")) name else
+      if (grepl("^axis-", name)) "axis text" else
+      if (grepl("^[xy]lab-", name)) "axis title" else
+      if (grepl("^guide-box", name)) "legend text" else
+      if (grepl("^strip-", name)) "strip text" else NULL
+    if (is.null(role)) next
+    colours <- unlist(lapply(.collect_text_grobs(gt$grobs[[i]]), function(g) g$gp$col))
+    add(role, colours, text_min, bg = outer)
   }
   # A grid asked for on one axis only lives in the .x or .y element, so all
   # three have to be looked at.
@@ -142,8 +148,9 @@ check_contrast <- function(plot, background = NULL, text_min = 4.5,
     ))
   }
 
-  out <- do.call(rbind, rows)
+  out <- unique(do.call(rbind, rows))
   out$passes <- out$ratio >= out$threshold
+  out$ratio <- round(out$ratio, 2)
   # A gridline is meant to be ignorable, so failing the mark threshold is
   # normal and not worth reporting as a problem.
   out$passes[out$role == "gridline"] <- TRUE
@@ -152,27 +159,33 @@ check_contrast <- function(plot, background = NULL, text_min = 4.5,
 
 #' @noRd
 .plot_background <- function(theme) {
-  fill <- .el_get(theme$panel.background, "fill") %||%
-    .el_get(theme$plot.background, "fill")
-  # .is_blank_fill() also catches an alpha of zero and the other spellings of
-  # white. Without it a fill of "#00000000", which draws nothing at all, was
-  # measured as opaque black and every mark on the plot failed against it.
-  if (is.null(fill) || .is_blank_fill(fill)) return("white")
-  fill
+  outer <- .el_get(theme$plot.background, "fill") %||% "white"
+  outer <- .composite(outer, NULL, "white")
+  panel <- .el_get(theme$panel.background, "fill") %||% "transparent"
+  .composite(panel, NULL, outer)
 }
 
 # What a semi-transparent colour actually looks like on the page.
 #' @noRd
 .composite <- function(colour, alpha, background) {
-  if (is.null(colour)) return(character(0))
+  if (!length(colour)) return(character(0))
   colour <- as.character(colour)
-  if (is.null(alpha)) return(colour)
-  alpha <- rep_len(alpha, length(colour))
-  needs <- !is.na(alpha) & alpha < 1 & !is.na(colour)
+  n <- max(length(colour), length(background))
+  colour <- rep_len(colour, n)
+  rgba <- grDevices::col2rgb(colour, alpha = TRUE)
+  embedded <- rgba[4, ] / 255
+  alpha <- if (is.null(alpha)) embedded else rep_len(alpha, n)
+  alpha[is.na(alpha)] <- embedded[is.na(alpha)]
+  # An explicit layer alpha replaces the encoded alpha, including alpha = 1.
+  opaque <- alpha == 1 & embedded < 1 & !is.na(colour)
+  if (any(opaque)) {
+    colour[opaque] <- grDevices::rgb(rgba[1, opaque], rgba[2, opaque],
+                                    rgba[3, opaque], maxColorValue = 255)
+  }
+  needs <- alpha < 1 & !is.na(colour)
   if (!any(needs)) return(colour)
-
-  bg <- as.vector(grDevices::col2rgb(background))
-  fg <- grDevices::col2rgb(colour[needs])
+  bg <- grDevices::col2rgb(rep_len(background, n))[ , needs, drop = FALSE]
+  fg <- rgba[1:3, needs, drop = FALSE]
   a <- matrix(alpha[needs], nrow = 3, ncol = sum(needs), byrow = TRUE)
   mixed <- fg * a + bg * (1 - a)
   colour[needs] <- grDevices::rgb(

@@ -1,35 +1,38 @@
-## Test environments
+## Test environment
 
-* local macOS 26.4 (aarch64), R 4.5.2
-* `R CMD check --as-cran` on the built tarball
+* Local macOS 26.4 (aarch64), R 4.5.2, ggplot2 4.0.3
+* Built source archive: `tufter_0.6.4.tar.gz`
+* `R CMD check --as-cran` completed on 2026-09-07
 
 ## R CMD check results
 
-0 errors | 0 warnings | 2 notes
+0 errors | 0 warnings | 1 note
 
-The first is CRAN incoming feasibility, reporting a new submission and a 404 on
-`https://github.com/lobsterbush/tufter`. The repo is still private. Make it
-public, or drop the two URLs from `DESCRIPTION`, before submitting.
+The only note is CRAN incoming feasibility: "New submission".
+All 672 test expectations passed, with no failures, warnings, or skips.
+Examples, both installed vignettes, and PDF and HTML manuals passed.
+The repository is public and the package URLs pass URL checks.
 
-The second is local rather than about the package: this machine's HTML Tidy
-predates the version R now asks for, so the HTML manual check is skipped.
+## Checks still required before submission
 
-A third note appears on this machine intermittently, reporting a `.DS_Store` in
-the check directory. Finder writes those while the check is running. The built
-tarball contains none, and they're git-ignored, so nothing reaches the package
-or the repository.
+This is a release candidate, not a record of completed cross-platform checks.
+Run the archive on current R release and R-devel, including Windows, and
+update this file with those actual results before uploading to CRAN.
+No CRAN upload or external check-service request has been made.
 
 ## Notes for the reviewer
 
-`data_ink_ratio()` and `check_labels_fit()` render the plot to a temporary PNG
-to measure it, using `ragg` when that's installed and `grDevices::png()`
-otherwise. Both write only to `tempfile()`, delete what they write, and restore
-the previously active graphics device.
+This is the first CRAN submission of tufter.
 
-Nothing in the package accesses the internet. `data-raw/` holds a script that
-fetches from four public APIs and is excluded from the build. The vignettes use
-`gapminder` and `palmerpenguins`, both suggested and both guarded, so they build
-when neither is installed.
+`data_ink_ratio()` and `check_labels_fit()` use temporary PNG files for
+measurement. The ink renderer uses `ragg` when available and `grDevices::png()`
+otherwise. Temporary measurement files are cleaned up and the previous
+graphics device is restored. The base PNG fallback was also exercised locally.
 
-The title and description name Edward Tufte, whose books the package implements.
-The four books are cited by ISBN and Cleveland, McGill and McGill (1988) by DOI.
+Package functions do not access the internet. Network data collection scripts
+and site-only articles are excluded from the source package. The two installed
+vignettes guard their suggested data packages with `requireNamespace()`.
+
+The source archive includes `inst/PROVENANCE`, declaring AI – Human (editor)
+and identifying Charles Crabtree as human editor and maintainer. Development
+notes, website files, build scripts, and local check artifacts are excluded.

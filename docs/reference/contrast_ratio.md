@@ -24,6 +24,11 @@ contrast_ratio(colour, background = "white")
 
 A numeric vector of contrast ratios.
 
+## Details
+
+Embedded transparency is composited against the background. A
+transparent background is first composited over white.
+
 ## See also
 
 [`check_contrast()`](https://lobsterbush.github.io/tufter/reference/check_contrast.md),

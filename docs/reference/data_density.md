@@ -39,7 +39,11 @@ The data matrix here is counted as the number of rows drawn, times the
 number of distinct variables mapped to aesthetics. Positional aesthetics
 count; constants set outside
 [`aes()`](https://ggplot2.tidyverse.org/reference/aes.html) don't,
-because they carry no data.
+because they carry no data. This is an estimate, especially for
+statistical layers and plots combining different data sources: it
+multiplies a pooled row count by the union of mapped variables rather
+than reconstructing each displayed data matrix. If panel area cannot be
+estimated, the whole canvas area is used.
 
 ## Examples
 

@@ -68,7 +68,25 @@ NULL
 .mapped_base_vars <- function(quo) {
   if (is.null(quo)) return(character(0))
   expr <- if (rlang::is_quosure(quo)) rlang::quo_get_expr(quo) else quo
-  if (is.symbol(expr) || is.call(expr)) return(all.vars(expr))
+  if (is.symbol(expr)) {
+    name <- as.character(expr)
+    return(setdiff(name, c(".data", ".env")))
+  }
+  if (is.call(expr)) {
+    operator <- as.character(expr[[1]])[1]
+    if (operator %in% c("$", "[[") && length(expr) >= 3 &&
+        identical(expr[[2]], as.name(".env"))) return(character(0))
+    if (operator %in% c("$", "[[") && length(expr) >= 3 &&
+        identical(expr[[2]], as.name(".data"))) {
+      key <- expr[[3]]
+      if (is.character(key) || (operator == "$" && is.symbol(key))) {
+        return(as.character(key))
+      }
+      return(character(0))
+    }
+    return(unique(unlist(lapply(as.list(expr)[-1], .mapped_base_vars),
+                         use.names = FALSE)))
+  }
   character(0)
 }
 
