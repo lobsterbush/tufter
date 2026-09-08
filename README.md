@@ -197,9 +197,7 @@ discusses the evidence and the limits of that principle.
 
 ## Provenance
 
-| Declaration | Mark and standard |
-| :--- | :--- |
-| AI – Human (editor) | 🤖✏️👤 · [The Latent Review provenance standard](https://thelatentreview.com/provenance/) |
+[![tufter: AI – Human (editor) 🤖✏️👤](man/figures/provenance.svg)](https://thelatentreview.com/provenance/)
 
 I'm the human editor and maintainer. Anthropic's Claude, through Claude Code,
 wrote most of the original R source, tests, documentation and vignettes.
